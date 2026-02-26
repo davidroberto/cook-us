@@ -1,0 +1,15 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+
+# Environment
+.env.local
+.env.prod
+
+# IDE
+.idea
+
+# E2E
+/e2e/test-results/.last-run.json

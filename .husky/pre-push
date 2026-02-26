@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "=== Backend: lint ==="
+cd backend && npm run lint
+
+echo "=== Backend: build (typecheck) ==="
+npm run build
+
+echo "=== Frontend: lint ==="
+cd ../frontend && npm run lint
+
+echo "=== Frontend: build (typecheck) ==="
+npm run build
+
+echo "=== All checks passed ==="
