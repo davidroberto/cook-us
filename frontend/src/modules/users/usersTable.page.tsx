@@ -22,6 +22,7 @@ type BackofficeUser = {
     role: UserRole
     createdAt: string
     deletedAt: string | null
+    description: string | null
     cookProfile: {
         speciality: CookSpeciality
         city: string
@@ -42,6 +43,7 @@ const users: BackofficeUser[] = [
         role: 'client',
         createdAt: '2026-01-12T10:00:00Z',
         deletedAt: null,
+        description: 'Cliente fidèle depuis le lancement, commande régulièrement des repas indiens et italiens pour ses soirées en famille.',
         cookProfile: null,
     },
     {
@@ -53,6 +55,7 @@ const users: BackofficeUser[] = [
         role: 'cook',
         createdAt: '2026-01-20T15:45:00Z',
         deletedAt: null,
+        description: 'Chef spécialisé en cuisine italienne avec 10 ans d\'expérience dans des restaurants étoilés à Milan et Lyon.',
         cookProfile: {
             speciality: 'italien',
             city: 'Lyon',
@@ -68,6 +71,7 @@ const users: BackofficeUser[] = [
         role: 'cook',
         createdAt: '2026-02-01T09:20:00Z',
         deletedAt: null,
+        description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
         cookProfile: {
             speciality: 'indian',
             city: 'Paris',
@@ -83,6 +87,7 @@ const users: BackofficeUser[] = [
         role: 'admin',
         createdAt: '2025-12-15T08:00:00Z',
         deletedAt: null,
+        description: null,
         cookProfile: null,
     },
     {
@@ -94,6 +99,7 @@ const users: BackofficeUser[] = [
         role: 'client',
         createdAt: '2026-02-14T13:30:00Z',
         deletedAt: '2026-02-28T18:10:00Z',
+        description: null,
         cookProfile: null,
     },
 ]
@@ -134,6 +140,18 @@ const SortIcon = ({ column, sortKey, direction }: { column: SortKey; sortKey: So
     if (sortKey !== column) return <ChevronsUpDown className="ml-1 inline h-3 w-3 opacity-40" />
     if (direction === 'asc') return <ChevronUp className="ml-1 inline h-3 w-3" />
     return <ChevronDown className="ml-1 inline h-3 w-3" />
+}
+
+const DescriptionCell = ({ text }: { text: string | null }) => {
+    if (!text) return <span className="text-muted-foreground">-</span>
+    return (
+        <div className="group relative">
+            <span className="block max-w-[180px] cursor-default truncate">{text}</span>
+            <div className="pointer-events-none absolute left-0 top-full z-50 mt-1 hidden w-72 rounded-md border border-border bg-card px-3 py-2 text-xs shadow-lg group-hover:block">
+                {text}
+            </div>
+        </div>
+    )
 }
 
 export const UsersTablePage = () => {
@@ -182,6 +200,7 @@ export const UsersTablePage = () => {
                                 <TableHead className={thClass} onClick={() => handleSort('role')}>
                                     Rôle <SortIcon column="role" sortKey={sortKey} direction={sortDirection} />
                                 </TableHead>
+                                <TableHead>Description</TableHead>
                                 <TableHead className={thClass} onClick={() => handleSort('speciality')}>
                                     Spécialité <SortIcon column="speciality" sortKey={sortKey} direction={sortDirection} />
                                 </TableHead>
@@ -205,6 +224,7 @@ export const UsersTablePage = () => {
                                     </TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell className="capitalize">{user.role}</TableCell>
+                                    <TableCell><DescriptionCell text={user.description} /></TableCell>
                                     <TableCell className="capitalize">{user.cookProfile?.speciality ?? '-'}</TableCell>
                                     <TableCell>{user.cookProfile?.city ?? '-'}</TableCell>
                                     <TableCell>{user.cookProfile?.price ?? '-'}/h</TableCell>
