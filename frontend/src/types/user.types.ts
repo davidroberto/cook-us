@@ -1,4 +1,5 @@
 export type UserRole = 'client' | 'cook' | 'admin'
+export type CookSpeciality = 'indian' | 'french' | 'italien'
 
 export type BackofficeUser = {
     id: number
@@ -11,10 +12,9 @@ export type BackofficeUser = {
     updatedAt: string
     deletedAt: string | null
     cookProfile: {
-        description: string | null
-        speciality: string
-        hourlyRate: number | null
-        isActive: boolean
-        isValidated: boolean
+        description: string
+        speciality: CookSpeciality
+        hourlyRate: string
+        city: string
     } | null
 }

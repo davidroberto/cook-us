@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table'
 import { useUsers, type BackofficeUser } from './useUsers'
 
-type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'createdAt' | 'updatedAt'
+type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'city' | 'createdAt' | 'updatedAt'
 type SortDirection = 'asc' | 'desc'
 
 const formatDate = (value: string | null) => {
@@ -29,7 +29,8 @@ const getSortValue = (user: BackofficeUser, key: SortKey): string | number => {
         case 'email': return user.email.toLowerCase()
         case 'role': return user.role
         case 'speciality': return user.cookProfile?.speciality ?? '\uffff'
-        case 'hourlyRate': return user.cookProfile?.hourlyRate ?? Infinity
+        case 'hourlyRate': return parseFloat(user.cookProfile?.hourlyRate ?? '99999')
+        case 'city': return user.cookProfile?.city.toLowerCase() ?? '\uffff'
         case 'createdAt': return new Date(user.createdAt).getTime()
         case 'updatedAt': return new Date(user.updatedAt).getTime()
     }
@@ -128,6 +129,9 @@ export const UsersTablePage = () => {
                                     <TableHead className={thClass} onClick={() => handleSort('speciality')}>
                                         Spécialité <SortIcon column="speciality" sortKey={sortKey} direction={sortDirection} />
                                     </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('city')}>
+                                        Ville <SortIcon column="city" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
                                     <TableHead className={thClass} onClick={() => handleSort('hourlyRate')}>
                                         Tarif/h <SortIcon column="hourlyRate" sortKey={sortKey} direction={sortDirection} />
                                     </TableHead>
@@ -150,7 +154,8 @@ export const UsersTablePage = () => {
                                         <TableCell className="capitalize">{user.role}</TableCell>
                                         <TableCell><DescriptionCell text={user.cookProfile?.description ?? null} /></TableCell>
                                         <TableCell className="capitalize">{user.cookProfile?.speciality ?? '-'}</TableCell>
-                                        <TableCell>{user.cookProfile?.hourlyRate != null ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
+                                        <TableCell>{user.cookProfile?.city ?? '-'}</TableCell>
+                                        <TableCell>{user.cookProfile?.hourlyRate ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
                                         <TableCell>{formatDate(user.createdAt)}</TableCell>
                                         <TableCell>{formatDate(user.updatedAt)}</TableCell>
                                     </TableRow>
