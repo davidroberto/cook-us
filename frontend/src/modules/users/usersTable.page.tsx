@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/table'
 
 type UserRole = 'client' | 'cook' | 'admin'
-type CookSpeciality = 'indian' | 'french' | 'italien'
 
 type BackofficeUser = {
     id: number
@@ -21,16 +20,18 @@ type BackofficeUser = {
     thumbnail: string | null
     role: UserRole
     createdAt: string
+    updatedAt: string
     deletedAt: string | null
-    description: string | null
     cookProfile: {
-        speciality: CookSpeciality
-        city: string
-        price: string
+        description: string | null
+        speciality: string
+        hourlyRate: number | null
+        isActive: boolean
+        isValidated: boolean
     } | null
 }
 
-type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'city' | 'price' | 'createdAt' | 'deletedAt'
+type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'createdAt' | 'updatedAt'
 type SortDirection = 'asc' | 'desc'
 
 const users: BackofficeUser[] = [
@@ -42,8 +43,8 @@ const users: BackofficeUser[] = [
         thumbnail: null,
         role: 'client',
         createdAt: '2026-01-12T10:00:00Z',
+        updatedAt: '2026-01-12T10:00:00Z',
         deletedAt: null,
-        description: 'Cliente fidèle depuis le lancement, commande régulièrement des repas indiens et italiens pour ses soirées en famille.',
         cookProfile: null,
     },
     {
@@ -54,12 +55,14 @@ const users: BackofficeUser[] = [
         thumbnail: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop',
         role: 'cook',
         createdAt: '2026-01-20T15:45:00Z',
+        updatedAt: '2026-02-01T08:00:00Z',
         deletedAt: null,
-        description: 'Chef spécialisé en cuisine italienne avec 10 ans d\'expérience dans des restaurants étoilés à Milan et Lyon.',
         cookProfile: {
+            description: 'Chef spécialisé en cuisine italienne avec 10 ans d\'expérience dans des restaurants étoilés à Milan et Lyon.',
             speciality: 'italien',
-            city: 'Lyon',
-            price: '45€',
+            hourlyRate: 45,
+            isActive: true,
+            isValidated: true,
         },
     },
     {
@@ -70,12 +73,14 @@ const users: BackofficeUser[] = [
         thumbnail: null,
         role: 'cook',
         createdAt: '2026-02-01T09:20:00Z',
+        updatedAt: '2026-02-01T09:20:00Z',
         deletedAt: null,
-        description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
         cookProfile: {
+            description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
             speciality: 'indian',
-            city: 'Paris',
-            price: '52€',
+            hourlyRate: 52,
+            isActive: true,
+            isValidated: false,
         },
     },
     {
@@ -86,8 +91,8 @@ const users: BackofficeUser[] = [
         thumbnail: null,
         role: 'admin',
         createdAt: '2025-12-15T08:00:00Z',
+        updatedAt: '2025-12-15T08:00:00Z',
         deletedAt: null,
-        description: null,
         cookProfile: null,
     },
     {
@@ -98,8 +103,8 @@ const users: BackofficeUser[] = [
         thumbnail: null,
         role: 'client',
         createdAt: '2026-02-14T13:30:00Z',
+        updatedAt: '2026-02-14T13:30:00Z',
         deletedAt: '2026-02-28T18:10:00Z',
-        description: null,
         cookProfile: null,
     },
 ]
@@ -119,10 +124,9 @@ const getSortValue = (user: BackofficeUser, key: SortKey): string | number => {
         case 'email': return user.email.toLowerCase()
         case 'role': return user.role
         case 'speciality': return user.cookProfile?.speciality ?? '\uffff'
-        case 'city': return user.cookProfile?.city.toLowerCase() ?? '\uffff'
-        case 'price': return parseInt(user.cookProfile?.price ?? '99999')
+        case 'hourlyRate': return user.cookProfile?.hourlyRate ?? Infinity
         case 'createdAt': return new Date(user.createdAt).getTime()
-        case 'deletedAt': return user.deletedAt ? new Date(user.deletedAt).getTime() : Infinity
+        case 'updatedAt': return new Date(user.updatedAt).getTime()
     }
 }
 
@@ -204,14 +208,14 @@ export const UsersTablePage = () => {
                                 <TableHead className={thClass} onClick={() => handleSort('speciality')}>
                                     Spécialité <SortIcon column="speciality" sortKey={sortKey} direction={sortDirection} />
                                 </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('city')}>
-                                    Ville <SortIcon column="city" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('price')}>
-                                    Prix <SortIcon column="price" sortKey={sortKey} direction={sortDirection} />
+                                <TableHead className={thClass} onClick={() => handleSort('hourlyRate')}>
+                                    Tarif/h <SortIcon column="hourlyRate" sortKey={sortKey} direction={sortDirection} />
                                 </TableHead>
                                 <TableHead className={thClass} onClick={() => handleSort('createdAt')}>
                                     Créé le <SortIcon column="createdAt" sortKey={sortKey} direction={sortDirection} />
+                                </TableHead>
+                                <TableHead className={thClass} onClick={() => handleSort('updatedAt')}>
+                                    Modifié le <SortIcon column="updatedAt" sortKey={sortKey} direction={sortDirection} />
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -224,11 +228,11 @@ export const UsersTablePage = () => {
                                     </TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell className="capitalize">{user.role}</TableCell>
-                                    <TableCell><DescriptionCell text={user.description} /></TableCell>
+                                    <TableCell><DescriptionCell text={user.cookProfile?.description ?? null} /></TableCell>
                                     <TableCell className="capitalize">{user.cookProfile?.speciality ?? '-'}</TableCell>
-                                    <TableCell>{user.cookProfile?.city ?? '-'}</TableCell>
-                                    <TableCell>{user.cookProfile?.price ?? '-'}/h</TableCell>
+                                    <TableCell>{user.cookProfile?.hourlyRate != null ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
                                     <TableCell>{formatDate(user.createdAt)}</TableCell>
+                                    <TableCell>{formatDate(user.updatedAt)}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
