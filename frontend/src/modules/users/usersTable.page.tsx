@@ -9,105 +9,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+import { useUsers, type BackofficeUser } from './useUsers'
 
-type UserRole = 'client' | 'cook' | 'admin'
-
-type BackofficeUser = {
-    id: number
-    firstName: string
-    lastName: string
-    email: string
-    thumbnail: string | null
-    role: UserRole
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-    cookProfile: {
-        description: string | null
-        speciality: string
-        hourlyRate: number | null
-        isActive: boolean
-        isValidated: boolean
-    } | null
-}
-
-type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'createdAt' | 'updatedAt'
+type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'city' | 'createdAt' | 'updatedAt'
 type SortDirection = 'asc' | 'desc'
-
-const users: BackofficeUser[] = [
-    {
-        id: 1,
-        firstName: 'Marie',
-        lastName: 'Dupont',
-        email: 'marie.dupont@cookus.app',
-        thumbnail: null,
-        role: 'client',
-        createdAt: '2026-01-12T10:00:00Z',
-        updatedAt: '2026-01-12T10:00:00Z',
-        deletedAt: null,
-        cookProfile: null,
-    },
-    {
-        id: 2,
-        firstName: 'Luca',
-        lastName: 'Bianchi',
-        email: 'luca.bianchi@cookus.app',
-        thumbnail: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop',
-        role: 'cook',
-        createdAt: '2026-01-20T15:45:00Z',
-        updatedAt: '2026-02-01T08:00:00Z',
-        deletedAt: null,
-        cookProfile: {
-            description: 'Chef spécialisé en cuisine italienne avec 10 ans d\'expérience dans des restaurants étoilés à Milan et Lyon.',
-            speciality: 'italien',
-            hourlyRate: 45,
-            isActive: true,
-            isValidated: true,
-        },
-    },
-    {
-        id: 3,
-        firstName: 'Aïcha',
-        lastName: 'Martin',
-        email: 'aicha.martin@cookus.app',
-        thumbnail: null,
-        role: 'cook',
-        createdAt: '2026-02-01T09:20:00Z',
-        updatedAt: '2026-02-01T09:20:00Z',
-        deletedAt: null,
-        cookProfile: {
-            description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
-            speciality: 'indian',
-            hourlyRate: 52,
-            isActive: true,
-            isValidated: false,
-        },
-    },
-    {
-        id: 4,
-        firstName: 'Admin',
-        lastName: 'Cookus',
-        email: 'admin@cookus.app',
-        thumbnail: null,
-        role: 'admin',
-        createdAt: '2025-12-15T08:00:00Z',
-        updatedAt: '2025-12-15T08:00:00Z',
-        deletedAt: null,
-        cookProfile: null,
-    },
-    {
-        id: 5,
-        firstName: 'Nora',
-        lastName: 'Petit',
-        email: 'nora.petit@cookus.app',
-        thumbnail: null,
-        role: 'client',
-        createdAt: '2026-02-14T13:30:00Z',
-        updatedAt: '2026-02-14T13:30:00Z',
-        deletedAt: '2026-02-28T18:10:00Z',
-        cookProfile: null,
-    },
-]
 
 const formatDate = (value: string | null) => {
     if (!value) return '-'
@@ -124,7 +29,8 @@ const getSortValue = (user: BackofficeUser, key: SortKey): string | number => {
         case 'email': return user.email.toLowerCase()
         case 'role': return user.role
         case 'speciality': return user.cookProfile?.speciality ?? '\uffff'
-        case 'hourlyRate': return user.cookProfile?.hourlyRate ?? Infinity
+        case 'hourlyRate': return parseFloat(user.cookProfile?.hourlyRate ?? '99999')
+        case 'city': return user.cookProfile?.city.toLowerCase() ?? '\uffff'
         case 'createdAt': return new Date(user.createdAt).getTime()
         case 'updatedAt': return new Date(user.updatedAt).getTime()
     }
@@ -162,6 +68,8 @@ export const UsersTablePage = () => {
     const [sortKey, setSortKey] = useState<SortKey | null>(null)
     const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
 
+    const { data, isLoading, isError } = useUsers()
+
     const handleSort = (key: SortKey) => {
         if (sortKey !== key) {
             setSortKey(key)
@@ -174,7 +82,7 @@ export const UsersTablePage = () => {
         }
     }
 
-    const activeUsers = users.filter((user) => user.deletedAt === null)
+    const activeUsers = (data ?? []).filter((user) => user.deletedAt === null)
     const sortedUsers = sortKey && sortDirection ? sortUsers(activeUsers, sortKey, sortDirection) : activeUsers
 
     const thClass = 'cursor-pointer select-none hover:text-foreground'
@@ -188,55 +96,73 @@ export const UsersTablePage = () => {
                 </header>
 
                 <div className="rounded-lg border bg-card p-4">
-                    <Table>
-                        <TableCaption>Liste des utilisateurs ({activeUsers.length})</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className={thClass} onClick={() => handleSort('id')}>
-                                    ID <SortIcon column="id" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('name')}>
-                                    Nom <SortIcon column="name" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('email')}>
-                                    Email <SortIcon column="email" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('role')}>
-                                    Rôle <SortIcon column="role" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('speciality')}>
-                                    Spécialité <SortIcon column="speciality" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('hourlyRate')}>
-                                    Tarif/h <SortIcon column="hourlyRate" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('createdAt')}>
-                                    Créé le <SortIcon column="createdAt" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                                <TableHead className={thClass} onClick={() => handleSort('updatedAt')}>
-                                    Modifié le <SortIcon column="updatedAt" sortKey={sortKey} direction={sortDirection} />
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {sortedUsers.map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell className="font-medium">{user.id}</TableCell>
-                                    <TableCell>
-                                        {user.firstName} {user.lastName}
-                                    </TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell className="capitalize">{user.role}</TableCell>
-                                    <TableCell><DescriptionCell text={user.cookProfile?.description ?? null} /></TableCell>
-                                    <TableCell className="capitalize">{user.cookProfile?.speciality ?? '-'}</TableCell>
-                                    <TableCell>{user.cookProfile?.hourlyRate != null ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
-                                    <TableCell>{formatDate(user.createdAt)}</TableCell>
-                                    <TableCell>{formatDate(user.updatedAt)}</TableCell>
+                    {isError && (
+                        <p className="py-8 text-center text-sm text-destructive">
+                            Impossible de charger les utilisateurs.
+                        </p>
+                    )}
+
+                    {isLoading && (
+                        <p className="py-8 text-center text-sm text-muted-foreground">
+                            Chargement...
+                        </p>
+                    )}
+
+                    {!isLoading && !isError && (
+                        <Table>
+                            <TableCaption>Liste des utilisateurs ({activeUsers.length})</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className={thClass} onClick={() => handleSort('id')}>
+                                        ID <SortIcon column="id" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('name')}>
+                                        Nom <SortIcon column="name" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('email')}>
+                                        Email <SortIcon column="email" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('role')}>
+                                        Rôle <SortIcon column="role" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('speciality')}>
+                                        Spécialité <SortIcon column="speciality" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('city')}>
+                                        Ville <SortIcon column="city" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('hourlyRate')}>
+                                        Tarif/h <SortIcon column="hourlyRate" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('createdAt')}>
+                                        Créé le <SortIcon column="createdAt" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('updatedAt')}>
+                                        Modifié le <SortIcon column="updatedAt" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {sortedUsers.map((user) => (
+                                    <TableRow key={user.id}>
+                                        <TableCell className="font-medium">{user.id}</TableCell>
+                                        <TableCell>
+                                            {user.firstName} {user.lastName}
+                                        </TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell className="capitalize">{user.role}</TableCell>
+                                        <TableCell><DescriptionCell text={user.cookProfile?.description ?? null} /></TableCell>
+                                        <TableCell className="capitalize">{user.cookProfile?.speciality ?? '-'}</TableCell>
+                                        <TableCell>{user.cookProfile?.city ?? '-'}</TableCell>
+                                        <TableCell>{user.cookProfile?.hourlyRate ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
+                                        <TableCell>{formatDate(user.createdAt)}</TableCell>
+                                        <TableCell>{formatDate(user.updatedAt)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
             </section>
         </main>
