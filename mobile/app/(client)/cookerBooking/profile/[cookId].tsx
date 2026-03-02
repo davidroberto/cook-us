@@ -1,15 +1,18 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
-  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useCookerProfile } from "../../../../features/cookerBooking/cookerProfile/useCookerProfile";
+import { colors, typography } from "@/styles";
+import {
+  ProfileCard,
+  ProfileSkeleton,
+  useCookerProfile,
+} from "@/features/client/cookerBooking/cookerProfile";
 
 // TODO: remplacer par le vrai contexte d'authentification
 const isAuthenticated = false;
@@ -48,7 +51,7 @@ export default function CookerProfilePage() {
       )}
 
       <ScrollView contentContainerStyle={styles.scroll}>
-        {state.status === "loading" && <SkeletonProfile />}
+        {state.status === "loading" && <ProfileSkeleton />}
 
         {state.status === "not_found" && (
           <View style={styles.centered}>
@@ -67,7 +70,7 @@ export default function CookerProfilePage() {
         )}
 
         {state.status === "success" && (
-          <CookerProfileCard
+          <ProfileCard
             cook={state.cook}
             onProposeCreneau={handleProposeCreneau}
           />
@@ -77,131 +80,10 @@ export default function CookerProfilePage() {
   );
 }
 
-// --- Sous-composants ---
-
-type CookerProfileCardProps = {
-  cook: {
-    firstName: string;
-    lastName: string;
-    photoUrl: string | null;
-    description: string | null;
-    speciality: string;
-    hourlyRate: number | null;
-  };
-  onProposeCreneau: () => void;
-};
-
-function CookerProfileCard({ cook, onProposeCreneau }: CookerProfileCardProps) {
-  const hourlyRateLabel =
-    cook.hourlyRate != null ? `${cook.hourlyRate}€/h` : "Tarif sur demande";
-
-  return (
-    <View style={styles.profile}>
-      <CookerAvatar
-        photoUrl={cook.photoUrl}
-        firstName={cook.firstName}
-        lastName={cook.lastName}
-      />
-      <Text style={styles.name}>
-        {cook.firstName} {cook.lastName}
-      </Text>
-      <Text style={styles.speciality}>{cook.speciality}</Text>
-      <Text style={styles.rate}>{hourlyRateLabel}</Text>
-      {cook.description ? (
-        <Text style={styles.description}>{cook.description}</Text>
-      ) : null}
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={onProposeCreneau}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.primaryButtonText}>Proposer un créneau</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function CookerAvatar({
-  photoUrl,
-  firstName,
-  lastName,
-}: {
-  photoUrl: string | null;
-  firstName: string;
-  lastName: string;
-}) {
-  const [hasError, setHasError] = useState(false);
-
-  if (photoUrl && !hasError) {
-    return (
-      <Image
-        source={{ uri: photoUrl }}
-        style={styles.avatar}
-        onError={() => setHasError(true)}
-      />
-    );
-  }
-
-  return (
-    <View style={[styles.avatar, styles.avatarFallback]}>
-      <Text style={styles.avatarInitials}>
-        {firstName[0]}
-        {lastName[0]}
-      </Text>
-    </View>
-  );
-}
-
-function SkeletonProfile() {
-  return (
-    <View style={styles.profile}>
-      <SkeletonBox
-        style={{ width: 96, height: 96, borderRadius: 48, marginBottom: 16 }}
-      />
-      <SkeletonBox style={{ width: 180, height: 24, marginBottom: 8 }} />
-      <SkeletonBox style={{ width: 120, height: 18, marginBottom: 8 }} />
-      <SkeletonBox style={{ width: 80, height: 18, marginBottom: 16 }} />
-      <SkeletonBox style={{ width: "100%", height: 72, marginBottom: 32 }} />
-      <SkeletonBox style={{ width: 200, height: 48, borderRadius: 12 }} />
-    </View>
-  );
-}
-
-function SkeletonBox({ style }: { style: object }) {
-  const opacity = useRef(new Animated.Value(0.4)).current;
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.4,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    animation.start();
-    return () => animation.stop();
-  }, [opacity]);
-
-  return (
-    <Animated.View
-      style={[{ backgroundColor: "#e0e0e0", borderRadius: 4 }, style, { opacity }]}
-    />
-  );
-}
-
-// --- Styles ---
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FDF6E7",
+    backgroundColor: colors.background,
   },
   scroll: {
     flexGrow: 1,
@@ -212,15 +94,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#A82712",
+    backgroundColor: colors.mainDark,
     paddingVertical: 14,
     paddingHorizontal: 20,
     zIndex: 100,
   },
   toastText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "600",
+    ...typography.styles.body2Bold,
+    color: colors.white,
     textAlign: "center",
   },
   centered: {
@@ -230,73 +111,19 @@ const styles = StyleSheet.create({
     paddingTop: 80,
   },
   notFoundText: {
-    fontSize: 16,
-    color: "#240E0D",
+    ...typography.styles.body1Regular,
+    color: colors.text,
   },
   retryButton: {
     paddingVertical: 12,
     paddingHorizontal: 28,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.text,
+    opacity: colors.opacity[24],
   },
   retryText: {
-    fontSize: 15,
-    color: "#240e0d",
-  },
-  profile: {
-    alignItems: "center",
-    paddingTop: 24,
-    gap: 8,
-  },
-  avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    marginBottom: 8,
-  },
-  avatarFallback: {
-    backgroundColor: "#d7553a",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarInitials: {
-    color: "#fff",
-    fontSize: 32,
-    fontWeight: "700",
-  },
-  name: {
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#240e0d",
-  },
-  speciality: {
-    fontSize: 15,
-    color: "#240E0D",
-  },
-  rate: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#d7553a",
-  },
-  description: {
-    fontSize: 14,
-    color: "#240E0D",
-    textAlign: "center",
-    lineHeight: 22,
-    marginTop: 8,
-    maxWidth: 320,
-  },
-  primaryButton: {
-    marginTop: 20,
-    backgroundColor: "#d7553a",
-    paddingVertical: 14,
-    paddingHorizontal: 36,
-    borderRadius: 12,
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
+    ...typography.styles.body1Regular,
+    color: colors.text,
   },
 });
