@@ -1,70 +1,46 @@
 export const typography = {
-  // Font Families
-  fontFamily: {
-    alexandria: "Alexandria",
-    dancingScript: "Dancing Script",
-    merriweather: "Merriweather",
-  },
-
-  // Font Sizes
-  fontSize: {
-    heading1: 32,
-    heading2: 28,
-    heading3: 24,
-    cta: 18,
-    body1Bold: 16,
-    body1Regular: 16,
-    body2Bold: 14,
-    body2Regular: 14,
-  },
-
-  // Font Weights
-  fontWeight: {
-    regular: "400" as const,
-    bold: "700" as const,
-  },
-
   // Text Styles
   styles: {
     heading1: {
-      fontFamily: "Alexandria",
+      fontFamily: "Alexandria_700Bold",
       fontSize: 32,
-      fontWeight: "700" as const,
+      letterSpacing: -0.05,
     },
     heading2: {
-      fontFamily: "Dancing Script",
+      fontFamily: "DancingScript_400Regular",
       fontSize: 28,
-      fontWeight: "400" as const,
     },
     heading3: {
-      fontFamily: "Dancing Script",
+      fontFamily: "DancingScript_400Regular",
       fontSize: 24,
-      fontWeight: "400" as const,
+    },
+    ctaBold: {
+      fontFamily: "Merriweather_700Bold",
+      fontSize: 18,
     },
     cta: {
-      fontFamily: "Merriweather",
+      fontFamily: "Merriweather_400Regular",
       fontSize: 18,
-      fontWeight: "400" as const,
     },
     body1Bold: {
-      fontFamily: "Merriweather",
+      fontFamily: "Merriweather_700Bold",
       fontSize: 16,
-      fontWeight: "700" as const,
     },
     body1Regular: {
-      fontFamily: "Merriweather",
+      fontFamily: "Merriweather_400Regular",
       fontSize: 16,
-      fontWeight: "400" as const,
     },
     body2Bold: {
-      fontFamily: "Merriweather",
+      fontFamily: "Merriweather_700Bold",
       fontSize: 14,
-      fontWeight: "700" as const,
     },
     body2Regular: {
-      fontFamily: "Merriweather",
+      fontFamily: "Merriweather_400Regular",
       fontSize: 14,
-      fontWeight: "400" as const,
+    },
+    body2Light: {
+      fontFamily: "Merriweather_300Light",
+      fontSize: 14,
     },
   },
 } as const;

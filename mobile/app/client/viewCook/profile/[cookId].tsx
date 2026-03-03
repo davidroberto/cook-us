@@ -1,18 +1,13 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { colors, typography } from "@/styles";
 import {
   ProfileCard,
   ProfileSkeleton,
   useCookerProfile,
 } from "@/features/client/cookerBooking/cookerProfile";
+import { Button } from "@/components/ui/Button";
 
 // TODO: remplacer par le vrai contexte d'authentification
 const isAuthenticated = false;
@@ -41,50 +36,39 @@ export default function CookerProfilePage() {
 
   return (
     <View style={styles.container}>
-            
       {toastVisible && (
         <View style={styles.toast}>
-                    
           <Text style={styles.toastText}>
-                        Une erreur est survenue. Veuillez réessayer.           
+            Une erreur est survenue. Veuillez réessayer.
           </Text>
-                  
         </View>
       )}
-            
       <ScrollView contentContainerStyle={styles.scroll}>
-                {state.status === "loading" && <ProfileSkeleton />}
-                
+        {state.status === "loading" && <ProfileSkeleton />}
+
         {state.status === "not_found" && (
           <View style={styles.centered}>
-                        
             <Text style={styles.notFoundText}>
-                            Ce cuisinier est introuvable.             
+              Ce cuisinier est introuvable.
             </Text>
-                      
           </View>
         )}
-                
         {state.status === "error" && (
           <View style={styles.centered}>
-                        
-            <TouchableOpacity onPress={retry} style={styles.retryButton}>
-                            <Text style={styles.retryText}>Réessayer</Text>
-                          
-            </TouchableOpacity>
-                      
+            <Button
+              title="Retour à la liste"
+              variant="outline"
+              onPress={() => router.push("/(client)/cookerBooking")}
+            />
           </View>
         )}
-                
         {state.status === "success" && (
           <ProfileCard
             cook={state.cook}
             onProposeCreneau={handleProposeCreneau}
           />
         )}
-              
       </ScrollView>
-          
     </View>
   );
 }
