@@ -14,7 +14,7 @@ export class CreateCookRequestUseCase {
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
     @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
+    private readonly clientRepository: Repository<Client>
   ) {}
 
   async execute(dto: CreateCookRequestDto, userId: number) {
