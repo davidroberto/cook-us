@@ -19,6 +19,7 @@ import { GetMyConversationsController } from "@src/modules/conversation/getMyCon
 import { GetMyConversationsUseCase } from "@src/modules/conversation/getMyConversations/getMyConversations.useCase";
 import { GetConversationMessagesController } from "@src/modules/conversation/getConversationMessages/getConversationMessages.controller";
 import { GetConversationMessagesUseCase } from "@src/modules/conversation/getConversationMessages/getConversationMessages.useCase";
+import { ConversationParticipantGuard } from "@src/modules/conversation/conversationParticipant.guard";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { GetConversationMessagesUseCase } from "@src/modules/conversation/getCon
     SendMessageUseCase,
     AddParticipantUseCase,
     RemoveParticipantUseCase,
+    ConversationParticipantGuard,
   ],
 })
 export class ConversationModule {}
