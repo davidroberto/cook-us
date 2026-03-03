@@ -3,8 +3,9 @@ import type { AuthUser } from '@src/types/auth.types'
 
 export type AuthContextValue = {
     user: AuthUser | null
+    token: string | null
     isLoading: boolean
-    login: (user: AuthUser) => void
+    login: (user: AuthUser, token: string) => void
     logout: () => void
 }
 

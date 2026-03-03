@@ -5,10 +5,8 @@ import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LoginPage } from './login.page'
 import * as useAuthModule from '@src/contexts/useAuth'
-import * as authMock from './auth.mock'
 
 vi.mock('@src/contexts/useAuth', () => ({ useAuth: vi.fn() }))
-vi.mock('./auth.mock', () => ({ mockLogin: vi.fn() }))
 
 const renderLoginPage = () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })
@@ -25,7 +23,7 @@ describe('LoginPage', () => {
     beforeEach(() => {
         vi.clearAllMocks()
         vi.mocked(useAuthModule.useAuth).mockReturnValue({
-            user: null, isLoading: false,
+            user: null, token: null, isLoading: false,
             login: vi.fn(), logout: vi.fn(),
         })
     })
@@ -38,7 +36,9 @@ describe('LoginPage', () => {
     })
 
     it('affiche un message d\'erreur pour des identifiants incorrects', async () => {
-        vi.mocked(authMock.mockLogin).mockRejectedValue(new Error('Identifiants incorrects'))
+        vi.spyOn(global, 'fetch').mockResolvedValue(
+            new Response(JSON.stringify({ message: 'Identifiants incorrects' }), { status: 401 }),
+        )
         renderLoginPage()
 
         await userEvent.type(screen.getByLabelText('Email'), 'wrong@test.com')
@@ -53,10 +53,12 @@ describe('LoginPage', () => {
     it('appelle login et redirige après une connexion réussie', async () => {
         const loginFn = vi.fn()
         vi.mocked(useAuthModule.useAuth).mockReturnValue({
-            user: null, isLoading: false,
+            user: null, token: null, isLoading: false,
             login: loginFn, logout: vi.fn(),
         })
-        vi.mocked(authMock.mockLogin).mockResolvedValue({ id: 4, email: 'admin@cookus.app', role: 'admin' })
+        vi.spyOn(global, 'fetch').mockResolvedValue(
+            new Response(JSON.stringify({ token: 'jwt-token', user: { id: 4, email: 'admin@cookus.app', role: 'admin' } }), { status: 200 }),
+        )
 
         renderLoginPage()
         await userEvent.type(screen.getByLabelText('Email'), 'admin@cookus.app')
@@ -64,7 +66,10 @@ describe('LoginPage', () => {
         await userEvent.click(screen.getByRole('button', { name: 'Se connecter' }))
 
         await waitFor(() => {
-            expect(loginFn).toHaveBeenCalledWith({ id: 4, email: 'admin@cookus.app', role: 'admin' })
+            expect(loginFn).toHaveBeenCalledWith(
+                { id: 4, email: 'admin@cookus.app', role: 'admin' },
+                'jwt-token',
+            )
         })
     })
 })
