@@ -17,7 +17,7 @@ export class RegisterUseCase {
     private readonly cookRepository: Repository<Cook>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async execute(dto: RegisterDto) {
@@ -32,7 +32,7 @@ export class RegisterUseCase {
 
     if (role === UserRole.COOK && !dto.cookProfile?.speciality) {
       throw new BadRequestException(
-        "La spécialité est obligatoire pour un profil cuisinier.",
+        "La spécialité est obligatoire pour un profil cuisinier."
       );
     }
 
