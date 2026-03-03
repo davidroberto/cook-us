@@ -1,5 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Cook } from "@src/modules/cook/cook.entity";
+import { Client } from "@src/modules/client/client.entity";
 
 export enum CookRequestStatus {
   PENDING = "pending",
@@ -14,6 +22,14 @@ export class CookRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: "pending", enum: CookRequestStatus })
+  @Column({
+    type: "enum",
+    enum: CookRequestStatus,
+    default: CookRequestStatus.PENDING,
+  })
+  status: CookRequestStatus;
+
   @ApiProperty({ example: 4 })
   @Column({ name: "guests_number", type: "int" })
   guestsNumber: number;
@@ -23,22 +39,20 @@ export class CookRequestEntity {
   startDate: Date;
 
   @ApiProperty({ example: "2026-03-15T22:00:00.000Z" })
-  @Column({ name: "end_date", type: "timestamp" })
-  endDate: Date;
+  @Column({ name: "end_date", type: "timestamp", nullable: true })
+  endDate: Date | null;
 
-  @ApiProperty({ example: "550e8400-e29b-41d4-a716-446655440000" })
   @Column({ name: "cook_id", type: "uuid" })
   cookId: string;
 
-  @ApiProperty({ example: 1 })
+  @ManyToOne(() => Cook)
+  @JoinColumn({ name: "cook_id" })
+  cook: Cook;
+
   @Column({ name: "client_id", type: "int" })
   clientId: number;
 
-  @ApiProperty({ example: "pending", enum: CookRequestStatus })
-  @Column({
-    type: "enum",
-    enum: CookRequestStatus,
-    default: CookRequestStatus.PENDING,
-  })
-  status: CookRequestStatus;
+  @ManyToOne(() => Client)
+  @JoinColumn({ name: "client_id" })
+  client: Client;
 }
