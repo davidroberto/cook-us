@@ -18,35 +18,36 @@ export type CookSpeciality =
 
 /** Table : users */
 export interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
+  id: number;
+  firstName: string;
+  lastName: string;
   email: string;
   thumbnail: string | null;
   role: UserRole;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /** Table : cook_image */
 export interface CookImage {
-  id: string;
-  cook_id: string;
-  url: string;
-  created_at: string;
-  updated_at: string;
+  id: number;
+  cookId: number;
+  imgUrl: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /** Table : cook (avec relations jointes telles que retournées par l'API) */
 export interface Cook {
   id: string;
-  user_id: string;
-  description: string;
+  userId: number;
+  description: string | null;
   speciality: CookSpeciality;
-  hourly_rate: number;
-  city: string;
-  created_at: string;
-  updated_at: string;
+  hourlyRate: number | null;
+  photoUrl: string | null;
+  isActive: boolean;
+  isValidated: boolean;
   /** Relation : users */
   user: User;
   /** Relation : cook_image[] */

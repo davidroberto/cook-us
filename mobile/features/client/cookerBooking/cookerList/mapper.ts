@@ -13,18 +13,19 @@ import type { Cook, CookerCardData } from "./types";
  */
 const resolveThumbnail = (cook: Cook): string | null => {
   if (cook.user.thumbnail) return cook.user.thumbnail;
-  if (cook.images.length > 0) return cook.images[0].url;
+  if (cook.images.length > 0) return cook.images[0].imgUrl;
   return null;
 };
 
 export const mapCookToCardData = (cook: Cook): CookerCardData => ({
   id: cook.id,
-  first_name: cook.user.first_name,
-  last_name: cook.user.last_name,
+  first_name: cook.user.firstName,
+  last_name: cook.user.lastName,
   speciality: cook.speciality,
   thumbnail: resolveThumbnail(cook),
-  hourly_rate: cook.hourly_rate,
-  city: cook.city,
+  hourly_rate: cook.hourlyRate ?? 0,
+  // city n'existe pas encore dans l'entité backend
+  city: "",
 });
 
 export const mapCooksToCardData = (cooks: Cook[]): CookerCardData[] =>

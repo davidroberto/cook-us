@@ -25,6 +25,16 @@ export const CookerList = () => {
     );
   }
 
+  if (cooks.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.emptyText} testID="empty-message">
+          Aucun cuisinier disponible pour le moment.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList<CookerCardData>
       data={cooks}
@@ -50,6 +60,11 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 15,
     color: colors.mainDark,
+    textAlign: "center",
+  },
+  emptyText: {
+    fontSize: 15,
+    color: colors.text,
     textAlign: "center",
   },
 });

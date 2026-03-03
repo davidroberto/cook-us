@@ -1,14 +1,11 @@
 /**
- * Hook gérant la récupération de la liste des cuisiniers.
- *
- * Actuellement : charge les mocks de manière asynchrone.
- * Future intégration API : remplacer le bloc "TODO: API" par un fetch réel
- * sans modifier les composants consommateurs.
+ * Hook gérant la récupération de la liste des cuisiniers via l'API.
+ * Délègue le fetch à repository.ts et la transformation à mapper.ts.
  */
 
 import { useEffect, useState } from "react";
 import { mapCooksToCardData } from "./mapper";
-import { MOCK_COOKS } from "./mocks";
+import { getCooks } from "./repository";
 import type { CookerCardData } from "./types";
 
 interface UseCookerListResult {
@@ -30,18 +27,12 @@ export const useCookerList = (): UseCookerListResult => {
         setLoading(true);
         setError(null);
 
-        // TODO: API — remplacer par fetch(`${API_URL}/cooks`) quand le backend sera prêt
-        // const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/cooks`);
-        // const data: Cook[] = await response.json();
-
-        // Simulation d'un délai réseau
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        const data = MOCK_COOKS;
+        const data = await getCooks();
 
         if (!cancelled) {
           setCooks(mapCooksToCardData(data));
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) {
           setError("Impossible de charger les cuisiniers.");
         }
