@@ -25,7 +25,8 @@ export function SendPropositionForm({
   cookSpeciality,
 }: Props) {
   const [numberOfGuests, setNumberOfGuests] = useState("");
-  const [date, setDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const { error, isLoading, isSuccess, sendProposition } = useSendProposition();
 
@@ -33,8 +34,8 @@ export function SendPropositionForm({
     await sendProposition({
       cookId,
       numberOfGuests: parseInt(numberOfGuests, 10),
-      date,
-      speciality: cookSpeciality,
+      startDate,
+      endDate,
     });
   };
 
@@ -71,12 +72,27 @@ export function SendPropositionForm({
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date</Text>
+        <Text style={styles.label}>Date de début</Text>
         <TextInput
-          testID="date-input"
+          testID="start-date-input"
           style={styles.input}
-          value={date}
-          onChangeText={setDate}
+          value={startDate}
+          onChangeText={setStartDate}
+          placeholder="JJ-MM-AAAA"
+          keyboardType="numbers-and-punctuation"
+          maxLength={10}
+          autoCorrect={false}
+        />
+        <Text style={styles.hint}>Ex : 15-06-2026</Text>
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Date de fin</Text>
+        <TextInput
+          testID="end-date-input"
+          style={styles.input}
+          value={endDate}
+          onChangeText={setEndDate}
           placeholder="JJ-MM-AAAA"
           keyboardType="numbers-and-punctuation"
           maxLength={10}
