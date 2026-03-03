@@ -37,10 +37,13 @@ export class UploadController {
         if (file.mimetype.startsWith("image/")) {
           cb(null, true);
         } else {
-          cb(new BadRequestException("Seules les images sont acceptées."), false);
+          cb(
+            new BadRequestException("Seules les images sont acceptées."),
+            false
+          );
         }
       },
-    }),
+    })
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException("Aucun fichier reçu.");
