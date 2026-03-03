@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
-import { diskStorage } from "multer";
+import multer, { diskStorage } from "multer";
 import { extname } from "path";
 import { Public } from "@src/modules/auth/public.decorator";
 
@@ -45,7 +45,7 @@ export class UploadController {
       },
     })
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: multer.File) {
     if (!file) throw new BadRequestException("Aucun fichier reçu.");
     return { url: `/api/uploads/${file.filename}` };
   }
