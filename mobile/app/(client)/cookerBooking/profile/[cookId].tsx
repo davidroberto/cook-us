@@ -35,47 +35,56 @@ export default function CookerProfilePage() {
       // TODO: passer le redirect en param pour revenir après connexion
       router.push("/login");
       return;
-    }
-    // TODO: naviguer vers le module de proposition de créneau
+    } // TODO: naviguer vers le module de proposition de créneau
     router.push(`/cookerBooking/${cookId}/booking` as never);
   };
 
   return (
     <View style={styles.container}>
+            
       {toastVisible && (
         <View style={styles.toast}>
+                    
           <Text style={styles.toastText}>
-            Une erreur est survenue. Veuillez réessayer.
+                        Une erreur est survenue. Veuillez réessayer.           
           </Text>
+                  
         </View>
       )}
-
+            
       <ScrollView contentContainerStyle={styles.scroll}>
-        {state.status === "loading" && <ProfileSkeleton />}
-
+                {state.status === "loading" && <ProfileSkeleton />}
+                
         {state.status === "not_found" && (
           <View style={styles.centered}>
+                        
             <Text style={styles.notFoundText}>
-              Ce cuisinier est introuvable.
+                            Ce cuisinier est introuvable.             
             </Text>
+                      
           </View>
         )}
-
+                
         {state.status === "error" && (
           <View style={styles.centered}>
+                        
             <TouchableOpacity onPress={retry} style={styles.retryButton}>
-              <Text style={styles.retryText}>Réessayer</Text>
+                            <Text style={styles.retryText}>Réessayer</Text>
+                          
             </TouchableOpacity>
+                      
           </View>
         )}
-
+                
         {state.status === "success" && (
           <ProfileCard
             cook={state.cook}
             onProposeCreneau={handleProposeCreneau}
           />
         )}
+              
       </ScrollView>
+          
     </View>
   );
 }
