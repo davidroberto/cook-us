@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -46,9 +45,6 @@ export default function BookingPage() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backText}>← Retour</Text>
-      </TouchableOpacity>
       <SendPropositionForm
         cookId={cookId ?? ""}
         cookFirstName={state.cook.firstName}
@@ -92,14 +88,5 @@ const styles = StyleSheet.create({
   retryText: {
     fontSize: 15,
     color: colors.text,
-  },
-  backButton: {
-    padding: 16,
-    paddingBottom: 0,
-  },
-  backText: {
-    fontSize: 15,
-    color: colors.main,
-    fontWeight: "600",
   },
 });

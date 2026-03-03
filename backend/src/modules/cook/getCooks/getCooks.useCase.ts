@@ -13,6 +13,31 @@ export class GetCooksUseCase {
   execute() {
     return this.cookRepository.find({
       relations: { user: true, images: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        photoUrl: true,
+        description: true,
+        speciality: true,
+        hourlyRate: true,
+        isActive: true,
+        isValidated: true,
+        city: true,
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          thumbnail: true,
+          role: true,
+        },
+        images: {
+          id: true,
+          imgUrl: true,
+          description: true,
+        },
+      },
     });
   }
 }

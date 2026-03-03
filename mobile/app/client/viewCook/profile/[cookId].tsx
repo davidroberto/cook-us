@@ -56,7 +56,7 @@ export default function CookerProfilePage() {
             <Button
               title="Retour à la liste"
               variant="outline"
-              onPress={() => router.push("/(client)/cookerBooking")}
+              onPress={() => router.push("/client/home")}
             />
           </View>
         )}

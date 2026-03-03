@@ -14,16 +14,26 @@ export class CreateCookRequestUseCase {
     private readonly cookRequestRepository: Repository<CookRequestEntity>
   ) {}
 
-  async execute(dto: CreateCookRequestDto): Promise<CookRequestEntity> {
+  async execute(dto: CreateCookRequestDto) {
     const cookRequest = this.cookRequestRepository.create({
       guestsNumber: dto.guestsNumber,
       startDate: new Date(dto.startDate),
-      endDate: new Date(dto.endDate),
+      endDate: dto.endDate ? new Date(dto.endDate) : null,
       cookId: dto.cookId,
       clientId: dto.clientId,
       status: CookRequestStatus.PENDING,
     });
 
-    return this.cookRequestRepository.save(cookRequest);
+    const saved = await this.cookRequestRepository.save(cookRequest);
+
+    return {
+      id: saved.id,
+      guestsNumber: saved.guestsNumber,
+      startDate: saved.startDate,
+      endDate: saved.endDate ?? null,
+      status: saved.status,
+      cookId: saved.cookId,
+      clientId: saved.clientId,
+    };
   }
 }

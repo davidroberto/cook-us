@@ -1,28 +1,5 @@
-import { SafeAreaView, StyleSheet, Text } from "react-native";
-import { colors } from "@/styles/colors";
-import { CookerList } from "../../features/client/cookerBooking/cookerList";
+import { Redirect } from "expo-router";
 
-const CookerBooking = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Trouver un cuisinier</Text>
-      <CookerList />
-    </SafeAreaView>
-  );
-};
-
-export default CookerBooking;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: colors.text,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-});
+export default function ClientIndex() {
+  return <Redirect href="/client/home" />;
+}
