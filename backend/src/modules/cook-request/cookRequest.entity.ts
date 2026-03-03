@@ -1,5 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Cook } from "@src/modules/cook/cook.entity";
+import { Client } from "@src/modules/client/client.entity";
 
 export enum CookRequestStatus {
   PENDING = "pending",
@@ -30,9 +38,17 @@ export class CookRequestEntity {
   @Column({ name: "cook_id", type: "uuid" })
   cookId: string;
 
+  @ManyToOne(() => Cook)
+  @JoinColumn({ name: "cook_id" })
+  cook: Cook;
+
   @ApiProperty({ example: 1 })
   @Column({ name: "client_id", type: "int" })
   clientId: number;
+
+  @ManyToOne(() => Client)
+  @JoinColumn({ name: "client_id" })
+  client: Client;
 
   @ApiProperty({ example: "pending", enum: CookRequestStatus })
   @Column({
