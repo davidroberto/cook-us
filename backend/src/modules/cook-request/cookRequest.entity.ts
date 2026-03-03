@@ -30,7 +30,7 @@ export class CookRequestEntity {
   @Column({ name: "start_date", type: "timestamp" })
   startDate: Date;
 
-  @ApiProperty({ example: "2026-03-15T22:00:00.000Z" })
+  @ApiProperty({ example: "2026-03-15T22:00:00.000Z", nullable: true })
   @Column({ name: "end_date", type: "timestamp", nullable: true })
   endDate: Date | null;
 
