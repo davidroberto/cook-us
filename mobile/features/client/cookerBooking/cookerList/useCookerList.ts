@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/features/auth/AuthContext";
 import { mapCooksToCardData } from "./mapper";
 import { getCooks } from "./repository";
 import type { CookerCardData } from "./types";
@@ -15,6 +16,7 @@ interface UseCookerListResult {
 }
 
 export const useCookerList = (): UseCookerListResult => {
+  const { token } = useAuth();
   const [cooks, setCooks] = useState<CookerCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export const useCookerList = (): UseCookerListResult => {
         setLoading(true);
         setError(null);
 
-        const data = await getCooks();
+        const data = await getCooks(token!);
 
         if (!cancelled) {
           setCooks(mapCooksToCardData(data));

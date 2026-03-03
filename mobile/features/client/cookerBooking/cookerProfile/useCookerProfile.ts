@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "@/features/auth/AuthContext";
 import { getCook, NotFoundError } from "./repository";
 import type { CookerProfile, CookerProfileState } from "./types";
 import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
@@ -14,6 +15,7 @@ const mapToCookerProfile = (cook: Cook): CookerProfile => ({
 });
 
 export const useCookerProfile = (cookId: string) => {
+  const { token } = useAuth();
   const [state, setState] = useState<CookerProfileState>({ status: "loading" });
 
   const load = useCallback(async () => {
@@ -23,7 +25,7 @@ export const useCookerProfile = (cookId: string) => {
     }
     setState({ status: "loading" });
     try {
-      const cook = await getCook(cookId);
+      const cook = await getCook(cookId, token!);
       setState({ status: "success", cook: mapToCookerProfile(cook) });
     } catch (err) {
       if (err instanceof NotFoundError) {

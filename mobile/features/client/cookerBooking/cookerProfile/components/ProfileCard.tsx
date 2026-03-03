@@ -38,7 +38,7 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
           {cook.description}
         </Text>
       ) : null}
-      <Button title="Proposer un créneau" onPress={onProposeCreneau} />
+      <Button title="Proposer un créneau" onPress={onProposeCreneau} testID="propose-creneau-button" />
     </View>
   );
 };
