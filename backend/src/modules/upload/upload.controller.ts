@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
-import multer, { diskStorage } from "multer";
+import { diskStorage } from "multer";
 import { extname } from "path";
 import { Public } from "@src/modules/auth/public.decorator";
 
@@ -45,7 +45,8 @@ export class UploadController {
       },
     })
   )
-  uploadFile(@UploadedFile() file: multer.File) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  uploadFile(@UploadedFile() file: any) {
     if (!file) throw new BadRequestException("Aucun fichier reçu.");
     return { url: `/api/uploads/${file.filename}` };
   }
