@@ -43,9 +43,15 @@ describe("SendPropositionForm", () => {
     expect(input.props.placeholder).toBe("Ex : 4");
   });
 
-  it("affiche le champ date avec son placeholder", () => {
+  it("affiche le champ date de début avec son placeholder", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
-    const input = screen.getByTestId("date-input");
+    const input = screen.getByTestId("start-date-input");
+    expect(input.props.placeholder).toBe("JJ-MM-AAAA");
+  });
+
+  it("affiche le champ date de fin avec son placeholder", () => {
+    render(<SendPropositionForm {...BASE_PROPS} />);
+    const input = screen.getByTestId("end-date-input");
     expect(input.props.placeholder).toBe("JJ-MM-AAAA");
   });
 
@@ -69,22 +75,29 @@ describe("SendPropositionForm", () => {
     expect(screen.getByTestId("number-of-guests-input").props.value).toBe("");
   });
 
-  it("met à jour le champ date", () => {
+  it("met à jour le champ date de début", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
-    fireEvent.changeText(screen.getByTestId("date-input"), "15-06-2026");
-    expect(screen.getByTestId("date-input").props.value).toBe("15-06-2026");
+    fireEvent.changeText(screen.getByTestId("start-date-input"), "15-06-2026");
+    expect(screen.getByTestId("start-date-input").props.value).toBe("15-06-2026");
+  });
+
+  it("met à jour le champ date de fin", () => {
+    render(<SendPropositionForm {...BASE_PROPS} />);
+    fireEvent.changeText(screen.getByTestId("end-date-input"), "16-06-2026");
+    expect(screen.getByTestId("end-date-input").props.value).toBe("16-06-2026");
   });
 
   it("appelle sendProposition avec les bonnes données au clic sur le bouton", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     fireEvent.changeText(screen.getByTestId("number-of-guests-input"), "4");
-    fireEvent.changeText(screen.getByTestId("date-input"), "15-06-2026");
+    fireEvent.changeText(screen.getByTestId("start-date-input"), "15-06-2026");
+    fireEvent.changeText(screen.getByTestId("end-date-input"), "16-06-2026");
     fireEvent.press(screen.getByTestId("submit-button"));
     expect(mockSendProposition).toHaveBeenCalledWith({
       cookId: "cook-1",
       numberOfGuests: 4,
-      date: "15-06-2026",
-      speciality: "Gastronomie française",
+      startDate: "15-06-2026",
+      endDate: "16-06-2026",
     });
   });
 

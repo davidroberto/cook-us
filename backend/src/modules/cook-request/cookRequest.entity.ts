@@ -22,14 +22,6 @@ export class CookRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: "pending", enum: CookRequestStatus })
-  @Column({
-    type: "enum",
-    enum: CookRequestStatus,
-    default: CookRequestStatus.PENDING,
-  })
-  status: CookRequestStatus;
-
   @ApiProperty({ example: 4 })
   @Column({ name: "guests_number", type: "int" })
   guestsNumber: number;
@@ -55,4 +47,12 @@ export class CookRequestEntity {
   @ManyToOne(() => Client)
   @JoinColumn({ name: "client_id" })
   client: Client;
+
+  @ApiProperty({ example: "pending", enum: CookRequestStatus })
+  @Column({
+    type: "enum",
+    enum: CookRequestStatus,
+    default: CookRequestStatus.PENDING,
+  })
+  status: CookRequestStatus;
 }
