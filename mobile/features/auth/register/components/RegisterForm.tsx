@@ -11,11 +11,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { COOK_SPECIALITIES, type CookSpeciality } from "../types";
+import { COOK_SPECIALITIES, type CookSpeciality, type AuthUser } from "../types";
 import { useRegister } from "../useRegister";
 
 type Props = {
-  onSuccess: (token: string) => void;
+  onSuccess: (token: string, user: AuthUser) => void;
   onNavigateLogin: () => void;
 };
 
@@ -62,7 +62,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           }
         : {}),
     });
-    if (result) onSuccess(result.token);
+    if (result) onSuccess(result.token, result.user);
   };
 
   return (

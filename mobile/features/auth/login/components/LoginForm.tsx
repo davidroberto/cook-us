@@ -10,9 +10,10 @@ import {
   View,
 } from "react-native";
 import { useLogin } from "../useLogin";
+import type { AuthUser } from "../types";
 
 type Props = {
-  onSuccess: (token: string) => void;
+  onSuccess: (token: string, user: AuthUser) => void;
   onNavigateRegister: () => void;
 };
 
@@ -23,7 +24,7 @@ export function LoginForm({ onSuccess, onNavigateRegister }: Props) {
 
   const handleSubmit = async () => {
     const result = await login({ email, password });
-    if (result) onSuccess(result.token);
+    if (result) onSuccess(result.token, result.user);
   };
 
   return (
