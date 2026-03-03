@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { AuthUser } from '@src/types/auth.types'
 import { mockMe } from '@src/modules/auth/auth.mock'
-import { AuthContext } from '@src/contexts/auth-context'
+import { AuthContext } from '@src/contexts/useAuth'
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<AuthUser | null>(null)
@@ -26,4 +26,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         </AuthContext.Provider>
     )
 }
-

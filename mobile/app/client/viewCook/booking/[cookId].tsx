@@ -1,5 +1,5 @@
 import { useCookerProfile } from "@/features/client/cookerBooking/cookerProfile/useCookerProfile";
-import { SendPropositionForm } from "@/features/client/cookerBooking/sendProposition/SendPropositionForm";
+import { SendPropositionForm } from "@/features/client/cookerBooking/sendProposition/components/SendPropositionForm";
 import { colors } from "@/styles/colors";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {

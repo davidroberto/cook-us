@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronUp, ChevronDown, ChevronsUpDown, Eye } from 'lucide-react'
 import {
     Table,
     TableBody,
@@ -67,6 +68,7 @@ const DescriptionCell = ({ text }: { text: string | null }) => {
 export const UsersTablePage = () => {
     const [sortKey, setSortKey] = useState<SortKey | null>(null)
     const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
+    const navigate = useNavigate()
 
     const { data, isLoading, isError } = useUsers()
 
@@ -141,6 +143,7 @@ export const UsersTablePage = () => {
                                     <TableHead className={thClass} onClick={() => handleSort('updatedAt')}>
                                         Modifié le <SortIcon column="updatedAt" sortKey={sortKey} direction={sortDirection} />
                                     </TableHead>
+                                    <TableHead />
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -158,6 +161,15 @@ export const UsersTablePage = () => {
                                         <TableCell>{user.cookProfile?.hourlyRate ? `${user.cookProfile.hourlyRate}€/h` : '-'}</TableCell>
                                         <TableCell>{formatDate(user.createdAt)}</TableCell>
                                         <TableCell>{formatDate(user.updatedAt)}</TableCell>
+                                        <TableCell>
+                                            <button
+                                                onClick={() => navigate(`/users/${user.id}`)}
+                                                className="rounded p-1 text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                                                title="Voir le détail"
+                                            >
+                                                <Eye className="h-4 w-4" />
+                                            </button>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

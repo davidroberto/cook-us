@@ -48,7 +48,7 @@ describe("ProfileCard", () => {
   it("affiche la description quand elle est renseignée", () => {
     render(<ProfileCard cook={BASE_COOK} onProposeCreneau={jest.fn()} />);
     expect(screen.getByTestId("profile-description")).toHaveTextContent(
-      "Cuisinière passionnée",
+      /Cuisinière passionnée/,
     );
   });
 
