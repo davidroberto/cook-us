@@ -1,5 +1,6 @@
 export type CookerProfile = {
   id: string;
+  userId: number;
   firstName: string;
   lastName: string;
   photoUrl: string | null;

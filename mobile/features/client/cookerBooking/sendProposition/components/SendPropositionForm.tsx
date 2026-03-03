@@ -1,17 +1,14 @@
-import { colors } from "@/styles/colors";
-import { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { Input } from "@/components/ui/Input";
-import { useSendProposition } from "../useSendProposition";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { colors } from "@/styles/colors";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSendProposition } from "../useSendProposition";
 
 type Props = {
   cookId: string;
+  cookUserId: number;
   cookFirstName: string;
   cookLastName: string;
   cookSpeciality: string;
@@ -19,23 +16,37 @@ type Props = {
 
 export function SendPropositionForm({
   cookId,
+  cookUserId,
   cookFirstName,
   cookLastName,
   cookSpeciality,
 }: Props) {
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
 
-  const { error, isLoading, isSuccess, sendProposition } = useSendProposition();
+  const router = useRouter();
+  const { error, isLoading, sendProposition } = useSendProposition();
 
   const handleSubmit = async () => {
-    await sendProposition({
+    const result = await sendProposition({
       cookId,
+      cookUserId,
       numberOfGuests: parseInt(numberOfGuests, 10),
       startDate,
-      endDate,
     });
+
+    if (result) {
+      router.replace({
+        pathname: "/client/messaging/[requestId]",
+        params: {
+          requestId: String(result.conversationId),
+          cookFirstName,
+          cookLastName,
+          startDate,
+          guestsNumber: numberOfGuests,
+        },
+      } as never);
+    }
   };
 
   return (
@@ -79,18 +90,6 @@ export function SendPropositionForm({
         hint="Ex : 15-06-2026"
       />
 
-      <Input
-        testID="end-date-input"
-        label="Date de fin"
-        value={endDate}
-        onChangeText={setEndDate}
-        placeholder="JJ-MM-AAAA"
-        keyboardType="numbers-and-punctuation"
-        maxLength={10}
-        autoCorrect={false}
-        hint="Ex : 15-06-2026"
-      />
-
       <Button
         testID="submit-button"
         title="Envoyer la proposition"
@@ -102,14 +101,6 @@ export function SendPropositionForm({
       {error !== null && (
         <View testID="error-message" style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
-
-      {isSuccess && (
-        <View testID="success-message" style={styles.successContainer}>
-          <Text style={styles.successText}>
-            Proposition envoyée avec succès !
-          </Text>
         </View>
       )}
     </ScrollView>
@@ -166,18 +157,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: colors.mainDark,
-    fontSize: 14,
-  },
-  successContainer: {
-    backgroundColor: "#E8F5E9",
-    padding: 14,
-    borderRadius: 8,
-    marginTop: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: "#4CAF50",
-  },
-  successText: {
-    color: "#2E7D32",
     fontSize: 14,
   },
 });

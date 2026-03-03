@@ -18,7 +18,7 @@ export class CreateCookRequestUseCase {
     const cookRequest = this.cookRequestRepository.create({
       guestsNumber: dto.guestsNumber,
       startDate: new Date(dto.startDate),
-      endDate: new Date(dto.endDate),
+      endDate: dto.endDate ? new Date(dto.endDate) : null,
       cookId: dto.cookId,
       clientId: dto.clientId,
       status: CookRequestStatus.PENDING,

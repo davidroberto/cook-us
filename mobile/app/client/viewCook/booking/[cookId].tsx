@@ -47,6 +47,7 @@ export default function BookingPage() {
     <View style={styles.container}>
       <SendPropositionForm
         cookId={cookId ?? ""}
+        cookUserId={state.cook.userId}
         cookFirstName={state.cook.firstName}
         cookLastName={state.cook.lastName}
         cookSpeciality={state.cook.speciality}

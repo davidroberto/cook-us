@@ -4,6 +4,10 @@ import * as repository from "../repository";
 import { NotFoundError } from "../repository";
 import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
+jest.mock("@/features/auth/AuthContext", () => ({
+  useAuth: () => ({ token: "fake-token", user: { id: 1 }, isReady: true }),
+}));
+
 const MOCK_COOK: Cook = {
   id: "cook-1",
   userId: 1,

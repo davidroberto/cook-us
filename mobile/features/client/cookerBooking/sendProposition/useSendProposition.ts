@@ -1,7 +1,10 @@
 import { useState } from "react";
-import type { SendPropositionCommand } from "./types";
+import { useAuth } from "@/features/auth/AuthContext";
+import { COOK_REQUEST_MESSAGE_PREFIX } from "@/features/messaging/useConversation";
+import type { CreatedCookRequest, SendPropositionCommand } from "./types";
 
-const API_URL = "http://localhost:8080/api/cook-request";
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+const API_URL = `${BASE_URL}/cook-request`;
 
 function parseDDMMYYYY(value: string): Date {
   const [day, month, year] = value.split("-");
@@ -34,9 +37,7 @@ function validateCommand(command: SendPropositionCommand): void {
     throw new Error("Le cuisinier est requis.");
   }
   if (!Number.isInteger(command.numberOfGuests) || command.numberOfGuests < 1) {
-    throw new Error(
-      "Le nombre de convives doit être un entier supérieur à 0."
-    );
+    throw new Error("Le nombre de convives doit être un entier supérieur à 0.");
   }
   if (!isValidDateString(command.startDate)) {
     throw new Error("La date de début doit être au format JJ-MM-AAAA.");
@@ -44,22 +45,17 @@ function validateCommand(command: SendPropositionCommand): void {
   if (!isDateTodayOrFuture(command.startDate)) {
     throw new Error("La date de début doit être aujourd'hui ou dans le futur.");
   }
-  if (!isValidDateString(command.endDate)) {
-    throw new Error("La date de fin doit être au format JJ-MM-AAAA.");
-  }
-  if (parseDDMMYYYY(command.endDate) < parseDDMMYYYY(command.startDate)) {
-    throw new Error("La date de fin doit être après la date de début.");
-  }
 }
 
 export function useSendProposition() {
+  const { token, user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const sendProposition = async (
     command: SendPropositionCommand
-  ): Promise<void> => {
+  ): Promise<{ conversationId: number } | null> => {
     setIsLoading(true);
     setError(null);
     setIsSuccess(false);
@@ -67,32 +63,84 @@ export function useSendProposition() {
     try {
       validateCommand(command);
 
-      const response = await fetch(API_URL, {
+      const cookRequestResponse = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           guestsNumber: command.numberOfGuests,
           startDate: parseDDMMYYYY(command.startDate).toISOString(),
-          endDate: parseDDMMYYYY(command.endDate).toISOString(),
+          endDate: null,
           cookId: command.cookId,
-          clientId: 1, // TODO: remplacer par l'ID de l'utilisateur authentifié
+          clientId: user!.id,
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+      if (!cookRequestResponse.ok) {
+        const errorData = await cookRequestResponse.json().catch(() => ({}));
         throw new Error(
           (errorData as { message?: string }).message ??
             "Une erreur est survenue lors de l'envoi de la proposition."
         );
       }
 
+      const myConversationsResponse = await fetch(`${BASE_URL}/conversations/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!myConversationsResponse.ok) {
+        throw new Error("Impossible de récupérer les conversations.");
+      }
+
+      const myConversations: { id: number; participants: { authorId: number }[] }[] =
+        await myConversationsResponse.json();
+
+      const existing = myConversations.find((c) =>
+        c.participants.some((p) => p.authorId === command.cookUserId)
+      );
+
+      let conversationId: number;
+
+      if (existing) {
+        conversationId = existing.id;
+      } else {
+        const conversationResponse = await fetch(`${BASE_URL}/conversations`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ participantIds: [user!.id, command.cookUserId] }),
+        });
+
+        if (!conversationResponse.ok) {
+          throw new Error("Impossible de créer la conversation.");
+        }
+
+        const conversation: { id: number } = await conversationResponse.json();
+        conversationId = conversation.id;
+      }
+
+      await fetch(`${BASE_URL}/conversations/${conversationId}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          message:
+            COOK_REQUEST_MESSAGE_PREFIX +
+            JSON.stringify({ startDate: command.startDate, guestsNumber: command.numberOfGuests }),
+        }),
+      });
+
       setIsSuccess(true);
+      return { conversationId };
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Une erreur inattendue est survenue."
       );
       setIsSuccess(false);
+      return null;
     } finally {
       setIsLoading(false);
     }

@@ -1,9 +1,18 @@
 import { Stack, Redirect } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 
 export default function ClientLayout() {
-  const { token } = useAuth();
+  const { token, isReady } = useAuth();
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   if (!token) {
     return <Redirect href="/login" />;

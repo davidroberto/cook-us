@@ -1,8 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsDateString,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Min,
 } from "class-validator";
@@ -21,13 +22,13 @@ export class CreateCookRequestDto {
   @IsNotEmpty()
   startDate: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: "Date de fin de la prestation",
     example: "2026-03-15T22:00:00.000Z",
   })
+  @IsOptional()
   @IsDateString()
-  @IsNotEmpty()
-  endDate: string;
+  endDate?: string;
 
   @ApiProperty({
     description: "Identifiant du cuisinier",

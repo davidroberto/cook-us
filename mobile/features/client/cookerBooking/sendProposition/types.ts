@@ -1,8 +1,16 @@
 export type SendPropositionCommand = {
   cookId: string;
+  cookUserId: number;
   numberOfGuests: number;
   startDate: string;
-  endDate: string;
+};
+
+export type CreatedCookRequest = {
+  id: number;
+  cookId: string;
+  guestsNumber: number;
+  startDate: string;
+  endDate: string | null;
 };
 
 export type Proposition = {
