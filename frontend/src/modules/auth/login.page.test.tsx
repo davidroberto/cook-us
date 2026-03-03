@@ -50,6 +50,20 @@ describe('LoginPage', () => {
         })
     })
 
+    it('affiche une erreur si le compte n\'est pas admin', async () => {
+        vi.spyOn(global, 'fetch').mockResolvedValue(
+            new Response(JSON.stringify({ token: 'jwt-token', user: { id: 5, email: 'cook@cookus.app', role: 'cook' } }), { status: 200 }),
+        )
+        renderLoginPage()
+        await userEvent.type(screen.getByLabelText('Email'), 'cook@cookus.app')
+        await userEvent.type(screen.getByLabelText('Mot de passe'), 'cook1234')
+        await userEvent.click(screen.getByRole('button', { name: 'Se connecter' }))
+
+        await waitFor(() => {
+            expect(screen.getByText('Accès réservé aux administrateurs.')).toBeInTheDocument()
+        })
+    })
+
     it('appelle login et redirige après une connexion réussie', async () => {
         const loginFn = vi.fn()
         vi.mocked(useAuthModule.useAuth).mockReturnValue({
