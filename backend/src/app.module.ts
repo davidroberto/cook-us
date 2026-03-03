@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { HomeModule } from "@src/modules/home/home.module";
 import { CookModule } from "@src/modules/cook/cook.module";
 import { CookRequestModule } from "@src/modules/cook-request/cookRequest.module";
 import { AuthModule } from "@src/modules/auth/auth.module";
@@ -22,7 +21,6 @@ import { RolesGuard } from "@src/modules/auth/roles.guard";
         synchronize: true,
       }),
     }),
-    HomeModule,
     CookModule,
     CookRequestModule,
     AuthModule,
