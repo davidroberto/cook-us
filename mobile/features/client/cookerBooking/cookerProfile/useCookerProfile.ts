@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
-import { MOCK_COOKER_PROFILE } from "./mocks";
+import { getCook, NotFoundError } from "./repository";
 import type { CookerProfile, CookerProfileState } from "./types";
+import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
-// --- Fake API (à remplacer par un vrai appel réseau) ---
-
-const fakeGetCookerProfile = async (
-  cookId: string
-): Promise<CookerProfile | null> => {
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  if (cookId === "not-found") return null;
-  if (cookId === "error") throw new Error("Technical error");
-  return { ...MOCK_COOKER_PROFILE, id: cookId };
-};
-
-// -------------------------------------------------------
+const mapToCookerProfile = (cook: Cook): CookerProfile => ({
+  id: cook.id,
+  firstName: cook.user.firstName,
+  lastName: cook.user.lastName,
+  photoUrl: cook.user.thumbnail ?? cook.images[0]?.imgUrl ?? null,
+  description: cook.description,
+  speciality: cook.speciality,
+  hourlyRate: cook.hourlyRate,
+});
 
 export const useCookerProfile = (cookId: string) => {
   const [state, setState] = useState<CookerProfileState>({ status: "loading" });
@@ -25,14 +23,14 @@ export const useCookerProfile = (cookId: string) => {
     }
     setState({ status: "loading" });
     try {
-      const cook = await fakeGetCookerProfile(cookId);
-      if (!cook) {
+      const cook = await getCook(cookId);
+      setState({ status: "success", cook: mapToCookerProfile(cook) });
+    } catch (err) {
+      if (err instanceof NotFoundError) {
         setState({ status: "not_found" });
       } else {
-        setState({ status: "success", cook });
+        setState({ status: "error" });
       }
-    } catch {
-      setState({ status: "error" });
     }
   }, [cookId]);
 
