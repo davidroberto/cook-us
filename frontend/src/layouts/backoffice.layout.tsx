@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { Users, ChefHat } from 'lucide-react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Users, ChefHat, LogOut } from 'lucide-react'
+import { useAuth } from '@src/contexts/auth.context'
 
 const navItems = [
     { to: '/users', label: 'Utilisateurs', icon: Users },
@@ -7,14 +8,22 @@ const navItems = [
 ]
 
 export const BackofficeLayout = () => {
+    const { logout } = useAuth()
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+
     return (
         <div className="flex min-h-screen bg-[#FDF6E7]">
-            <aside className="w-56 shrink-0 border-r border-border bg-card">
+            <aside className="w-56 shrink-0 border-r border-border bg-card flex flex-col">
                 <div className="p-6">
                     <span className="text-lg font-bold text-primary">Cook&apos;us</span>
                     <p className="text-xs text-muted-foreground">Backoffice</p>
                 </div>
-                <nav className="px-3 pb-6">
+                <nav className="px-3 flex-1">
                     {navItems.map(({ to, label, icon: Icon }) => (
                         <NavLink
                             key={to}
@@ -32,6 +41,15 @@ export const BackofficeLayout = () => {
                         </NavLink>
                     ))}
                 </nav>
+                <div className="p-3">
+                    <button
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    >
+                        <LogOut className="h-4 w-4" />
+                        Déconnexion
+                    </button>
+                </div>
             </aside>
 
             <div className="flex-1 overflow-auto">
