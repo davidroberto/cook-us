@@ -88,7 +88,7 @@ export const UsersTablePage = () => {
     const thClass = 'cursor-pointer select-none hover:text-foreground'
 
     return (
-        <main className="min-h-screen bg-[#FDF6E7] p-6 text-foreground md:p-10">
+        <main className="p-6 text-foreground md:p-10">
             <section className="mx-auto w-full max-w-7xl space-y-4">
                 <header className="space-y-1">
                     <h1 className="text-2xl font-semibold tracking-tight">Users</h1>

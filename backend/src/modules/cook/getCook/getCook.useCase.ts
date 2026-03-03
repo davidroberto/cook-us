@@ -7,7 +7,7 @@ import { Cook } from "@src/modules/cook/cook.entity";
 export class GetCookUseCase {
   constructor(
     @InjectRepository(Cook)
-    private readonly cookRepository: Repository<Cook>,
+    private readonly cookRepository: Repository<Cook>
   ) {}
 
   async execute(id: string) {
