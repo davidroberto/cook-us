@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(npx jest:*)"
+      "Bash(npx jest:*)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

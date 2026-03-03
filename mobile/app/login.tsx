@@ -13,7 +13,7 @@ export default function LoginPage() {
       <LoginForm
         onSuccess={(token) => {
           setToken(token);
-          router.replace("/client");
+          router.replace("/client/home");
         }}
         onNavigateRegister={() => router.push("/register")}
       />
