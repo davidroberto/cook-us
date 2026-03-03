@@ -46,13 +46,13 @@ describe("SendPropositionForm", () => {
   it("affiche le champ date de début avec son placeholder", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     const input = screen.getByTestId("start-date-input");
-    expect(input.props.placeholder).toBe("JJ-MM-AAAA");
+    expect(input.props.placeholder).toBe("JJMMAAAA");
   });
 
   it("affiche le champ date de fin avec son placeholder", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     const input = screen.getByTestId("end-date-input");
-    expect(input.props.placeholder).toBe("JJ-MM-AAAA");
+    expect(input.props.placeholder).toBe("JJMMAAAA");
   });
 
   it("affiche le bouton d'envoi", () => {

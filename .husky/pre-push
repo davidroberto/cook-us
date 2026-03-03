@@ -2,6 +2,8 @@
 
 set -e
 
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 echo "=== Backend: lint ==="
 cd backend && npm run lint
 

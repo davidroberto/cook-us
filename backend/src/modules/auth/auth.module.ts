@@ -16,7 +16,8 @@ import { LoginUseCase } from "@src/modules/auth/login/login.useCase";
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN as any },
     }),
     TypeOrmModule.forFeature([User, Cook, Client]),
   ],

@@ -32,7 +32,7 @@ export function Button({
     >
       {({ pressed }) =>
         loading ? (
-          <ActivityIndicator color={colors.white} />
+          <ActivityIndicator testID="loading-indicator" color={colors.white} />
         ) : (
           <Text
             style={[

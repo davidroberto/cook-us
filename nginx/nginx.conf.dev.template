@@ -25,6 +25,20 @@ http {
         }
 
         location /api/ {
+            # Preflight CORS
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept' always;
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, Accept' always;
+
             proxy_pass http://backend:${BACKEND_CONTAINER_PORT};
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
