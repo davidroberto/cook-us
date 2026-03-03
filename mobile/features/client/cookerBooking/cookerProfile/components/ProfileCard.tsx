@@ -1,13 +1,8 @@
 import { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { colors, typography } from "@/styles";
 import type { CookerProfile } from "../types";
+import { Button } from "@/components/ui/Button";
 
 interface ProfileCardProps {
   cook: CookerProfile;
@@ -43,15 +38,7 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
           {cook.description}
         </Text>
       ) : null}
-
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={onProposeCreneau}
-        activeOpacity={0.8}
-        testID="propose-creneau-button"
-      >
-        <Text style={styles.primaryButtonText}>Proposer un créneau</Text>
-      </TouchableOpacity>
+      <Button title="Proposer un créneau" onPress={onProposeCreneau} />
     </View>
   );
 };
@@ -80,7 +67,10 @@ function ProfileAvatar({
   }
 
   return (
-    <View style={[styles.avatar, styles.avatarFallback]} testID="profile-avatar-fallback">
+    <View
+      style={[styles.avatar, styles.avatarFallback]}
+      testID="profile-avatar-fallback"
+    >
       <Text style={styles.avatarInitials}>
         {firstName[0]}
         {lastName[0]}
@@ -111,7 +101,7 @@ const styles = StyleSheet.create({
     color: colors.mainDark,
   },
   name: {
-    ...typography.styles.heading2,
+    ...typography.styles.heading1,
     color: colors.text,
   },
   speciality: {
