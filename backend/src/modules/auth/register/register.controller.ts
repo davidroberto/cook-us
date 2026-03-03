@@ -5,8 +5,10 @@ import {
   RegisterDto,
   CookSpeciality,
 } from "@src/modules/auth/register/register.dto";
+import { Public } from "@src/modules/auth/public.decorator";
 
 @ApiTags("Auth")
+@Public()
 @Controller("auth")
 export class RegisterController {
   constructor(private readonly registerUseCase: RegisterUseCase) {}
