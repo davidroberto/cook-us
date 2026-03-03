@@ -15,42 +15,41 @@ type Props = {
   cookId: string;
   cookFirstName: string;
   cookLastName: string;
-  cookSpecialities: string[];
+  cookSpeciality: string;
 };
 
 export function SendPropositionForm({
   cookId,
   cookFirstName,
   cookLastName,
-  cookSpecialities,
+  cookSpeciality,
 }: Props) {
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [date, setDate] = useState("");
-  const [speciality, setSpeciality] = useState<string | null>(
-    cookSpecialities.length === 1 ? cookSpecialities[0] : null,
-  );
 
   const { error, isLoading, isSuccess, sendProposition } = useSendProposition();
 
   const handleSubmit = async () => {
-    if (speciality === null) return;
     await sendProposition({
       cookId,
       numberOfGuests: parseInt(numberOfGuests, 10),
       date,
-      speciality,
+      speciality: cookSpeciality,
     });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      testID="send-proposition-form"
+      contentContainerStyle={styles.container}
+    >
       <View style={styles.cookerHeader}>
         <Text style={styles.cookerLabel}>Cuisinier sélectionné</Text>
-        <Text style={styles.cookerName}>
+        <Text testID="cook-name" style={styles.cookerName}>
           {cookFirstName} {cookLastName}
         </Text>
-        <Text style={styles.cookerSpeciality}>
-          {cookSpecialities.join(" · ")}
+        <Text testID="cook-speciality" style={styles.cookerSpeciality}>
+          {cookSpeciality}
         </Text>
       </View>
 
@@ -59,6 +58,7 @@ export function SendPropositionForm({
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Nombre de convives</Text>
         <TextInput
+          testID="number-of-guests-input"
           style={styles.input}
           value={numberOfGuests}
           onChangeText={(text) => {
@@ -73,6 +73,7 @@ export function SendPropositionForm({
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Date</Text>
         <TextInput
+          testID="date-input"
           style={styles.input}
           value={date}
           onChangeText={setDate}
@@ -84,66 +85,28 @@ export function SendPropositionForm({
         <Text style={styles.hint}>Ex : 15-06-2026</Text>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Spécialité souhaitée</Text>
-        {cookSpecialities.length === 1 ? (
-          <View style={styles.specialityAuto}>
-            <Text style={styles.specialityAutoText}>{cookSpecialities[0]}</Text>
-            <Text style={styles.specialityAutoHint}>
-              Spécialité unique du cuisinier
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.specialityRow}>
-            {cookSpecialities.map((option) => (
-              <TouchableOpacity
-                key={option}
-                style={[
-                  styles.specialityPill,
-                  speciality === option && styles.specialityPillSelected,
-                ]}
-                onPress={() => setSpeciality(option)}
-                accessibilityRole="radio"
-                accessibilityState={{ checked: speciality === option }}
-              >
-                <Text
-                  style={[
-                    styles.specialityPillText,
-                    speciality === option && styles.specialityPillTextSelected,
-                  ]}
-                >
-                  {option}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
-
       <TouchableOpacity
-        style={[
-          styles.button,
-          (isLoading || speciality === null) && styles.buttonDisabled,
-        ]}
+        testID="submit-button"
+        style={[styles.button, isLoading && styles.buttonDisabled]}
         onPress={handleSubmit}
-        disabled={isLoading || speciality === null}
+        disabled={isLoading}
         accessibilityRole="button"
       >
         {isLoading ? (
-          <ActivityIndicator color={colors.white} />
+          <ActivityIndicator testID="loading-indicator" color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>Envoyer la proposition</Text>
         )}
       </TouchableOpacity>
 
       {error !== null && (
-        <View style={styles.errorContainer}>
+        <View testID="error-message" style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
 
       {isSuccess && (
-        <View style={styles.successContainer}>
+        <View testID="success-message" style={styles.successContainer}>
           <Text style={styles.successText}>
             Proposition envoyée avec succès !
           </Text>
@@ -216,52 +179,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     opacity: 0.56,
     marginTop: 4,
-  },
-  specialityAuto: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.tertiary,
-    borderRadius: 10,
-    padding: 12,
-  },
-  specialityAutoText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  specialityAutoHint: {
-    fontSize: 12,
-    color: colors.text,
-    opacity: 0.56,
-    marginTop: 2,
-  },
-  specialityRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  specialityPill: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.tertiary,
-    alignItems: "center",
-    backgroundColor: colors.white,
-  },
-  specialityPillSelected: {
-    backgroundColor: colors.main,
-    borderColor: colors.main,
-  },
-  specialityPillText: {
-    fontSize: 13,
-    color: colors.text,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  specialityPillTextSelected: {
-    color: colors.white,
-    fontWeight: "700",
   },
   button: {
     backgroundColor: colors.main,
