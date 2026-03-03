@@ -1,15 +1,14 @@
 import { colors } from "@/styles/colors";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
+import { Input } from "@/components/ui/Input";
 import { useSendProposition } from "../useSendProposition";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   cookId: string;
@@ -56,64 +55,49 @@ export function SendPropositionForm({
 
       <Text style={styles.title}>Envoyer une proposition</Text>
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Nombre de convives</Text>
-        <TextInput
-          testID="number-of-guests-input"
-          style={styles.input}
-          value={numberOfGuests}
-          onChangeText={(text) => {
-            if (/^\d*$/.test(text)) setNumberOfGuests(text);
-          }}
-          placeholder="Ex : 4"
-          keyboardType="number-pad"
-          maxLength={3}
-        />
-      </View>
+      <Input
+        testID="number-of-guests-input"
+        label="Nombre de convives"
+        value={numberOfGuests}
+        onChangeText={(text) => {
+          if (/^\d*$/.test(text)) setNumberOfGuests(text);
+        }}
+        placeholder="Ex : 4"
+        keyboardType="number-pad"
+        maxLength={3}
+      />
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date de début</Text>
-        <TextInput
-          testID="start-date-input"
-          style={styles.input}
-          value={startDate}
-          onChangeText={setStartDate}
-          placeholder="JJ-MM-AAAA"
-          keyboardType="numbers-and-punctuation"
-          maxLength={10}
-          autoCorrect={false}
-        />
-        <Text style={styles.hint}>Ex : 15-06-2026</Text>
-      </View>
+      <Input
+        testID="start-date-input"
+        label="Date de début"
+        value={startDate}
+        onChangeText={setStartDate}
+        placeholder="JJ-MM-AAAA"
+        keyboardType="numbers-and-punctuation"
+        maxLength={10}
+        autoCorrect={false}
+        hint="Ex : 15-06-2026"
+      />
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date de fin</Text>
-        <TextInput
-          testID="end-date-input"
-          style={styles.input}
-          value={endDate}
-          onChangeText={setEndDate}
-          placeholder="JJ-MM-AAAA"
-          keyboardType="numbers-and-punctuation"
-          maxLength={10}
-          autoCorrect={false}
-        />
-        <Text style={styles.hint}>Ex : 15-06-2026</Text>
-      </View>
+      <Input
+        testID="end-date-input"
+        label="Date de fin"
+        value={endDate}
+        onChangeText={setEndDate}
+        placeholder="JJ-MM-AAAA"
+        keyboardType="numbers-and-punctuation"
+        maxLength={10}
+        autoCorrect={false}
+        hint="Ex : 15-06-2026"
+      />
 
-      <TouchableOpacity
+      <Button
         testID="submit-button"
-        style={[styles.button, isLoading && styles.buttonDisabled]}
+        title="Envoyer la proposition"
         onPress={handleSubmit}
-        disabled={isLoading}
+        loading={isLoading}
         accessibilityRole="button"
-      >
-        {isLoading ? (
-          <ActivityIndicator testID="loading-indicator" color={colors.white} />
-        ) : (
-          <Text style={styles.buttonText}>Envoyer la proposition</Text>
-        )}
-      </TouchableOpacity>
+      />
 
       {error !== null && (
         <View testID="error-message" style={styles.errorContainer}>
@@ -168,48 +152,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: colors.text,
+    color: colors.main,
     marginBottom: 24,
     textAlign: "center",
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: colors.text,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.tertiary,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 12,
-    color: colors.text,
-    opacity: 0.56,
-    marginTop: 4,
-  },
-  button: {
-    backgroundColor: colors.main,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.tertiary,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "700",
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",
