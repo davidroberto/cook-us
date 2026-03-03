@@ -10,8 +10,24 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { useCookRequests, type CookRequest } from './useCookRequests'
+import type { CookRequestStatus } from '@src/types/cookRequest.types'
 
-type SortKey = 'id' | 'cook' | 'client' | 'guestsNumber' | 'startDate' | 'endDate'
+type SortKey = 'id' | 'cook' | 'client' | 'guestsNumber' | 'startDate' | 'endDate' | 'status'
+
+const STATUS_CONFIG: Record<CookRequestStatus, { label: string; className: string }> = {
+    pending:  { label: 'En attente', className: 'bg-yellow-100 text-yellow-800' },
+    accepted: { label: 'Acceptée',   className: 'bg-green-100 text-green-800' },
+    declined: { label: 'Refusée',    className: 'bg-red-100 text-red-800' },
+}
+
+const StatusBadge = ({ status }: { status: CookRequestStatus }) => {
+    const { label, className } = STATUS_CONFIG[status]
+    return (
+        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>
+            {label}
+        </span>
+    )
+}
 type SortDirection = 'asc' | 'desc'
 
 const formatDate = (value: string | null) => {
@@ -30,6 +46,7 @@ const getSortValue = (req: CookRequest, key: SortKey): string | number => {
         case 'guestsNumber': return req.guestsNumber
         case 'startDate': return req.startDate ? new Date(req.startDate).getTime() : Infinity
         case 'endDate': return req.endDate ? new Date(req.endDate).getTime() : Infinity
+        case 'status': return req.status
     }
 }
 
@@ -116,6 +133,9 @@ export const CookRequestsTablePage = () => {
                                     <TableHead className={thClass} onClick={() => handleSort('endDate')}>
                                         Fin <SortIcon column="endDate" sortKey={sortKey} direction={sortDirection} />
                                     </TableHead>
+                                    <TableHead className={thClass} onClick={() => handleSort('status')}>
+                                        Statut <SortIcon column="status" sortKey={sortKey} direction={sortDirection} />
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -127,6 +147,7 @@ export const CookRequestsTablePage = () => {
                                         <TableCell>{req.guestsNumber}</TableCell>
                                         <TableCell>{formatDate(req.startDate)}</TableCell>
                                         <TableCell>{formatDate(req.endDate)}</TableCell>
+                                        <TableCell><StatusBadge status={req.status} /></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

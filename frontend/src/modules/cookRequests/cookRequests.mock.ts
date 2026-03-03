@@ -3,6 +3,7 @@ import type { CookRequest } from '@src/types/cookRequest.types'
 export const cookRequestsMock: CookRequest[] = [
     {
         id: 1,
+        status: 'accepted',
         guestsNumber: 6,
         startDate: '2026-03-10T19:00:00Z',
         endDate: '2026-03-10T22:00:00Z',
@@ -11,6 +12,7 @@ export const cookRequestsMock: CookRequest[] = [
     },
     {
         id: 2,
+        status: 'pending',
         guestsNumber: 4,
         startDate: '2026-03-15T12:00:00Z',
         endDate: '2026-03-15T14:30:00Z',
@@ -19,6 +21,7 @@ export const cookRequestsMock: CookRequest[] = [
     },
     {
         id: 3,
+        status: 'pending',
         guestsNumber: 10,
         startDate: '2026-04-01T18:00:00Z',
         endDate: null,
@@ -27,6 +30,7 @@ export const cookRequestsMock: CookRequest[] = [
     },
     {
         id: 4,
+        status: 'declined',
         guestsNumber: 2,
         startDate: null,
         endDate: null,

@@ -1,5 +1,8 @@
+export type CookRequestStatus = 'pending' | 'accepted' | 'declined'
+
 export type CookRequest = {
     id: number
+    status: CookRequestStatus
     guestsNumber: number
     startDate: string | null
     endDate: string | null
