@@ -6,6 +6,13 @@ import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSendProposition } from "../useSendProposition";
 
+function formatDateInput(text: string): string {
+  const digits = text.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4)}`;
+}
+
 type Props = {
   cookId: string;
   cookUserId: number;
@@ -82,12 +89,10 @@ export function SendPropositionForm({
         testID="start-date-input"
         label="Date de début"
         value={startDate}
-        onChangeText={setStartDate}
-        placeholder="JJ-MM-AAAA"
-        keyboardType="numbers-and-punctuation"
+        onChangeText={(text) => setStartDate(formatDateInput(text))}
+        placeholder="JJMMAAAA"
+        keyboardType="number-pad"
         maxLength={10}
-        autoCorrect={false}
-        hint="Ex : 15-06-2026"
       />
 
       <Button

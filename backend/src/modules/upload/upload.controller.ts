@@ -45,7 +45,7 @@ export class UploadController {
       },
     })
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: { filename: string }) {
     if (!file) throw new BadRequestException("Aucun fichier reçu.");
     return { url: `/api/uploads/${file.filename}` };
   }

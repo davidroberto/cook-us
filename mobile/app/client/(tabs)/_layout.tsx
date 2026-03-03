@@ -34,6 +34,15 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="compte"
+        options={{
+          title: "Compte",
+          tabBarIcon: ({ color, size }) => (
+            <TabBarIcon name="person" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

@@ -47,7 +47,7 @@ describe("SendPropositionForm", () => {
   it("affiche le champ date de début avec son placeholder", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     const input = screen.getByTestId("start-date-input");
-    expect(input.props.placeholder).toBe("JJ-MM-AAAA");
+    expect(input.props.placeholder).toBe("JJMMAAAA");
   });
 
   it("affiche le bouton d'envoi", () => {
@@ -73,7 +73,9 @@ describe("SendPropositionForm", () => {
   it("met à jour le champ date de début", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     fireEvent.changeText(screen.getByTestId("start-date-input"), "15-06-2026");
-    expect(screen.getByTestId("start-date-input").props.value).toBe("15-06-2026");
+    expect(screen.getByTestId("start-date-input").props.value).toBe(
+      "15-06-2026",
+    );
   });
 
   it("appelle sendProposition avec les bonnes données au clic sur le bouton", () => {

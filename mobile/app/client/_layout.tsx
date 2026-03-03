@@ -38,6 +38,10 @@ export default function ClientLayout() {
         name="viewCook/booking/[cookId]"
         options={{ title: "Réserver" }}
       />
+      <Stack.Screen
+        name="viewProfile/profile"
+        options={{ title: "Mon profil" }}
+      />
     </Stack>
   );
 }

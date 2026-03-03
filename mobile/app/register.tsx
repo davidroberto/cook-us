@@ -6,13 +6,13 @@ import { SafeAreaView, StyleSheet } from "react-native";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { setToken } = useAuth();
+  const { setAuth } = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>
       <RegisterForm
-        onSuccess={(token) => {
-          setToken(token);
+        onSuccess={(token, user) => {
+          setAuth(token, user);
           router.replace("/client/home");
         }}
         onNavigateLogin={() => router.push("/login")}
