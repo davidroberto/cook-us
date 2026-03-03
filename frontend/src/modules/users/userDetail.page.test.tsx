@@ -47,7 +47,7 @@ describe('UserDetailPage', () => {
     beforeEach(() => {
         vi.clearAllMocks()
         vi.mocked(useCookRequestsModule.useCookRequests).mockReturnValue({
-            data: [], isLoading: false, isError: false,
+            data: [] as CookRequest[], isLoading: false, isError: false,
         } as ReturnType<typeof useCookRequestsModule.useCookRequests>)
     })
 
