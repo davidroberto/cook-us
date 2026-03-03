@@ -30,9 +30,9 @@ export const cookRequestsMock: CookRequest[] = [
     },
     {
         id: 4,
-        status: 'declined',
+        status: 'refused',
         guestsNumber: 2,
-        startDate: null,
+        startDate: '2026-02-15T14:00:00Z',
         endDate: null,
         cook: { id: 2, firstName: 'Luca', lastName: 'Bianchi' },
         client: { id: 8, firstName: 'Sophie', lastName: 'Moreau' },

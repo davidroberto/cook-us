@@ -21,6 +21,7 @@ export class Cook {
   hourlyRate: number | null;
   @Column({ default: true }) isActive: boolean;
   @Column({ default: false }) isValidated: boolean;
+  @Column({ nullable: true }) city: string | null;
 
   @Column({ name: "user_id", nullable: true })
   userId: number;

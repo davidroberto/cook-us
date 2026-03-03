@@ -31,23 +31,19 @@ export class CookRequestEntity {
   startDate: Date;
 
   @ApiProperty({ example: "2026-03-15T22:00:00.000Z" })
-  @Column({ name: "end_date", type: "timestamp" })
-  endDate: Date;
+  @Column({ name: "end_date", type: "timestamp", nullable: true })
+  endDate: Date | null;
 
-  @ApiProperty({ example: "550e8400-e29b-41d4-a716-446655440000" })
   @Column({ name: "cook_id", type: "uuid" })
   cookId: string;
 
-  @ApiProperty({ description: "Profil du cuisinier", type: () => Cook })
   @ManyToOne(() => Cook)
   @JoinColumn({ name: "cook_id" })
   cook: Cook;
 
-  @ApiProperty({ example: 1 })
   @Column({ name: "client_id", type: "int" })
   clientId: number;
 
-  @ApiProperty({ description: "Profil du client", type: () => Client })
   @ManyToOne(() => Client)
   @JoinColumn({ name: "client_id" })
   client: Client;

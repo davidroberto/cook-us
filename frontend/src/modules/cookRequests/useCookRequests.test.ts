@@ -20,7 +20,7 @@ describe('useCookRequests', () => {
     it('chaque demande a un statut valide', async () => {
         const { result } = renderHook(() => useCookRequests(), { wrapper: createWrapper() })
         await waitFor(() => expect(result.current.isSuccess).toBe(true))
-        const validStatuses = ['pending', 'accepted', 'declined']
+        const validStatuses = ['pending', 'accepted', 'refused', 'cancelled']
         result.current.data?.forEach((req) => {
             expect(validStatuses).toContain(req.status)
         })

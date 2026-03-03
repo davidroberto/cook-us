@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CookModule } from "@src/modules/cook/cook.module";
 import { CookRequestModule } from "@src/modules/cook-request/cookRequest.module";
 import { AuthModule } from "@src/modules/auth/auth.module";
+import { BackofficeModule } from "@src/modules/backoffice/backoffice.module";
 import { JwtAuthGuard } from "@src/modules/auth/jwt-auth.guard";
 import { RolesGuard } from "@src/modules/auth/roles.guard";
 
@@ -24,6 +25,7 @@ import { RolesGuard } from "@src/modules/auth/roles.guard";
     CookModule,
     CookRequestModule,
     AuthModule,
+    BackofficeModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

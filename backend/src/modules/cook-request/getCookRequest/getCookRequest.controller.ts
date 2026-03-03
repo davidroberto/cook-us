@@ -16,20 +16,22 @@ import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity"
 @Controller("cook-request")
 @Roles(UserRole.COOK, UserRole.ADMIN)
 export class GetCookRequestController {
-  constructor(
-    private readonly getCookRequestUseCase: GetCookRequestUseCase
-  ) {}
+  constructor(private readonly getCookRequestUseCase: GetCookRequestUseCase) {}
 
   @Get(":id")
   @ApiOperation({ summary: "Consulter le détail d'une réservation (cook)" })
   @ApiParam({ name: "id", type: Number, description: "ID de la réservation" })
   @ApiResponse({
     status: 200,
-    description: "Détail de la réservation avec les informations du cook et du client",
+    description:
+      "Détail de la réservation avec les informations du cook et du client",
     type: CookRequestEntity,
   })
   @ApiResponse({ status: 401, description: "Non authentifié" })
-  @ApiResponse({ status: 403, description: "Rôle non autorisé (cook ou admin requis)" })
+  @ApiResponse({
+    status: 403,
+    description: "Rôle non autorisé (cook ou admin requis)",
+  })
   @ApiResponse({ status: 404, description: "Réservation non trouvée" })
   getCookRequest(@Param("id", ParseIntPipe) id: number) {
     return this.getCookRequestUseCase.execute(id);
