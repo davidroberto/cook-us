@@ -15,7 +15,8 @@ export class LoginController {
   })
   @ApiResponse({
     status: 200,
-    description: "Connexion réussie. Retourne le token JWT et les données utilisateur.",
+    description:
+      "Connexion réussie. Retourne le token JWT et les données utilisateur.",
   })
   @ApiResponse({
     status: 401,
