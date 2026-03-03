@@ -2,7 +2,8 @@
   "name": "cook-us",
   "private": true,
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "install:all": "npm i --prefix backend && npm i --prefix frontend && npm i --prefix mobile"
   },
   "devDependencies": {
     "husky": "^9.1.0"
