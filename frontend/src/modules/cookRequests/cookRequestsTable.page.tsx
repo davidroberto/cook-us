@@ -9,56 +9,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { useCookRequests, type CookRequest } from './useCookRequests'
-import type { CookRequestStatus } from '@src/types/cookRequest.types'
-
-type SortKey = 'id' | 'cook' | 'client' | 'guestsNumber' | 'startDate' | 'endDate' | 'status'
-
-const STATUS_CONFIG: Record<CookRequestStatus, { label: string; className: string }> = {
-    pending:  { label: 'En attente', className: 'bg-yellow-100 text-yellow-800' },
-    accepted: { label: 'Acceptée',   className: 'bg-green-100 text-green-800' },
-    declined: { label: 'Refusée',    className: 'bg-red-100 text-red-800' },
-}
-
-const StatusBadge = ({ status }: { status: CookRequestStatus }) => {
-    const { label, className } = STATUS_CONFIG[status]
-    return (
-        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>
-            {label}
-        </span>
-    )
-}
-type SortDirection = 'asc' | 'desc'
-
-const formatDate = (value: string | null) => {
-    if (!value) return '-'
-    return new Intl.DateTimeFormat('fr-FR', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-    }).format(new Date(value))
-}
-
-const getSortValue = (req: CookRequest, key: SortKey): string | number => {
-    switch (key) {
-        case 'id': return req.id
-        case 'cook': return `${req.cook.lastName} ${req.cook.firstName}`.toLowerCase()
-        case 'client': return `${req.client.lastName} ${req.client.firstName}`.toLowerCase()
-        case 'guestsNumber': return req.guestsNumber
-        case 'startDate': return req.startDate ? new Date(req.startDate).getTime() : Infinity
-        case 'endDate': return req.endDate ? new Date(req.endDate).getTime() : Infinity
-        case 'status': return req.status
-    }
-}
-
-const sortRequests = (data: CookRequest[], key: SortKey, direction: SortDirection) => {
-    return [...data].sort((a, b) => {
-        const valA = getSortValue(a, key)
-        const valB = getSortValue(b, key)
-        if (valA < valB) return direction === 'asc' ? -1 : 1
-        if (valA > valB) return direction === 'asc' ? 1 : -1
-        return 0
-    })
-}
+import { useCookRequests } from './useCookRequests'
+import { sortRequests, type SortKey, type SortDirection } from './cookRequestsTable.utils'
+import { formatDate } from '@src/utils/format'
+import { StatusBadge } from '@src/components/ui/StatusBadge'
 
 const SortIcon = ({ column, sortKey, direction }: { column: SortKey; sortKey: SortKey | null; direction: SortDirection | null }) => {
     if (sortKey !== column) return <ChevronsUpDown className="ml-1 inline h-3 w-3 opacity-40" />

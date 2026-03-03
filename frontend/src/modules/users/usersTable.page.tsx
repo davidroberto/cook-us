@@ -10,59 +10,15 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { useUsers, type BackofficeUser } from './useUsers'
-
-type SortKey = 'id' | 'name' | 'email' | 'role' | 'speciality' | 'hourlyRate' | 'city' | 'createdAt' | 'updatedAt'
-type SortDirection = 'asc' | 'desc'
-
-const formatDate = (value: string | null) => {
-    if (!value) return '-'
-    return new Intl.DateTimeFormat('fr-FR', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-    }).format(new Date(value))
-}
-
-const getSortValue = (user: BackofficeUser, key: SortKey): string | number => {
-    switch (key) {
-        case 'id': return user.id
-        case 'name': return `${user.lastName} ${user.firstName}`.toLowerCase()
-        case 'email': return user.email.toLowerCase()
-        case 'role': return user.role
-        case 'speciality': return user.cookProfile?.speciality ?? '\uffff'
-        case 'hourlyRate': return parseFloat(user.cookProfile?.hourlyRate ?? '99999')
-        case 'city': return user.cookProfile?.city.toLowerCase() ?? '\uffff'
-        case 'createdAt': return new Date(user.createdAt).getTime()
-        case 'updatedAt': return new Date(user.updatedAt).getTime()
-    }
-}
-
-const sortUsers = (data: BackofficeUser[], key: SortKey, direction: SortDirection) => {
-    return [...data].sort((a, b) => {
-        const valA = getSortValue(a, key)
-        const valB = getSortValue(b, key)
-        if (valA < valB) return direction === 'asc' ? -1 : 1
-        if (valA > valB) return direction === 'asc' ? 1 : -1
-        return 0
-    })
-}
+import { useUsers } from './useUsers'
+import { sortUsers, type SortKey, type SortDirection } from './usersTable.utils'
+import { formatDate } from '@src/utils/format'
+import { DescriptionCell } from '@src/components/ui/DescriptionCell'
 
 const SortIcon = ({ column, sortKey, direction }: { column: SortKey; sortKey: SortKey | null; direction: SortDirection | null }) => {
     if (sortKey !== column) return <ChevronsUpDown className="ml-1 inline h-3 w-3 opacity-40" />
     if (direction === 'asc') return <ChevronUp className="ml-1 inline h-3 w-3" />
     return <ChevronDown className="ml-1 inline h-3 w-3" />
-}
-
-const DescriptionCell = ({ text }: { text: string | null }) => {
-    if (!text) return <span className="text-muted-foreground">-</span>
-    return (
-        <div className="group relative">
-            <span className="block max-w-[180px] cursor-default truncate">{text}</span>
-            <div className="pointer-events-none absolute left-0 top-full z-50 mt-1 hidden w-72 rounded-md border border-border bg-card px-3 py-2 text-xs shadow-lg group-hover:block">
-                {text}
-            </div>
-        </div>
-    )
 }
 
 export const UsersTablePage = () => {
