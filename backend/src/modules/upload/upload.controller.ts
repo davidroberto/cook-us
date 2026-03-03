@@ -45,8 +45,7 @@ export class UploadController {
       },
     })
   )
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  uploadFile(@UploadedFile() file: any) {
+    uploadFile(@UploadedFile() file: { filename: string }) {
     if (!file) throw new BadRequestException("Aucun fichier reçu.");
     return { url: `/api/uploads/${file.filename}` };
   }

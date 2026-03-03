@@ -9,17 +9,29 @@ import { GetCookRequestController } from "@src/modules/cook-request/getCookReque
 import { GetCookRequestUseCase } from "@src/modules/cook-request/getCookRequest/getCookRequest.useCase";
 import { CancelCookRequestController } from "@src/modules/cook-request/cancelCookRequest/cancelCookRequest.controller";
 import { CancelCookRequestUseCase } from "@src/modules/cook-request/cancelCookRequest/cancelCookRequest.useCase";
+import { GetClientCookRequestsController } from "@src/modules/cook-request/getClientCookRequests/getClientCookRequests.controller";
+import { GetClientCookRequestsUseCase } from "@src/modules/cook-request/getClientCookRequests/getClientCookRequests.useCase";
+import { AcceptCookRequestController } from "@src/modules/cook-request/acceptCookRequest/acceptCookRequest.controller";
+import { AcceptCookRequestUseCase } from "@src/modules/cook-request/acceptCookRequest/acceptCookRequest.useCase";
+import { RefuseCookRequestController } from "@src/modules/cook-request/refuseCookRequest/refuseCookRequest.controller";
+import { RefuseCookRequestUseCase } from "@src/modules/cook-request/refuseCookRequest/refuseCookRequest.useCase";
 
 @Module({
   imports: [TypeOrmModule.forFeature([CookRequestEntity, Cook, Client])],
   controllers: [
     CreateCookRequestController,
+    GetClientCookRequestsController,
     GetCookRequestController,
+    AcceptCookRequestController,
+    RefuseCookRequestController,
     CancelCookRequestController,
   ],
   providers: [
     CreateCookRequestUseCase,
     GetCookRequestUseCase,
+    GetClientCookRequestsUseCase,
+    AcceptCookRequestUseCase,
+    RefuseCookRequestUseCase,
     CancelCookRequestUseCase,
   ],
 })

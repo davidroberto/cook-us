@@ -10,6 +10,13 @@ import { Input } from "@/components/ui/Input";
 import { useSendProposition } from "../useSendProposition";
 import { Button } from "@/components/ui/Button";
 
+function formatDateInput(text: string): string {
+  const digits = text.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4)}`;
+}
+
 type Props = {
   cookId: string;
   cookFirstName: string;
@@ -71,24 +78,20 @@ export function SendPropositionForm({
         testID="start-date-input"
         label="Date de début"
         value={startDate}
-        onChangeText={setStartDate}
-        placeholder="JJ-MM-AAAA"
-        keyboardType="numbers-and-punctuation"
+        onChangeText={(text) => setStartDate(formatDateInput(text))}
+        placeholder="JJMMAAAA"
+        keyboardType="number-pad"
         maxLength={10}
-        autoCorrect={false}
-        hint="Ex : 15-06-2026"
       />
 
       <Input
         testID="end-date-input"
         label="Date de fin"
         value={endDate}
-        onChangeText={setEndDate}
-        placeholder="JJ-MM-AAAA"
-        keyboardType="numbers-and-punctuation"
+        onChangeText={(text) => setEndDate(formatDateInput(text))}
+        placeholder="JJMMAAAA"
+        keyboardType="number-pad"
         maxLength={10}
-        autoCorrect={false}
-        hint="Ex : 15-06-2026"
       />
 
       <Button
