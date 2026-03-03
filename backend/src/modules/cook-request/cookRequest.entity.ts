@@ -1,6 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+export enum CookRequestStatus {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REFUSED = "refused",
+  CANCELLED = "cancelled",
+}
+
 @Entity("cook_request")
 export class CookRequestEntity {
   @ApiProperty({ example: 1 })
@@ -26,4 +33,12 @@ export class CookRequestEntity {
   @ApiProperty({ example: 1 })
   @Column({ name: "client_id", type: "int" })
   clientId: number;
+
+  @ApiProperty({ example: "pending", enum: CookRequestStatus })
+  @Column({
+    type: "enum",
+    enum: CookRequestStatus,
+    default: CookRequestStatus.PENDING,
+  })
+  status: CookRequestStatus;
 }

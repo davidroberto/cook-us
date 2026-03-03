@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 import { Cook } from "@src/modules/cook/cook.entity";
 import { Client } from "@src/modules/client/client.entity";
+import { CookRequestStatus } from "@src/modules/cook-request/cookRequest.entity";
 
 @Entity("cook_request")
 export class CookRequest {
@@ -35,4 +36,11 @@ export class CookRequest {
   @ManyToOne(() => Client)
   @JoinColumn({ name: "client_id" })
   client: Client;
+
+  @Column({
+    type: "enum",
+    enum: CookRequestStatus,
+    default: CookRequestStatus.PENDING,
+  })
+  status: CookRequestStatus;
 }

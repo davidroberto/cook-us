@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
+import {
+  CookRequestEntity,
+  CookRequestStatus,
+} from "@src/modules/cook-request/cookRequest.entity";
 import { CreateCookRequestDto } from "@src/modules/cook-request/createCookRequest/createCookRequest.dto";
 
 @Injectable()
@@ -18,6 +21,7 @@ export class CreateCookRequestUseCase {
       endDate: new Date(dto.endDate),
       cookId: dto.cookId,
       clientId: dto.clientId,
+      status: CookRequestStatus.PENDING,
     });
 
     return this.cookRequestRepository.save(cookRequest);
