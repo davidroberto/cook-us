@@ -100,7 +100,7 @@ describe("SendPropositionForm", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     expect(screen.getByTestId("loading-indicator")).toBeTruthy();
     expect(screen.queryByText("Envoyer la proposition")).toBeNull();
-    expect(screen.getByTestId("submit-button").props.disabled).toBe(true);
+    expect(screen.getByTestId("submit-button")).toBeDisabled();
   });
 
   it("affiche la bannière de succès après envoi réussi", () => {
