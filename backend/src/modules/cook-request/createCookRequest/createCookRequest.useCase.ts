@@ -8,7 +8,7 @@ import { CreateCookRequestDto } from "@src/modules/cook-request/createCookReques
 export class CreateCookRequestUseCase {
   constructor(
     @InjectRepository(CookRequestEntity)
-    private readonly cookRequestRepository: Repository<CookRequestEntity>,
+    private readonly cookRequestRepository: Repository<CookRequestEntity>
   ) {}
 
   async execute(dto: CreateCookRequestDto): Promise<CookRequestEntity> {

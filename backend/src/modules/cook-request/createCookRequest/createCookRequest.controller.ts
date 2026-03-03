@@ -5,7 +5,7 @@ import { CreateCookRequestDto } from "@src/modules/cook-request/createCookReques
 @Controller("cook-request")
 export class CreateCookRequestController {
   constructor(
-    private readonly createCookRequestUseCase: CreateCookRequestUseCase,
+    private readonly createCookRequestUseCase: CreateCookRequestUseCase
   ) {}
 
   @Post()
