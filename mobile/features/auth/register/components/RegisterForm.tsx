@@ -1,7 +1,9 @@
 import { colors } from "@/styles/colors";
+import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,7 +26,23 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"client" | "cook">("client");
   const [speciality, setSpeciality] = useState<CookSpeciality | null>(null);
+  const [description, setDescription] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
+
   const { error, isLoading, register } = useRegister();
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+    if (!result.canceled) {
+      setThumbnailUri(result.assets[0].uri);
+    }
+  };
 
   const handleSubmit = async () => {
     const result = await register({
@@ -33,8 +51,15 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       email,
       password,
       role,
+      thumbnail: thumbnailUri ?? undefined,
       ...(role === "cook" && speciality
-        ? { cookProfile: { speciality } }
+        ? {
+            cookProfile: {
+              speciality,
+              description: description.trim() || undefined,
+              hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
+            },
+          }
         : {}),
     });
     if (result) onSuccess(result.token);
@@ -43,6 +68,29 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   return (
     <ScrollView testID="register-form" contentContainerStyle={styles.container}>
       <Text style={styles.title}>Créer un compte</Text>
+
+      {/* Photo de profil */}
+      <View style={styles.avatarSection}>
+        <TouchableOpacity
+          testID="avatar-picker"
+          style={styles.avatarButton}
+          onPress={pickImage}
+          accessibilityRole="button"
+        >
+          {thumbnailUri ? (
+            <Image
+              testID="avatar-preview"
+              source={{ uri: thumbnailUri }}
+              style={styles.avatarImage}
+            />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <Text style={styles.avatarPlaceholderText}>+</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        <Text style={styles.avatarLabel}>Photo de profil (optionnel)</Text>
+      </View>
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Prénom</Text>
@@ -139,32 +187,63 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       {role === "cook" && (
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Spécialité</Text>
-          <View style={styles.specialityGrid}>
-            {COOK_SPECIALITIES.map((item) => (
-              <TouchableOpacity
-                key={item.value}
-                testID={`speciality-${item.value}`}
-                style={[
-                  styles.specialityChip,
-                  speciality === item.value && styles.specialityChipSelected,
-                ]}
-                onPress={() => setSpeciality(item.value)}
-              >
-                <Text
+        <>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Spécialité</Text>
+            <View style={styles.specialityGrid}>
+              {COOK_SPECIALITIES.map((item) => (
+                <TouchableOpacity
+                  key={item.value}
+                  testID={`speciality-${item.value}`}
                   style={[
-                    styles.specialityChipText,
-                    speciality === item.value &&
-                      styles.specialityChipTextSelected,
+                    styles.specialityChip,
+                    speciality === item.value && styles.specialityChipSelected,
                   ]}
+                  onPress={() => setSpeciality(item.value)}
                 >
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.specialityChipText,
+                      speciality === item.value &&
+                        styles.specialityChipTextSelected,
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Description (optionnel)</Text>
+            <TextInput
+              testID="description-input"
+              style={[styles.input, styles.textArea]}
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Parlez de votre expérience, vos spécialités…"
+              multiline
+              numberOfLines={4}
+              autoCorrect={false}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Tarif horaire en € (optionnel)</Text>
+            <TextInput
+              testID="hourly-rate-input"
+              style={styles.input}
+              value={hourlyRate}
+              onChangeText={(text) => {
+                if (/^\d*\.?\d{0,2}$/.test(text)) setHourlyRate(text);
+              }}
+              placeholder="Ex : 25"
+              keyboardType="decimal-pad"
+              autoCorrect={false}
+            />
+          </View>
+        </>
       )}
 
       <TouchableOpacity
@@ -209,8 +288,43 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     color: colors.text,
-    marginBottom: 32,
+    marginBottom: 24,
     textAlign: "center",
+  },
+  avatarSection: {
+    alignItems: "center",
+    marginBottom: 28,
+  },
+  avatarButton: {
+    marginBottom: 8,
+  },
+  avatarImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderWidth: 3,
+    borderColor: colors.main,
+  },
+  avatarPlaceholder: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: colors.tertiary,
+    borderWidth: 2,
+    borderColor: colors.main,
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarPlaceholderText: {
+    fontSize: 32,
+    color: colors.main,
+    lineHeight: 36,
+  },
+  avatarLabel: {
+    fontSize: 13,
+    color: colors.text,
+    opacity: 0.6,
   },
   inputGroup: {
     marginBottom: 20,
@@ -229,6 +343,10 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     color: colors.text,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
   },
   hint: {
     fontSize: 12,

@@ -33,7 +33,7 @@ export class User {
   @Column({ type: "enum", enum: UserRole })
   role: UserRole;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn({ name: "created_at" })

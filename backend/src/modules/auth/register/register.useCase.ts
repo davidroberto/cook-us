@@ -44,6 +44,7 @@ export class RegisterUseCase {
       email: dto.email,
       password: hashedPassword,
       role,
+      thumbnail: dto.thumbnail ?? null,
     });
     await this.userRepository.save(user);
 
@@ -54,6 +55,7 @@ export class RegisterUseCase {
         speciality: dto.cookProfile!.speciality,
         description: dto.cookProfile?.description ?? null,
         hourlyRate: dto.cookProfile?.hourlyRate ?? null,
+        photoUrl: dto.thumbnail ?? null,
         userId: user.id,
       });
       await this.cookRepository.save(cook);
