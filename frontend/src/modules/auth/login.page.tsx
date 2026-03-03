@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useAuth } from '@src/contexts/useAuth'
-import { mockLogin } from './auth.mock'
+import { apiFetch } from '@src/utils/api'
+import type { AuthUser } from '@src/types/auth.types'
 
 export const LoginPage = () => {
     const [email, setEmail] = useState('')
@@ -11,19 +12,16 @@ export const LoginPage = () => {
     const navigate = useNavigate()
 
     const { mutate, isPending, error } = useMutation({
-        // TODO: replace mockLogin with real fetch POST /api/auth/login
         mutationFn: ({ email, password }: { email: string; password: string }) =>
-            mockLogin(email, password),
-        onSuccess: (user) => {
-            login(user)
+            apiFetch<{ token: string; user: AuthUser }>('/api/auth/login', null, {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+            }),
+        onSuccess: ({ user, token }) => {
+            login(user, token)
             navigate('/users')
         },
     })
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        mutate({ email, password })
-    }
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#FDF6E7]">
@@ -33,7 +31,7 @@ export const LoginPage = () => {
                     <p className="mt-1 text-sm text-muted-foreground">Backoffice — connexion admin</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); mutate({ email, password }) }} className="space-y-4">
                     <div className="space-y-1">
                         <label htmlFor="email" className="text-sm font-medium text-foreground">
                             Email
