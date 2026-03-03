@@ -55,4 +55,15 @@ export class CookRequestEntity {
     default: CookRequestStatus.PENDING,
   })
   status: CookRequestStatus;
+
+  @ApiProperty({
+    example: "Je ne suis plus disponible à cette date",
+    nullable: true,
+  })
+  @Column({
+    name: "cancellation_reason",
+    type: "text",
+    nullable: true,
+  })
+  cancellationReason: string | null;
 }
