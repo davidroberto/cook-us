@@ -21,7 +21,7 @@ describe("CookerCard", () => {
   it("affiche le libellé de spécialité traduit", () => {
     render(<CookerCard cooker={BASE_COOKER} />);
     expect(screen.getByTestId("cooker-speciality")).toHaveTextContent(
-      "Cuisine indienne"
+      "Cuisine indienne",
     );
   });
 
@@ -65,9 +65,9 @@ describe("CookerCard", () => {
       { key: "mexican", label: "Cuisine mexicaine" },
     ];
 
-    specialities.forEach(({ key, label }) => {
+    speciality.forEach(({ key, label }) => {
       const { unmount } = render(
-        <CookerCard cooker={{ ...BASE_COOKER, speciality: key }} />
+        <CookerCard cooker={{ ...BASE_COOKER, speciality: key }} />,
       );
       expect(screen.getByTestId("cooker-speciality")).toHaveTextContent(label);
       unmount();
