@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import { useAuth } from '@src/contexts/auth.context'
+import { useAuth } from '@src/contexts/useAuth'
 import { mockLogin } from './auth.mock'
 
 export const LoginPage = () => {

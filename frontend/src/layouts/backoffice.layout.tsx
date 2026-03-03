@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Users, ChefHat, LogOut } from 'lucide-react'
-import { useAuth } from '@src/contexts/auth.context'
+import { useAuth } from '@src/contexts/useAuth'
 
 const navItems = [
     { to: '/users', label: 'Utilisateurs', icon: Users },
