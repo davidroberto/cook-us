@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
+    port: parseInt(process.env.FRONTEND_CONTAINER_PORT || '5173'),
     watch: {
       usePolling: true,
     },
