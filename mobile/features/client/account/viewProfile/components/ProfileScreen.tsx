@@ -3,15 +3,44 @@
  * Réutilisé par la page Stack (viewProfile/profile.tsx) et l'onglet (tabs/compte.tsx).
  */
 
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
+import { useRouter } from "expo-router";
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useProfile } from "../useProfile";
-import { ProfileForm } from "./ProfileForm";
-import { PasswordForm } from "./PasswordForm";
 import { OrderHistoryList } from "./OrderHistoryList";
+import { PasswordForm } from "./PasswordForm";
+import { ProfileForm } from "./ProfileForm";
 
 export const ProfileScreen = () => {
   const { user } = useProfile();
+  const { clearAuth } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Alert.alert("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", [
+      {
+        text: "Annuler",
+        style: "cancel",
+      },
+      {
+        text: "Se déconnecter",
+        style: "destructive",
+        onPress: () => {
+          clearAuth();
+          router.replace("/login");
+        },
+      },
+    ]);
+  };
 
   if (!user) {
     return (
@@ -51,6 +80,14 @@ export const ProfileScreen = () => {
 
       <View style={styles.section}>
         <OrderHistoryList />
+      </View>
+
+      <View style={styles.logoutSection}>
+        <Button
+          title="Se déconnecter"
+          variant="outline"
+          onPress={handleLogout}
+        />
       </View>
     </ScrollView>
   );
@@ -105,5 +142,9 @@ const styles = StyleSheet.create({
     shadowOpacity: colors.opacity[8],
     shadowRadius: 4,
     elevation: 2,
+  },
+  logoutSection: {
+    marginTop: 8,
+    marginBottom: 16,
   },
 });

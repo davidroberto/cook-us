@@ -38,7 +38,12 @@ export class CreateCookRequestDto {
   @IsNotEmpty()
   cookId: string;
 
-  @ApiProperty({ description: "Identifiant du client", example: 1 })
+  @ApiPropertyOptional({
+    description:
+      "Identifiant du client (déduit automatiquement du token JWT si non fourni)",
+    example: 1,
+  })
+  @IsOptional()
   @IsInt()
-  clientId: number;
+  clientId?: number;
 }
