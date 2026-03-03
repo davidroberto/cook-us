@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import type { AuthUser } from '@src/types/auth.types'
 import { mockMe } from '@src/modules/auth/auth.mock'
 
@@ -9,7 +9,7 @@ type AuthContextValue = {
     logout: () => void
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null)
+export const AuthContext = createContext<AuthContextValue | null>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<AuthUser | null>(null)
@@ -35,8 +35,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     )
 }
 
-export const useAuth = () => {
-    const ctx = useContext(AuthContext)
-    if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
-    return ctx
-}
