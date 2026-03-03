@@ -1,20 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import type { CookRequest } from '@src/types/cookRequest.types'
-import { cookRequestsMock } from './cookRequests.mock'
+import { useAuth } from '@src/contexts/useAuth'
+import { apiFetch } from '@src/utils/api'
 
 export type { CookRequest }
 
-// TODO: replace with real fetch when API is ready
-const fetchCookRequests = async (): Promise<CookRequest[]> => {
-    // const response = await fetch('/api/backoffice/cook-requests')
-    // if (!response.ok) throw new Error('Erreur lors de la récupération des demandes')
-    // return response.json()
-    return Promise.resolve(cookRequestsMock)
-}
-
 export const useCookRequests = () => {
+    const { token } = useAuth()
+
     return useQuery({
         queryKey: ['backoffice', 'cook-requests'],
-        queryFn: fetchCookRequests,
+        queryFn: () => apiFetch<CookRequest[]>('/api/backoffice/cook-requests', token),
+        enabled: !!token,
     })
 }
