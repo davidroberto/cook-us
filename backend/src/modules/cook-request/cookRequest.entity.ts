@@ -38,6 +38,7 @@ export class CookRequestEntity {
   @Column({ name: "cook_id", type: "uuid" })
   cookId: string;
 
+  @ApiProperty({ description: "Profil du cuisinier", type: () => Cook })
   @ManyToOne(() => Cook)
   @JoinColumn({ name: "cook_id" })
   cook: Cook;
@@ -46,6 +47,7 @@ export class CookRequestEntity {
   @Column({ name: "client_id", type: "int" })
   clientId: number;
 
+  @ApiProperty({ description: "Profil du client", type: () => Client })
   @ManyToOne(() => Client)
   @JoinColumn({ name: "client_id" })
   client: Client;
