@@ -17,7 +17,8 @@ export class Cook {
   @Column({ nullable: true }) photoUrl: string | null;
   @Column({ nullable: true, type: "text" }) description: string | null;
   @Column() speciality: string;
-  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true }) hourlyRate: number | null;
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  hourlyRate: number | null;
   @Column({ default: true }) isActive: boolean;
   @Column({ default: false }) isValidated: boolean;
 

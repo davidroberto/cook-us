@@ -11,7 +11,9 @@ import { GetCookController } from "@src/modules/cook/getCook/getCook.controller"
 import { GetCookUseCase } from "@src/modules/cook/getCook/getCook.useCase";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cook, CookImage, CookRequest, Client, User])],
+  imports: [
+    TypeOrmModule.forFeature([Cook, CookImage, CookRequest, Client, User]),
+  ],
   controllers: [GetCooksController, GetCookController],
   providers: [GetCooksUseCase, GetCookUseCase],
 })

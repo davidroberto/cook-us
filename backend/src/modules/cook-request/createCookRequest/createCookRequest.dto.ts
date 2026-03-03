@@ -1,4 +1,10 @@
-import { IsDateString, IsInt, IsNotEmpty, IsString, Min } from "class-validator";
+import {
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+} from "class-validator";
 
 export class CreateCookRequestDto {
   @IsInt()
