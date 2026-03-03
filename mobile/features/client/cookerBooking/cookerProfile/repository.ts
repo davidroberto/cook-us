@@ -1,8 +1,9 @@
 import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
-export const getCook = async (cookId: string): Promise<Cook> => {
+export const getCook = async (cookId: string, token: string): Promise<Cook> => {
   const response = await fetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/cooks/${cookId}`
+    `${process.env.EXPO_PUBLIC_API_URL}/cooks/${cookId}`,
+    { headers: { Authorization: `Bearer ${token}` } }
   );
 
   if (response.status === 404) {
