@@ -8,6 +8,8 @@ import { Client } from "@src/modules/client/client.entity";
 import { JwtStrategy } from "@src/modules/auth/jwt.strategy";
 import { RegisterController } from "@src/modules/auth/register/register.controller";
 import { RegisterUseCase } from "@src/modules/auth/register/register.useCase";
+import { LoginController } from "@src/modules/auth/login/login.controller";
+import { LoginUseCase } from "@src/modules/auth/login/login.useCase";
 
 @Module({
   imports: [
@@ -18,8 +20,8 @@ import { RegisterUseCase } from "@src/modules/auth/register/register.useCase";
     }),
     TypeOrmModule.forFeature([User, Cook, Client]),
   ],
-  controllers: [RegisterController],
-  providers: [JwtStrategy, RegisterUseCase],
+  controllers: [RegisterController, LoginController],
+  providers: [JwtStrategy, RegisterUseCase, LoginUseCase],
   exports: [JwtModule],
 })
 export class AuthModule {}
