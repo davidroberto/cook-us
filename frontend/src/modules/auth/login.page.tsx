@@ -18,6 +18,9 @@ export const LoginPage = () => {
                 body: JSON.stringify({ email, password }),
             }),
         onSuccess: ({ user, token }) => {
+            if (user.role !== 'admin') {
+                throw new Error('Accès réservé aux administrateurs.')
+            }
             login(user, token)
             navigate('/users')
         },
