@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, type PressableProps } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, type PressableProps } from "react-native";
 import { colors } from "../../styles/colors";
 import { typography } from "../../styles/typography";
 
@@ -7,41 +7,44 @@ type ButtonVariant = "primary" | "secondary" | "outline";
 interface ButtonProps extends Omit<PressableProps, "children"> {
   title: string;
   variant?: ButtonVariant;
+  loading?: boolean;
 }
 
 export function Button({
   title,
   variant = "primary",
+  loading = false,
   style,
   disabled,
   ...props
 }: ButtonProps) {
   return (
     <Pressable
-      style={(state: { pressed: boolean; hovered?: boolean }) => [
+      style={({ pressed }) => [
         styles.base,
         styles[variant],
-        (state.pressed || state.hovered) && styles[`${variant}Pressed`],
-        disabled && styles.disabled,
+        pressed && styles[`${variant}Pressed`],
+        (disabled || loading) && styles.disabled,
         typeof style === "function" ? undefined : style,
       ]}
-      disabled={disabled}
+      disabled={disabled || loading}
       {...props}
     >
-      {(state: { pressed: boolean; hovered?: boolean }) => {
-        const isActive = state.pressed || state.hovered;
-        return (
+      {({ pressed }) =>
+        loading ? (
+          <ActivityIndicator color={colors.white} />
+        ) : (
           <Text
             style={[
               styles.text,
-              variant === "outline" && !isActive && styles.outlineText,
+              variant === "outline" && !pressed && styles.outlineText,
               variant === "secondary" && styles.secondaryText,
             ]}
           >
             {title}
           </Text>
-        );
-      }}
+        )
+      }
     </Pressable>
   );
 }

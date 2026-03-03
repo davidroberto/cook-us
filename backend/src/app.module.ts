@@ -6,6 +6,7 @@ import { CookRequestModule } from "@src/modules/cook-request/cookRequest.module"
 import { AuthModule } from "@src/modules/auth/auth.module";
 import { BackofficeModule } from "@src/modules/backoffice/backoffice.module";
 import { ConversationModule } from "@src/modules/conversation/conversation.module";
+import { UploadModule } from "@src/modules/upload/upload.module";
 import { JwtAuthGuard } from "@src/modules/auth/jwt-auth.guard";
 import { RolesGuard } from "@src/modules/auth/roles.guard";
 
@@ -28,6 +29,7 @@ import { RolesGuard } from "@src/modules/auth/roles.guard";
     AuthModule,
     BackofficeModule,
     ConversationModule,
+    UploadModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

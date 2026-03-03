@@ -68,6 +68,11 @@ export class RegisterDto {
   @IsEnum(UserRole)
   role?: UserRole.COOK | UserRole.CLIENT;
 
+  @ApiPropertyOptional({ example: "/api/uploads/avatar.jpg" })
+  @IsOptional()
+  @IsString()
+  thumbnail?: string;
+
   @ApiPropertyOptional({
     type: RegisterCookProfileDto,
     description: "Obligatoire si le rôle est cook.",

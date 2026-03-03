@@ -15,8 +15,11 @@ export type RegisterCommand = {
   email: string;
   password: string;
   role: "client" | "cook";
+  thumbnail?: string;
   cookProfile?: {
     speciality: CookSpeciality;
+    description?: string;
+    hourlyRate?: number;
   };
 };
 
