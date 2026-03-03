@@ -13,7 +13,7 @@ import { GetConversationMessagesUseCase } from "@src/modules/conversation/getCon
 @Controller("conversations")
 export class GetConversationMessagesController {
   constructor(
-    private readonly getConversationMessagesUseCase: GetConversationMessagesUseCase,
+    private readonly getConversationMessagesUseCase: GetConversationMessagesUseCase
   ) {}
 
   @Get(":id/messages")

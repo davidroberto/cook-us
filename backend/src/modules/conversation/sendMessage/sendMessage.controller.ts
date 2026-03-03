@@ -30,7 +30,7 @@ export class SendMessageController {
   sendMessage(
     @Param("id", ParseIntPipe) id: number,
     @Body() dto: SendMessageDto,
-    @Req() req: { user: { id: number } },
+    @Req() req: { user: { id: number } }
   ) {
     return this.sendMessageUseCase.execute(id, req.user.id, dto);
   }

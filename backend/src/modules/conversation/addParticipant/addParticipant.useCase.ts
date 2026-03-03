@@ -15,12 +15,12 @@ export class AddParticipantUseCase {
     @InjectRepository(ConversationParticipant)
     private readonly participantRepository: Repository<ConversationParticipant>,
     @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>,
+    private readonly conversationRepository: Repository<Conversation>
   ) {}
 
   async execute(
     conversationId: number,
-    dto: AddParticipantDto,
+    dto: AddParticipantDto
   ): Promise<ConversationParticipant> {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
@@ -36,7 +36,7 @@ export class AddParticipantUseCase {
 
     if (existing) {
       throw new BadRequestException(
-        `L'utilisateur ${dto.userId} est déjà participant de cette conversation`,
+        `L'utilisateur ${dto.userId} est déjà participant de cette conversation`
       );
     }
 
