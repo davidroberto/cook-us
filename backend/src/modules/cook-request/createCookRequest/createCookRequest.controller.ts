@@ -11,7 +11,7 @@ import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity"
 @Roles(UserRole.CLIENT, UserRole.ADMIN)
 export class CreateCookRequestController {
   constructor(
-    private readonly createCookRequestUseCase: CreateCookRequestUseCase,
+    private readonly createCookRequestUseCase: CreateCookRequestUseCase
   ) {}
 
   @Post()
