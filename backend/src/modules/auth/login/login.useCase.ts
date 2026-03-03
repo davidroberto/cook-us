@@ -15,9 +15,11 @@ export class LoginUseCase {
   ) {}
 
   async execute(dto: LoginDto) {
-    const user = await this.userRepository.findOne({
-      where: { email: dto.email },
-    });
+    const user = await this.userRepository
+      .createQueryBuilder("user")
+      .addSelect("user.password")
+      .where("user.email = :email", { email: dto.email })
+      .getOne();
     if (!user) {
       throw new UnauthorizedException("Email ou mot de passe incorrect.");
     }
