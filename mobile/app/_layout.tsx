@@ -1,5 +1,6 @@
 import { Slot } from "expo-router";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { AuthProvider } from "@/features/auth/AuthContext";
 import { useFonts } from "expo-font";
 import {
   Alexandria_400Regular,
@@ -32,7 +33,11 @@ export default function RootLayout() {
     );
   }
 
-  return <Slot />;
+  return (
+    <AuthProvider>
+      <Slot />
+    </AuthProvider>
+  );
 }
 
 const styles = StyleSheet.create({

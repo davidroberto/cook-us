@@ -1,4 +1,5 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 import { colors } from "@/styles/colors";
 import { CookerCard } from "./Card";
 import { useCookerList } from "../useCookerList";
@@ -6,6 +7,7 @@ import type { CookerCardData } from "../types";
 
 export const CookerList = () => {
   const { cooks, loading, error } = useCookerList();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -39,7 +41,12 @@ export const CookerList = () => {
     <FlatList<CookerCardData>
       data={cooks}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <CookerCard cooker={item} />}
+      renderItem={({ item }) => (
+          <CookerCard
+            cooker={item}
+            onPress={() => router.push(`/client/viewCook/profile/${item.id}`)}
+          />
+        )}
       contentContainerStyle={styles.list}
       showsVerticalScrollIndicator={false}
       testID="cooker-list"

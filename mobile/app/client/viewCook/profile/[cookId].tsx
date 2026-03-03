@@ -8,13 +8,12 @@ import {
   useCookerProfile,
 } from "@/features/client/cookerBooking/cookerProfile";
 import { Button } from "@/components/ui/Button";
-
-// TODO: remplacer par le vrai contexte d'authentification
-const isAuthenticated = false;
+import { useAuth } from "@/features/auth/AuthContext";
 
 export default function CookerProfilePage() {
   const { cookId } = useLocalSearchParams<{ cookId: string }>();
   const router = useRouter();
+  const { token } = useAuth();
   const { state, retry } = useCookerProfile(cookId ?? "");
   const [toastVisible, setToastVisible] = useState(false);
 
@@ -26,12 +25,11 @@ export default function CookerProfilePage() {
   }, [state.status]);
 
   const handleProposeCreneau = () => {
-    if (!isAuthenticated) {
-      // TODO: passer le redirect en param pour revenir après connexion
+    if (!token) {
       router.push("/login");
       return;
-    } // TODO: naviguer vers le module de proposition de créneau
-    router.push(`/cookerBooking/${cookId}/booking` as never);
+    }
+    router.push(`/client/viewCook/booking/${cookId}`);
   };
 
   return (

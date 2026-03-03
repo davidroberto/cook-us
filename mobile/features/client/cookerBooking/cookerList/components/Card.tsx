@@ -1,9 +1,10 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "@/styles/colors";
 import type { CookerCardData } from "../types";
 
 interface CookerCardProps {
   cooker: CookerCardData;
+  onPress: () => void;
 }
 
 const SPECIALITY_LABEL: Record<CookerCardData["speciality"], string> = {
@@ -14,9 +15,9 @@ const SPECIALITY_LABEL: Record<CookerCardData["speciality"], string> = {
   mexican: "Cuisine mexicaine",
 };
 
-export const CookerCard = ({ cooker }: CookerCardProps) => {
+export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {
   return (
-    <View style={styles.card} testID="cooker-card">
+    <TouchableOpacity style={styles.card} testID="cooker-card" onPress={onPress} activeOpacity={0.7}>
       <View style={styles.avatarContainer}>
         {cooker.thumbnail ? (
           <Image
@@ -53,7 +54,7 @@ export const CookerCard = ({ cooker }: CookerCardProps) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
