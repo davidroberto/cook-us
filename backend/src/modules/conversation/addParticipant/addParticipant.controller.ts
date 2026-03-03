@@ -17,7 +17,7 @@ export class AddParticipantController {
   @ApiResponse({ status: 404, description: "Conversation non trouvée" })
   addParticipant(
     @Param("id", ParseIntPipe) id: number,
-    @Body() dto: AddParticipantDto,
+    @Body() dto: AddParticipantDto
   ) {
     return this.addParticipantUseCase.execute(id, dto);
   }

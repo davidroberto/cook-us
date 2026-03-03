@@ -8,7 +8,7 @@ import { GetConversationsUseCase } from "@src/modules/conversation/getConversati
 @Controller("conversations")
 export class GetConversationsController {
   constructor(
-    private readonly getConversationsUseCase: GetConversationsUseCase,
+    private readonly getConversationsUseCase: GetConversationsUseCase
   ) {}
 
   @Get()
@@ -22,7 +22,7 @@ export class GetConversationsController {
   @ApiResponse({ status: 200, description: "Liste des conversations" })
   getConversations(@Query("userId") userId?: number) {
     return this.getConversationsUseCase.execute(
-      userId ? Number(userId) : undefined,
+      userId ? Number(userId) : undefined
     );
   }
 }

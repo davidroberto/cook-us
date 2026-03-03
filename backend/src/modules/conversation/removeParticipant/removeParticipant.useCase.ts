@@ -7,7 +7,7 @@ import { ConversationParticipant } from "@src/modules/conversation/conversationP
 export class RemoveParticipantUseCase {
   constructor(
     @InjectRepository(ConversationParticipant)
-    private readonly participantRepository: Repository<ConversationParticipant>,
+    private readonly participantRepository: Repository<ConversationParticipant>
   ) {}
 
   async execute(conversationId: number, userId: number): Promise<void> {
@@ -17,7 +17,7 @@ export class RemoveParticipantUseCase {
 
     if (!participant) {
       throw new NotFoundException(
-        `Participant with userId ${userId} not found in conversation ${conversationId}`,
+        `Participant with userId ${userId} not found in conversation ${conversationId}`
       );
     }
 

@@ -11,19 +11,19 @@ export class CreateConversationUseCase {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(ConversationParticipant)
-    private readonly participantRepository: Repository<ConversationParticipant>,
+    private readonly participantRepository: Repository<ConversationParticipant>
   ) {}
 
   async execute(dto: CreateConversationDto): Promise<Conversation> {
     const conversation = await this.conversationRepository.save(
-      this.conversationRepository.create(),
+      this.conversationRepository.create()
     );
 
     const participants = dto.participantIds.map((userId) =>
       this.participantRepository.create({
         authorId: userId,
         conversationId: conversation.id,
-      }),
+      })
     );
 
     await this.participantRepository.save(participants);

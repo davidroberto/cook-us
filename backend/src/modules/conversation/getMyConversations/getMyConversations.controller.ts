@@ -12,7 +12,7 @@ import { GetMyConversationsUseCase } from "@src/modules/conversation/getMyConver
 @Controller("conversations")
 export class GetMyConversationsController {
   constructor(
-    private readonly getMyConversationsUseCase: GetMyConversationsUseCase,
+    private readonly getMyConversationsUseCase: GetMyConversationsUseCase
   ) {}
 
   @Get("me")

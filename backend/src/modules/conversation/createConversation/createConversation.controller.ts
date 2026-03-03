@@ -9,7 +9,7 @@ import { CreateConversationDto } from "@src/modules/conversation/createConversat
 @Controller("conversations")
 export class CreateConversationController {
   constructor(
-    private readonly createConversationUseCase: CreateConversationUseCase,
+    private readonly createConversationUseCase: CreateConversationUseCase
   ) {}
 
   @Post()

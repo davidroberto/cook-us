@@ -11,13 +11,13 @@ export class SendMessageUseCase {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>,
+    private readonly conversationRepository: Repository<Conversation>
   ) {}
 
   async execute(
     conversationId: number,
     authorId: number,
-    dto: SendMessageDto,
+    dto: SendMessageDto
   ): Promise<Message> {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },

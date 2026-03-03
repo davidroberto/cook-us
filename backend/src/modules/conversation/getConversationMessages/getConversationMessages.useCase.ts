@@ -10,7 +10,7 @@ export class GetConversationMessagesUseCase {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>,
+    private readonly conversationRepository: Repository<Conversation>
   ) {}
 
   async execute(conversationId: number): Promise<Message[]> {

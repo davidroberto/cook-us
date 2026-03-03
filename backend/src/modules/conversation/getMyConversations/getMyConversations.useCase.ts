@@ -7,7 +7,7 @@ import { Conversation } from "@src/modules/conversation/conversation.entity";
 export class GetMyConversationsUseCase {
   constructor(
     @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>,
+    private readonly conversationRepository: Repository<Conversation>
   ) {}
 
   async execute(userId: number): Promise<Conversation[]> {

@@ -14,7 +14,7 @@ import { RemoveParticipantUseCase } from "@src/modules/conversation/removePartic
 @Controller("conversations")
 export class RemoveParticipantController {
   constructor(
-    private readonly removeParticipantUseCase: RemoveParticipantUseCase,
+    private readonly removeParticipantUseCase: RemoveParticipantUseCase
   ) {}
 
   @Delete(":id/participants/:userId")
@@ -32,7 +32,7 @@ export class RemoveParticipantController {
   @ApiResponse({ status: 404, description: "Participant non trouvé" })
   removeParticipant(
     @Param("id", ParseIntPipe) id: number,
-    @Param("userId", ParseIntPipe) userId: number,
+    @Param("userId", ParseIntPipe) userId: number
   ) {
     return this.removeParticipantUseCase.execute(id, userId);
   }

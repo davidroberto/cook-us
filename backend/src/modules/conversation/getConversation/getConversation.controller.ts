@@ -8,7 +8,7 @@ import { GetConversationUseCase } from "@src/modules/conversation/getConversatio
 @Controller("conversations")
 export class GetConversationController {
   constructor(
-    private readonly getConversationUseCase: GetConversationUseCase,
+    private readonly getConversationUseCase: GetConversationUseCase
   ) {}
 
   @Get(":id")
