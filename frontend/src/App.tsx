@@ -1,20 +1,18 @@
-import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BackofficeLayout } from '@src/layouts/backoffice.layout'
+import { UsersTablePage } from '@src/modules/users/usersTable.page'
+import { CookRequestsTablePage } from '@src/modules/cookRequests/cookRequestsTable.page'
 
 export const App = () => {
-    const [appName, setAppName] = useState<string | null>(null)
-
-    useEffect(() => {
-        const fetchAppName = async () => {
-            const response = await fetch('/api/home/app-name')
-            const data = await response.json()
-            setAppName(data.name)
-        }
-        fetchAppName()
-    }, [])
-
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <h1>{appName ?? 'Loading...'}</h1>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route element={<BackofficeLayout />}>
+                    <Route index element={<Navigate to="/users" replace />} />
+                    <Route path="/users" element={<UsersTablePage />} />
+                    <Route path="/cook-requests" element={<CookRequestsTablePage />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     )
 }
