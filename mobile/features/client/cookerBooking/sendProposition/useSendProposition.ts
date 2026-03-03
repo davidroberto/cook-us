@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { SendPropositionCommand } from "./types";
 
-// POUR PASSER AUX VRAIES API : changer USE_FAKE_DATA de true à false
-const USE_FAKE_DATA = true;
+const API_URL = "http://localhost:8080/api/cook-request";
 
 function parseDDMMYYYY(value: string): Date {
   const [day, month, year] = value.split("-");
@@ -39,14 +38,17 @@ function validateCommand(command: SendPropositionCommand): void {
       "Le nombre de convives doit être un entier supérieur à 0."
     );
   }
-  if (!isValidDateString(command.date)) {
-    throw new Error("La date doit être au format JJ-MM-AAAA.");
+  if (!isValidDateString(command.startDate)) {
+    throw new Error("La date de début doit être au format JJ-MM-AAAA.");
   }
-  if (!isDateTodayOrFuture(command.date)) {
-    throw new Error("La date doit être aujourd'hui ou dans le futur.");
+  if (!isDateTodayOrFuture(command.startDate)) {
+    throw new Error("La date de début doit être aujourd'hui ou dans le futur.");
   }
-  if (!command.speciality) {
-    throw new Error("La spécialité est requise.");
+  if (!isValidDateString(command.endDate)) {
+    throw new Error("La date de fin doit être au format JJ-MM-AAAA.");
+  }
+  if (parseDDMMYYYY(command.endDate) < parseDDMMYYYY(command.startDate)) {
+    throw new Error("La date de fin doit être après la date de début.");
   }
 }
 
@@ -65,22 +67,24 @@ export function useSendProposition() {
     try {
       validateCommand(command);
 
-      if (USE_FAKE_DATA) {
-        await new Promise<void>((resolve) => setTimeout(resolve, 500));
-      } else {
-        const response = await fetch("http://localhost/api/propositions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(command),
-        });
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guestsNumber: command.numberOfGuests,
+          startDate: parseDDMMYYYY(command.startDate).toISOString(),
+          endDate: parseDDMMYYYY(command.endDate).toISOString(),
+          cookId: command.cookId,
+          clientId: 1, // TODO: remplacer par l'ID de l'utilisateur authentifié
+        }),
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            (errorData as { message?: string }).message ??
-              "Une erreur est survenue lors de l'envoi de la proposition."
-          );
-        }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          (errorData as { message?: string }).message ??
+            "Une erreur est survenue lors de l'envoi de la proposition."
+        );
       }
 
       setIsSuccess(true);
