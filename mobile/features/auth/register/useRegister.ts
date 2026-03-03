@@ -14,6 +14,27 @@ function validateCommand(command: RegisterCommand): void {
     throw new Error("La spécialité est requise pour un compte cuisinier.");
 }
 
+async function uploadThumbnail(uri: string): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", {
+    uri,
+    type: "image/jpeg",
+    name: "profile.jpg",
+  } as unknown as Blob);
+
+  const response = await fetch(`${API_URL}/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Impossible de télécharger la photo de profil.");
+  }
+
+  const data = (await response.json()) as { url: string };
+  return data.url;
+}
+
 export function useRegister() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,10 +48,15 @@ export function useRegister() {
     try {
       validateCommand(command);
 
+      let thumbnailUrl: string | undefined = undefined;
+      if (command.thumbnail) {
+        thumbnailUrl = await uploadThumbnail(command.thumbnail);
+      }
+
       const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(command),
+        body: JSON.stringify({ ...command, thumbnail: thumbnailUrl }),
       });
 
       if (!response.ok) {
