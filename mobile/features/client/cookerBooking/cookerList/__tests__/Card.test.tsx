@@ -65,7 +65,7 @@ describe("CookerCard", () => {
       { key: "mexican", label: "Cuisine mexicaine" },
     ];
 
-    speciality.forEach(({ key, label }) => {
+    specialities.forEach(({ key, label }) => {
       const { unmount } = render(
         <CookerCard cooker={{ ...BASE_COOKER, speciality: key }} />,
       );
