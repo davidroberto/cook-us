@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 const BASE_URL = "http://localhost:8081";
 const PROFILE_URL = (cookId: string) =>
-  `${BASE_URL}/cookerBooking/${cookId}`;
+  `${BASE_URL}/cookerBooking/profile/${cookId}`;
 
 // Timeout couvrant le délai du fake API (1200ms) + rendu
 const PROFILE_TIMEOUT = 5_000;
@@ -122,7 +122,7 @@ test("affiche un bouton Réessayer en cas d'erreur technique", async ({
 }) => {
   await page.goto(PROFILE_URL("error"));
 
-  await expect(page.getByText("Réessayer")).toBeVisible({
+  await expect(page.getByText("Réessayer", { exact: true })).toBeVisible({
     timeout: PROFILE_TIMEOUT,
   });
 });
@@ -130,13 +130,13 @@ test("affiche un bouton Réessayer en cas d'erreur technique", async ({
 test("recharge le profil au clic sur Réessayer", async ({ page }) => {
   await page.goto(PROFILE_URL("error"));
 
-  await expect(page.getByText("Réessayer")).toBeVisible({
+  await expect(page.getByText("Réessayer", { exact: true })).toBeVisible({
     timeout: PROFILE_TIMEOUT,
   });
 
   // Après un retry sur un ID valide (simulation : rechargement sur "error" → encore erreur,
   // mais le flow de retry doit se déclencher et recharger le state)
-  await page.getByText("Réessayer").click();
+  await page.getByText("Réessayer", { exact: true }).click();
 
   // Le skeleton réapparaît pendant le rechargement
   await expect(page.getByTestId("profile-skeleton")).toBeVisible();
