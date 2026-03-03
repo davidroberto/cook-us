@@ -13,7 +13,7 @@ export default function RegisterPage() {
       <RegisterForm
         onSuccess={(token) => {
           setToken(token);
-          router.replace("/client");
+          router.replace("/client/home");
         }}
         onNavigateLogin={() => router.push("/login")}
       />
