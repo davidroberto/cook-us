@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { BackofficeLayout } from '@src/layouts/backoffice.layout'
-import { ProtectedRoute } from '@src/components/ui/protectedRoute'
+import { ProtectedRoute } from '@src/modules/auth/protectedRoute'
 import { LoginPage } from '@src/modules/auth/login.page'
 import { UsersTablePage } from '@src/modules/users/usersTable.page'
 import { UserDetailPage } from '@src/modules/users/userDetail.page'
