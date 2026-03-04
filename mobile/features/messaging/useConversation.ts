@@ -26,8 +26,8 @@ function toConversation(api: ApiConversation, currentUserId: number): Conversati
   const other = api.participants.find((p) => p.authorId !== currentUserId);
   return {
     id: api.id,
-    cookFirstName: other?.author.firstName ?? "",
-    cookLastName: other?.author.lastName ?? "",
+    otherFirstName: other?.author.firstName ?? "",
+    otherLastName: other?.author.lastName ?? "",
     messages: api.messages.map((m) => {
       const requestData = parseRequestData(m.message);
       return {
@@ -47,9 +47,9 @@ export function useConversation(conversationId: number) {
 
   const currentUserId = user?.id;
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (silent = false) => {
     if (!conversationId || !currentUserId) return;
-    setState({ status: "loading" });
+    if (!silent) setState({ status: "loading" });
     try {
       const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -58,12 +58,14 @@ export function useConversation(conversationId: number) {
       const api: ApiConversation = await response.json();
       setState({ status: "success", conversation: toConversation(api, currentUserId) });
     } catch {
-      setState({ status: "error" });
+      if (!silent) setState({ status: "error" });
     }
   }, [conversationId, token, currentUserId]);
 
   useEffect(() => {
     load();
+    const interval = setInterval(() => load(true), 5000);
+    return () => clearInterval(interval);
   }, [load]);
 
   const sendMessage = useCallback(

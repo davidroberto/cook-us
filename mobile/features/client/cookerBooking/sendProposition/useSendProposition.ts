@@ -109,7 +109,10 @@ export function useSendProposition() {
       } else {
         const conversationResponse = await fetch(`${BASE_URL}/conversations`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ participantIds: [user!.id, command.cookUserId] }),
         });
 
