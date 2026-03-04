@@ -14,22 +14,6 @@ import { COOK_REQUEST_MESSAGE_PREFIX } from "@/features/messaging/useConversatio
 import type { ApiConversation } from "@/features/messaging/types";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
-import { useEffect, useState } from "react";
-import { getApiUrl } from "@/features/api/getApiUrl";
-
-const STATUS_LABEL: Record<string, string> = {
-  pending: "En attente",
-  accepted: "Acceptée",
-  refused: "Refusée",
-  cancelled: "Annulée",
-};
-
-const STATUS_COLOR: Record<string, string> = {
-  pending: colors.secondary,
-  accepted: "#4CAF50",
-  refused: colors.mainDark,
-  cancelled: "#9E9E9E",
-};
 
 function getOtherParticipant(conversation: ApiConversation, currentUserId: number) {
   return conversation.participants.find((p) => p.authorId !== currentUserId);
@@ -40,22 +24,6 @@ function getLastMessage(conversation: ApiConversation) {
   return [...conversation.messages].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   ).at(-1)!;
-}
-
-function getCookRequestId(conversation: ApiConversation): number | null {
-  for (const msg of conversation.messages) {
-    if (msg.message.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) {
-      try {
-        const data = JSON.parse(msg.message.slice(COOK_REQUEST_MESSAGE_PREFIX.length)) as {
-          cookRequestId?: number;
-        };
-        if (data.cookRequestId) return data.cookRequestId;
-      } catch {
-        // ignore
-      }
-    }
-  }
-  return null;
 }
 
 function formatMessagePreview(raw: string): string {
@@ -74,12 +42,10 @@ function formatMessagePreview(raw: string): string {
 function ConversationItem({
   conversation,
   currentUserId,
-  status,
   onPress,
 }: {
   conversation: ApiConversation;
   currentUserId: number;
-  status?: string;
   onPress: () => void;
 }) {
   const other = getOtherParticipant(conversation, currentUserId);
@@ -92,14 +58,7 @@ function ConversationItem({
         <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
       </View>
       <View style={styles.itemContent}>
-        <View style={styles.itemHeader}>
-          <Text style={styles.itemName}>{name}</Text>
-          {status && (
-            <View style={[styles.badge, { backgroundColor: STATUS_COLOR[status] ?? "#9E9E9E" }]}>
-              <Text style={styles.badgeText}>{STATUS_LABEL[status] ?? status}</Text>
-            </View>
-          )}
-        </View>
+        <Text style={styles.itemName}>{name}</Text>
         {lastMessage && (
           <Text style={styles.itemLastMessage} numberOfLines={1}>
             {formatMessagePreview(lastMessage.message)}
@@ -112,32 +71,8 @@ function ConversationItem({
 
 export default function MessagesTab() {
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const { state, retry } = useMyConversations();
-  const [statusMap, setStatusMap] = useState<Record<number, string>>({});
-
-  useEffect(() => {
-    if (state.status !== "success" || !token) return;
-
-    const fetchStatuses = async () => {
-      try {
-        const res = await fetch(`${getApiUrl()}/cook-request/my`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) return;
-        const requests = await res.json() as Array<{ id: number; status: string }>;
-        const map: Record<number, string> = {};
-        for (const r of requests) {
-          map[r.id] = r.status;
-        }
-        setStatusMap(map);
-      } catch {
-        // silently ignore
-      }
-    };
-
-    fetchStatuses();
-  }, [state.status, token]);
 
   if (state.status === "loading") {
     return (
@@ -173,23 +108,18 @@ export default function MessagesTab() {
         <FlatList
           data={state.conversations}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => {
-            const cookRequestId = getCookRequestId(item);
-            const status = cookRequestId != null ? statusMap[cookRequestId] : undefined;
-            return (
-              <ConversationItem
-                conversation={item}
-                currentUserId={user?.id ?? 0}
-                status={status}
-                onPress={() =>
-                  router.push({
-                    pathname: "/client/messaging/[requestId]",
-                    params: { requestId: String(item.id) },
-                  })
-                }
-              />
-            );
-          }}
+          renderItem={({ item }) => (
+            <ConversationItem
+              conversation={item}
+              currentUserId={user?.id ?? 0}
+              onPress={() =>
+                router.push({
+                  pathname: "/client/messaging/[requestId]",
+                  params: { requestId: String(item.id) },
+                })
+              }
+            />
+          )}
           contentContainerStyle={styles.list}
         />
       )}
@@ -242,26 +172,9 @@ const styles = StyleSheet.create({
   itemContent: {
     flex: 1,
   },
-  itemHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-  },
   itemName: {
     ...typography.styles.body2Bold,
     color: colors.text,
-    flexShrink: 1,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.white,
   },
   itemLastMessage: {
     ...typography.styles.body2Regular,
