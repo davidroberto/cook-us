@@ -12,9 +12,13 @@ export type BackofficeUser = {
     updatedAt: string
     deletedAt: string | null
     cookProfile: {
+        id: string
         description: string
         speciality: CookSpeciality
         hourlyRate: number | null
         city: string
+        siret: string | null
+        isValidated: boolean
+        validationStatus: 'pending' | 'validated' | 'refused'
     } | null
 }

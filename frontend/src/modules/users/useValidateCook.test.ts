@@ -21,13 +21,13 @@ beforeEach(() => {
 })
 
 describe('useValidateCook', () => {
-    it('appelle PATCH /api/backoffice/users/:id/validate', async () => {
+    it('appelle PATCH /api/backoffice/users/:id/validate quand approve est true', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
             new Response(JSON.stringify({ isValidated: true }), { status: 200 }),
         )
 
-        const { result } = renderHook(() => useValidateCook(), { wrapper: createWrapper() })
-        act(() => result.current.mutate(2))
+        const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
+        act(() => result.current.mutate({ cookId: 'cook-uuid', approve: true }))
 
         await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
@@ -37,13 +37,29 @@ describe('useValidateCook', () => {
         )
     })
 
+    it('appelle PATCH /api/backoffice/users/:id/reject quand approve est false', async () => {
+        const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
+            new Response(JSON.stringify({ isValidated: false }), { status: 200 }),
+        )
+
+        const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
+        act(() => result.current.mutate({ cookId: 'cook-uuid', approve: false }))
+
+        await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            '/api/backoffice/users/2/reject',
+            expect.objectContaining({ method: 'PATCH' }),
+        )
+    })
+
     it('envoie le token d\'authentification dans le header', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
             new Response(JSON.stringify({ isValidated: true }), { status: 200 }),
         )
 
-        const { result } = renderHook(() => useValidateCook(), { wrapper: createWrapper() })
-        act(() => result.current.mutate(2))
+        const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
+        act(() => result.current.mutate({ cookId: 'cook-uuid', approve: true }))
 
         await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
@@ -63,8 +79,8 @@ describe('useValidateCook', () => {
             ),
         )
 
-        const { result } = renderHook(() => useValidateCook(), { wrapper: createWrapper() })
-        act(() => result.current.mutate(1))
+        const { result } = renderHook(() => useValidateCook(1), { wrapper: createWrapper() })
+        act(() => result.current.mutate({ cookId: 'cook-uuid', approve: true }))
 
         await waitFor(() => expect(result.current.isError).toBe(true))
         expect(result.current.error?.message).toBe("L'utilisateur cible n'est pas un cuisinier")
@@ -78,19 +94,15 @@ describe('useValidateCook', () => {
             ),
         )
 
-        const { result } = renderHook(() => useValidateCook(), { wrapper: createWrapper() })
-        act(() => result.current.mutate(999))
+        const { result } = renderHook(() => useValidateCook(999), { wrapper: createWrapper() })
+        act(() => result.current.mutate({ cookId: 'cook-uuid', approve: true }))
 
         await waitFor(() => expect(result.current.isError).toBe(true))
         expect(result.current.error?.message).toBe('Utilisateur #999 introuvable')
     })
 
     it('commence en état idle avant la mutation', () => {
-        vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: true }), { status: 200 }),
-        )
-
-        const { result } = renderHook(() => useValidateCook(), { wrapper: createWrapper() })
+        const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
         expect(result.current.isIdle).toBe(true)
     })
 })
