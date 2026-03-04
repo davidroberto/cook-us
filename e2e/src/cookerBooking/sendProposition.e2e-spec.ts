@@ -63,6 +63,18 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
     });
   });
 
+  test("affiche les options de type de repas", async ({ page }) => {
+    await expect(page.getByTestId("meal-type-breakfast")).toBeVisible({ timeout: FORM_TIMEOUT });
+    await expect(page.getByTestId("meal-type-lunch")).toBeVisible({ timeout: FORM_TIMEOUT });
+    await expect(page.getByTestId("meal-type-dinner")).toBeVisible({ timeout: FORM_TIMEOUT });
+  });
+
+  test("affiche le champ message", async ({ page }) => {
+    await expect(page.getByTestId("message-input")).toBeVisible({
+      timeout: FORM_TIMEOUT,
+    });
+  });
+
   test("affiche une erreur si le formulaire est soumis vide", async ({
     page,
   }) => {
