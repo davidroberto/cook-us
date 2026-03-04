@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
+import {
+  CookRequestEntity,
+  CookRequestStatus,
+} from "@src/modules/cook-request/cookRequest.entity";
 import { Cook } from "@src/modules/cook/cook.entity";
 
 @Injectable()
@@ -31,7 +34,10 @@ export class GetCookCookRequestsUseCase {
       guestsNumber: r.guestsNumber,
       startDate: r.startDate,
       endDate: r.endDate ?? null,
-      status: r.status,
+      status:
+        r.status === CookRequestStatus.ACCEPTED
+          ? CookRequestStatus.PENDING
+          : r.status,
       cancellationReason: r.cancellationReason,
       client: {
         id: r.client.userId,
