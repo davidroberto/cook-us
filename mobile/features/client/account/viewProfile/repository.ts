@@ -1,11 +1,12 @@
 import type { AuthUser } from "@/features/auth/login/types";
+import { getApiUrl } from "@/features/api/getApiUrl";
 
 const apiFetch = async <T>(
   url: string,
   token: string,
   options: RequestInit
 ): Promise<T> => {
-  const res = await fetch(url, {
+  const res = await fetch(`${getApiUrl()}${url}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -24,7 +25,7 @@ export const updateProfile = (
   token: string,
   data: { firstName?: string; lastName?: string; email?: string }
 ): Promise<AuthUser> =>
-  apiFetch<AuthUser>("/api/auth/me", token, {
+  apiFetch<AuthUser>("/auth/me", token, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
@@ -33,7 +34,7 @@ export const changePassword = (
   token: string,
   data: { currentPassword: string; newPassword: string }
 ): Promise<{ message: string }> =>
-  apiFetch<{ message: string }>("/api/auth/change-password", token, {
+  apiFetch<{ message: string }>("/auth/change-password", token, {
     method: "POST",
     body: JSON.stringify(data),
   });
