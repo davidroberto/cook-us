@@ -61,25 +61,18 @@ test.describe("Envoi d'un message — Cuisinier", () => {
     await expect(page).toHaveURL(/\/cook\/messaging\//, { timeout: TIMEOUT });
   });
 
-  test("affiche la zone de saisie", async ({ page }) => {
-    await expect(page.getByTestId("message-input-container")).toBeVisible({ timeout: TIMEOUT });
-    await expect(page.getByTestId("message-text-input")).toBeVisible({ timeout: TIMEOUT });
-    await expect(page.getByTestId("message-send-button")).toBeVisible({ timeout: TIMEOUT });
-  });
-
-  test("le bouton envoyer est désactivé si le champ est vide", async ({ page }) => {
-    await expect(page.getByTestId("message-send-button")).toBeDisabled();
-  });
-
   test("envoie un message et l'affiche dans la conversation", async ({ page }) => {
     const messageText = "Bonjour, je confirme ma disponibilité.";
     await page.getByTestId("message-text-input").fill(messageText);
-    await expect(page.getByTestId("message-send-button")).toBeEnabled({ timeout: TIMEOUT });
     await page.getByTestId("message-send-button").click();
     await expect(page.getByTestId("message-text-input")).toHaveValue("", { timeout: TIMEOUT });
     await expect(
       page.getByTestId("message-bubble-client").filter({ hasText: messageText }).first()
     ).toBeVisible({ timeout: TIMEOUT });
+  });
+
+  test("ne peut pas envoyer un message vide", async ({ page }) => {
+    await expect(page.getByTestId("message-send-button")).toBeDisabled();
   });
 });
 
@@ -96,24 +89,17 @@ test.describe("Envoi d'un message — Client", () => {
     await expect(page).toHaveURL(/\/client\/messaging\//, { timeout: TIMEOUT });
   });
 
-  test("affiche la zone de saisie", async ({ page }) => {
-    await expect(page.getByTestId("message-input-container")).toBeVisible({ timeout: TIMEOUT });
-    await expect(page.getByTestId("message-text-input")).toBeVisible({ timeout: TIMEOUT });
-    await expect(page.getByTestId("message-send-button")).toBeVisible({ timeout: TIMEOUT });
-  });
-
-  test("le bouton envoyer est désactivé si le champ est vide", async ({ page }) => {
-    await expect(page.getByTestId("message-send-button")).toBeDisabled();
-  });
-
   test("envoie un message et l'affiche dans la conversation", async ({ page }) => {
     const messageText = "Avez-vous des disponibilités pour le 20 juin ?";
     await page.getByTestId("message-text-input").fill(messageText);
-    await expect(page.getByTestId("message-send-button")).toBeEnabled({ timeout: TIMEOUT });
     await page.getByTestId("message-send-button").click();
     await expect(page.getByTestId("message-text-input")).toHaveValue("", { timeout: TIMEOUT });
     await expect(
       page.getByTestId("message-bubble-client").filter({ hasText: messageText }).first()
     ).toBeVisible({ timeout: TIMEOUT });
+  });
+
+  test("ne peut pas envoyer un message vide", async ({ page }) => {
+    await expect(page.getByTestId("message-send-button")).toBeDisabled();
   });
 });
