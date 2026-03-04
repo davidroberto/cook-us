@@ -47,6 +47,8 @@ export type Message = {
   requestData?: {
     startDate: string;
     guestsNumber: number;
+    mealType?: string;
+    message?: string;
   };
 };
 

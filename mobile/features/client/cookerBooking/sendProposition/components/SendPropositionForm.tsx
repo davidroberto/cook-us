@@ -3,8 +3,21 @@ import { Input } from "@/components/ui/Input";
 import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
+
+const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
+  { value: "breakfast", label: "Petit-déjeuner" },
+  { value: "lunch", label: "Déjeuner" },
+  { value: "dinner", label: "Dîner" },
+];
 
 function formatDateInput(text: string): string {
   const digits = text.replace(/\D/g, "").slice(0, 8);
@@ -30,6 +43,8 @@ export function SendPropositionForm({
 }: Props) {
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [mealType, setMealType] = useState<MealType | null>(null);
+  const [message, setMessage] = useState("");
 
   const router = useRouter();
   const { error, isLoading, sendProposition } = useSendProposition();
@@ -40,6 +55,8 @@ export function SendPropositionForm({
       cookUserId,
       numberOfGuests: parseInt(numberOfGuests, 10),
       startDate,
+      mealType: mealType!,
+      message,
     });
 
     if (result) {
@@ -93,6 +110,44 @@ export function SendPropositionForm({
         placeholder="JJMMAAAA"
         keyboardType="number-pad"
         maxLength={10}
+      />
+
+      <View style={styles.mealTypeContainer}>
+        <Text style={styles.mealTypeLabel}>Type de repas</Text>
+        <View style={styles.mealTypeOptions}>
+          {MEAL_TYPE_OPTIONS.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              testID={`meal-type-${option.value}`}
+              style={[
+                styles.mealTypeOption,
+                mealType === option.value && styles.mealTypeOptionSelected,
+              ]}
+              onPress={() => setMealType(option.value)}
+            >
+              <Text
+                style={[
+                  styles.mealTypeOptionText,
+                  mealType === option.value &&
+                    styles.mealTypeOptionTextSelected,
+                ]}
+              >
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <Input
+        testID="message-input"
+        label="Message au cuisinier"
+        value={message}
+        onChangeText={setMessage}
+        placeholder="Précisez vos attentes, allergies, préférences..."
+        multiline
+        numberOfLines={4}
+        style={styles.messageInput}
       />
 
       <Button
@@ -151,6 +206,46 @@ const styles = StyleSheet.create({
     color: colors.main,
     marginBottom: 24,
     textAlign: "center",
+  },
+  mealTypeContainer: {
+    marginBottom: 20,
+  },
+  mealTypeLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.main,
+    marginBottom: 8,
+  },
+  mealTypeOptions: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  mealTypeOption: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+    backgroundColor: colors.white,
+    alignItems: "center",
+  },
+  mealTypeOptionSelected: {
+    borderColor: colors.main,
+    backgroundColor: colors.main,
+    borderWidth: 2,
+  },
+  mealTypeOptionText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: colors.text,
+  },
+  mealTypeOptionTextSelected: {
+    color: colors.white,
+    fontWeight: "700",
+  },
+  messageInput: {
+    height: 100,
+    textAlignVertical: "top",
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",

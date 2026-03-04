@@ -29,6 +29,8 @@ export function MessageBubble({ message }: Props) {
         <RequestSummaryCard
           startDate={message.requestData.startDate}
           guestsNumber={message.requestData.guestsNumber}
+          mealType={message.requestData.mealType}
+          message={message.requestData.message}
           isSentByMe={isClient}
         />
       ) : (
