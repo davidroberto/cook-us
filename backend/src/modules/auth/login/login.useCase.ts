@@ -11,7 +11,7 @@ export class LoginUseCase {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async execute(dto: LoginDto) {

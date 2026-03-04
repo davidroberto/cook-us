@@ -11,7 +11,7 @@ export class RefreshTokenUseCase {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async execute(dto: RefreshTokenDto) {
@@ -40,7 +40,7 @@ export class RefreshTokenUseCase {
 
     const tokenValid = await bcrypt.compare(
       dto.refreshToken,
-      user.refreshToken,
+      user.refreshToken
     );
     if (!tokenValid) {
       await this.userRepository.update(user.id, {
@@ -48,7 +48,7 @@ export class RefreshTokenUseCase {
         refreshTokenExpiresAt: null,
       });
       throw new UnauthorizedException(
-        "Refresh token invalide. Tous les tokens ont été révoqués.",
+        "Refresh token invalide. Tous les tokens ont été révoqués."
       );
     }
 
