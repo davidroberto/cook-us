@@ -1,21 +1,39 @@
-/**
- * Repository pour la slice viewProfile.
- *
- * Endpoints backend disponibles pour le rôle CLIENT :
- *   - POST   /cook-request          → Créer une demande
- *   - PATCH  /cook-request/:id/cancel → Annuler une demande
- *
- * Endpoints NON disponibles (pas implémentés côté serveur) :
- *   - GET    /users/me              → Récupérer son profil
- *   - PATCH  /users/me              → Mettre à jour ses coordonnées
- *   - POST   /auth/change-password  → Changer son mot de passe
- *   - GET    /cook-request?clientId → Lister ses propres commandes
- */
+import type { AuthUser } from "@/features/auth/login/types";
 
-export class BackendNotAvailableError extends Error {
-  constructor(feature: string) {
-    super(
-      `"${feature}" n'est pas encore disponible (endpoint backend manquant).`
-    );
+const apiFetch = async <T>(
+  url: string,
+  token: string,
+  options: RequestInit
+): Promise<T> => {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message ?? "Erreur réseau");
   }
-}
+  return res.json() as Promise<T>;
+};
+
+export const updateProfile = (
+  token: string,
+  data: { firstName?: string; lastName?: string; email?: string }
+): Promise<AuthUser> =>
+  apiFetch<AuthUser>("/api/auth/me", token, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
+export const changePassword = (
+  token: string,
+  data: { currentPassword: string; newPassword: string }
+): Promise<{ message: string }> =>
+  apiFetch<{ message: string }>("/api/auth/change-password", token, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });

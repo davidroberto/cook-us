@@ -1,25 +1,22 @@
-/**
- * Formulaire de changement de mot de passe.
- *
- * Note backend : Aucun endpoint POST /auth/change-password n'est disponible.
- * La validation client-side est implémentée, mais la sauvegarde affiche
- * un message d'information en attendant l'implémentation serveur.
- */
-
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { colors } from "@/styles/colors";
+import { useAuth } from "@/features/auth/AuthContext";
+import { changePassword } from "../repository";
 
 export const PasswordForm = () => {
+  const { token } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!token) return;
     setError(null);
     setNotice(null);
 
@@ -36,8 +33,18 @@ export const PasswordForm = () => {
       return;
     }
 
-    // Pas d'endpoint backend disponible pour le changement de mot de passe.
-    setNotice("La modification du mot de passe n'est pas encore disponible.");
+    setIsLoading(true);
+    try {
+      await changePassword(token, { currentPassword, newPassword });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setNotice("Mot de passe modifié.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur réseau");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,9 +96,10 @@ export const PasswordForm = () => {
       )}
 
       <Button
-        title="Modifier le mot de passe"
+        title={isLoading ? "Modification..." : "Modifier le mot de passe"}
         variant="outline"
         onPress={handleSave}
+        disabled={isLoading}
         testID="password-save-btn"
       />
     </View>
