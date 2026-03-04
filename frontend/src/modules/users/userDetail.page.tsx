@@ -12,9 +12,15 @@ const ROLE_LABEL: Record<string, string> = {
 }
 
 const SPECIALITY_LABEL: Record<string, string> = {
-    indian: 'Indienne',
-    french: 'Française',
-    italien: 'Italienne',
+    french_cooking: 'Française',
+    italian_cooking: 'Italienne',
+    asian_cooking: 'Asiatique',
+    mexican_cooking: 'Mexicaine',
+    vegetarian_cooking: 'Végétarienne',
+    pastry_cooking: 'Pâtisserie',
+    japanese_cooking: 'Japonaise',
+    indian_cooking: 'Indienne',
+    autre: 'Autre',
 }
 
 export const UserDetailPage = () => {

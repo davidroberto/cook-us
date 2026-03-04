@@ -13,7 +13,9 @@ type ConversationState =
 
 export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
 
-function parseRequestData(raw: string): { startDate: string; guestsNumber: number } | null {
+function parseRequestData(
+  raw: string,
+): { startDate: string; guestsNumber: number } | null {
   if (!raw.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) return null;
   try {
     return JSON.parse(raw.slice(COOK_REQUEST_MESSAGE_PREFIX.length));
@@ -22,7 +24,10 @@ function parseRequestData(raw: string): { startDate: string; guestsNumber: numbe
   }
 }
 
-function toConversation(api: ApiConversation, currentUserId: number): Conversation {
+function toConversation(
+  api: ApiConversation,
+  currentUserId: number,
+): Conversation {
   const other = api.participants.find((p) => p.authorId !== currentUserId);
   return {
     id: api.id,
@@ -42,25 +47,34 @@ function toConversation(api: ApiConversation, currentUserId: number): Conversati
 }
 
 export function useConversation(conversationId: number) {
-  const { token, user } = useAuth();
+  const { token, user, isReady } = useAuth();
   const [state, setState] = useState<ConversationState>({ status: "loading" });
 
   const currentUserId = user?.id;
 
-  const load = useCallback(async (silent = false) => {
-    if (!conversationId || !currentUserId) return;
-    if (!silent) setState({ status: "loading" });
-    try {
-      const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error();
-      const api: ApiConversation = await response.json();
-      setState({ status: "success", conversation: toConversation(api, currentUserId) });
-    } catch {
-      if (!silent) setState({ status: "error" });
-    }
-  }, [conversationId, token, currentUserId]);
+  const load = useCallback(
+    async (silent = false) => {
+      if (!isReady || !conversationId || !currentUserId) return;
+      if (!silent) setState({ status: "loading" });
+      try {
+        const response = await fetch(
+          `${API_URL}/conversations/${conversationId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (!response.ok) throw new Error();
+        const api: ApiConversation = await response.json();
+        setState({
+          status: "success",
+          conversation: toConversation(api, currentUserId),
+        });
+      } catch {
+        if (!silent) setState({ status: "error" });
+      }
+    },
+    [isReady, conversationId, token, currentUserId],
+  );
 
   useEffect(() => {
     load();
@@ -88,16 +102,25 @@ export function useConversation(conversationId: number) {
         };
       });
 
-      await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message: content }),
-      });
+      try {
+        const response = await fetch(
+          `${API_URL}/conversations/${conversationId}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ message: content }),
+          },
+        );
+        if (!response.ok) throw new Error();
+      } catch {
+        // Rollback: reload conversation from server to remove the optimistic message
+        load(true);
+      }
     },
-    [conversationId, token]
+    [conversationId, token, load],
   );
 
   return { state, retry: load, sendMessage };

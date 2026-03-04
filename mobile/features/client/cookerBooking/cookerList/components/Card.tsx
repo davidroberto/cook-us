@@ -8,11 +8,15 @@ interface CookerCardProps {
 }
 
 const SPECIALITY_LABEL: Record<CookerCardData["speciality"], string> = {
-  indian: "Cuisine indienne",
-  french: "Cuisine française",
-  italian: "Cuisine italienne",
-  japanese: "Cuisine japonaise",
-  mexican: "Cuisine mexicaine",
+  french_cooking: "Cuisine française",
+  italian_cooking: "Cuisine italienne",
+  asian_cooking: "Cuisine asiatique",
+  mexican_cooking: "Cuisine mexicaine",
+  vegetarian_cooking: "Cuisine végétarienne",
+  pastry_cooking: "Pâtisserie & Desserts",
+  japanese_cooking: "Cuisine japonaise",
+  indian_cooking: "Cuisine indienne",
+  autre: "Autre",
 };
 
 export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {

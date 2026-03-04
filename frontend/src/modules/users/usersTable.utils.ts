@@ -10,7 +10,7 @@ export const getSortValue = (user: BackofficeUser, key: SortKey): string | numbe
         case 'email': return user.email.toLowerCase()
         case 'role': return user.role
         case 'speciality': return user.cookProfile?.speciality ?? '\uffff'
-        case 'hourlyRate': return parseFloat(user.cookProfile?.hourlyRate ?? '99999')
+        case 'hourlyRate': return user.cookProfile?.hourlyRate ?? 99999
         case 'city': return user.cookProfile?.city.toLowerCase() ?? '\uffff'
         case 'createdAt': return new Date(user.createdAt).getTime()
         case 'updatedAt': return new Date(user.updatedAt).getTime()
