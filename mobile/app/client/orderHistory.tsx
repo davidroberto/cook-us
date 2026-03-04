@@ -1,4 +1,7 @@
-import { useOrderHistory, type CookRequestStatus } from "@/features/client/account/viewProfile/useOrderHistory";
+import { useState } from "react";
+import { useOrderHistory, type CookRequestStatus, type OrderHistoryItem } from "@/features/client/account/viewProfile/useOrderHistory";
+import { useCancelBooking } from "@/features/client/cancelBooking/useCancelBooking";
+import { CancelBookingModal } from "@/features/client/cancelBooking/components/CancelBookingModal";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useRouter } from "expo-router";
@@ -27,9 +30,28 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
   cancelled: "#9E9E9E",
 };
 
+const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
+
 export default function OrderHistoryScreen() {
   const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
+  const [cancelTarget, setCancelTarget] = useState<OrderHistoryItem | null>(null);
+
+  const { cancelBooking, isLoading: cancelLoading, error: cancelError, clearError } = useCancelBooking(() => {
+    setCancelTarget(null);
+    refresh();
+  });
+
+  const handleCancelPress = (order: OrderHistoryItem) => {
+    clearError();
+    setCancelTarget(order);
+  };
+
+  const handleConfirmCancel = (reason: string) => {
+    if (cancelTarget) {
+      cancelBooking(cancelTarget.id, reason);
+    }
+  };
 
   const header = (
     <View style={styles.header}>
@@ -95,6 +117,8 @@ export default function OrderHistoryScreen() {
             year: "numeric",
           });
 
+          const canCancel = CANCELLABLE_STATUSES.includes(item.status);
+
           return (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
@@ -125,9 +149,34 @@ export default function OrderHistoryScreen() {
                   Motif : {item.cancellationReason}
                 </Text>
               )}
+
+              {canCancel && (
+                <View style={styles.cancelButtonContainer}>
+                  <Button
+                    testID={`cancel-button-${item.id}`}
+                    title="Annuler la réservation"
+                    variant="outline"
+                    onPress={() => handleCancelPress(item)}
+                    style={styles.cancelButton}
+                  />
+                </View>
+              )}
             </View>
           );
         }}
+      />
+
+      <CancelBookingModal
+        visible={cancelTarget !== null}
+        cookName={
+          cancelTarget
+            ? `${cancelTarget.cook.firstName} ${cancelTarget.cook.lastName}`
+            : ""
+        }
+        isLoading={cancelLoading}
+        error={cancelError}
+        onCancel={() => setCancelTarget(null)}
+        onConfirm={handleConfirmCancel}
       />
     </SafeAreaView>
   );
@@ -217,6 +266,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.mainDark,
     fontStyle: "italic",
+  },
+  cancelButtonContainer: {
+    marginTop: 12,
+  },
+  cancelButton: {
+    borderColor: colors.mainDark,
   },
   emptyTitle: {
     fontSize: 18,
