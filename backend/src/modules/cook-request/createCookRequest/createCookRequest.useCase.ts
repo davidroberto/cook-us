@@ -58,6 +58,8 @@ export class CreateCookRequestUseCase {
       cookId: dto.cookId,
       clientId: client.id,
       status: CookRequestStatus.PENDING,
+      mealType: dto.mealType,
+      message: dto.message ?? null,
     });
     const saved = await this.cookRequestRepository.save(cookRequest);
 
@@ -81,6 +83,8 @@ export class CreateCookRequestUseCase {
       startDate: saved.startDate,
       endDate: saved.endDate ?? null,
       status: saved.status,
+      mealType: saved.mealType,
+      message: saved.message,
       cookId: saved.cookId,
       clientId: saved.clientId,
       conversationId: conversation.id,

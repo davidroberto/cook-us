@@ -1,12 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsDateString,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Min,
 } from "class-validator";
+import { MealType } from "@src/modules/cook-request/cookRequest.entity";
 
 export class CreateCookRequestDto {
   @ApiProperty({ description: "Nombre d'invités", example: 4, minimum: 1 })
@@ -46,4 +48,20 @@ export class CreateCookRequestDto {
   @IsOptional()
   @IsInt()
   clientId?: number;
+
+  @ApiProperty({
+    description: "Type de repas",
+    enum: MealType,
+    example: MealType.DINNER,
+  })
+  @IsEnum(MealType)
+  mealType: MealType;
+
+  @ApiPropertyOptional({
+    description: "Message du client au cuisinier",
+    example: "Bonjour, je souhaite un menu végétarien pour 4 personnes.",
+  })
+  @IsOptional()
+  @IsString()
+  message?: string;
 }
