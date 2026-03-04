@@ -27,7 +27,11 @@ export class Cook {
   hourlyRate: number | null;
   @Column({ default: true }) isActive: boolean;
   @Column({ default: false }) isValidated: boolean;
-  @Column({ type: "enum", enum: CookValidationStatus, default: CookValidationStatus.PENDING })
+  @Column({
+    type: "enum",
+    enum: CookValidationStatus,
+    default: CookValidationStatus.PENDING,
+  })
   validationStatus: CookValidationStatus;
   @Column({ nullable: true }) city: string | null;
   @Column({ nullable: true }) siret: string | null;
