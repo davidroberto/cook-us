@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const MOBILE_URL = "http://localhost:8081";
-const API_URL = "http://localhost:8080/api";
+const MOBILE_URL = process.env.E2E_MOBILE_URL ?? "http://localhost:8081";
+const API_URL = process.env.E2E_API_URL ?? "http://localhost:8080/api";
 
 const LIST_TIMEOUT = 10_000;
 
@@ -10,8 +10,8 @@ const LIST_TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   const response = await page.request.post(`${API_URL}/auth/login`, {
     data: {
-      email: "client@cookus.fr",
-      password: "password123",
+      email: process.env.E2E_CLIENT_EMAIL ?? "",
+      password: process.env.E2E_CLIENT_PASSWORD ?? "",
     },
   });
 

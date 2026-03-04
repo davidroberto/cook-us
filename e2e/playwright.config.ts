@@ -6,7 +6,7 @@ export default defineConfig({
   workers: 4,
   timeout: 30_000,
   use: {
-    baseURL: 'http://localhost',
+    baseURL: process.env.E2E_MOBILE_URL ?? 'http://localhost:8081',
   },
   projects: [
     {
