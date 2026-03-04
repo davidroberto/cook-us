@@ -1,6 +1,7 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { Public } from "@src/modules/auth/public.decorator";
 import { GetCooksUseCase } from "@src/modules/cook/getCooks/getCooks.useCase";
+import { GetCooksQueryDto } from "@src/modules/cook/getCooks/getCooks.dto";
 
 @Controller("cooks")
 export class GetCooksController {
@@ -8,7 +9,7 @@ export class GetCooksController {
 
   @Public()
   @Get()
-  getCooks() {
-    return this.getCooksUseCase.execute();
+  getCooks(@Query() query: GetCooksQueryDto) {
+    return this.getCooksUseCase.execute(query);
   }
 }

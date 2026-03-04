@@ -47,6 +47,10 @@ export default function ClientLayout() {
         options={{ title: "Mon profil" }}
       />
       <Stack.Screen
+        name="orderHistory"
+        options={{ title: "Historique de réservations" }}
+      />
+      <Stack.Screen
         name="messaging/[requestId]"
         options={{ headerShown: false }}
       />

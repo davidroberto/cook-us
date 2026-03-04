@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { colors, typography } from "@/styles";
 import type { CookerProfile } from "../types";
 import { Button } from "@/components/ui/Button";
+
+const NUM_COLUMNS = 2;
+const GRID_GAP = 12;
+const screenWidth = Dimensions.get("window").width;
+const IMAGE_SIZE = (screenWidth - 48 - GRID_GAP) / NUM_COLUMNS;
 
 const SPECIALITY_LABEL: Record<string, string> = {
   french_cooking: "Cuisine française",
@@ -50,7 +55,32 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
           {cook.description}
         </Text>
       ) : null}
+
       <Button title="Proposer un créneau" onPress={onProposeCreneau} testID="propose-creneau-button" />
+
+      {cook.images.length > 0 && (
+        <View style={styles.gallerySection} testID="profile-gallery">
+          <Text style={styles.galleryTitle}>Ses plats</Text>
+          <View style={styles.galleryGrid}>
+            {cook.images.map((img) => (
+              <View key={img.id} style={styles.galleryCard}>
+                <Image
+                  source={{ uri: img.url }}
+                  style={styles.galleryImage}
+                  testID={`gallery-image-${img.id}`}
+                />
+                {img.description && (
+                  <View style={styles.captionOverlay}>
+                    <Text style={styles.captionText} numberOfLines={2}>
+                      {img.description}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -144,5 +174,48 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     ...typography.styles.body1Bold,
     color: colors.white,
+  },
+  gallerySection: {
+    width: "100%",
+    marginTop: 28,
+  },
+  galleryTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+    marginBottom: 16,
+  },
+  galleryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GRID_GAP,
+  },
+  galleryCard: {
+    width: IMAGE_SIZE,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: colors.white,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  galleryImage: {
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+  },
+  captionOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  captionText: {
+    color: colors.white,
+    fontSize: 12,
+    fontWeight: "600",
   },
 });

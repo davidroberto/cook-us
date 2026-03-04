@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { UserRole } from "@src/modules/user/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
@@ -10,7 +15,7 @@ export class GetCookRequestUseCase {
     private readonly cookRequestRepository: Repository<CookRequestEntity>
   ) {}
 
-  async execute(id: number) {
+  async execute(id: number, currentUser: { id: number; role: UserRole }) {
     const cookRequest = await this.cookRequestRepository.findOne({
       where: { id },
       relations: { cook: true, client: { user: true } },
@@ -18,6 +23,15 @@ export class GetCookRequestUseCase {
 
     if (!cookRequest) {
       throw new NotFoundException(`Cook request ${id} not found`);
+    }
+
+    if (
+      currentUser.role === UserRole.COOK &&
+      cookRequest.cook.userId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Vous n'êtes pas autorisé à consulter cette réservation."
+      );
     }
 
     return {

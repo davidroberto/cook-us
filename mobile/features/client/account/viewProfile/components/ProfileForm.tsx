@@ -1,15 +1,10 @@
-/**
- * Formulaire d'affichage et de modification des coordonnées utilisateur.
- *
- * Note backend : Aucun endpoint PATCH /users/me n'est disponible.
- * La sauvegarde affiche un message d'information en attendant l'implémentation.
- */
-
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { colors } from "@/styles/colors";
+import { useAuth } from "@/features/auth/AuthContext";
+import { updateProfile } from "../repository";
 import type { ProfileUser } from "../types";
 
 interface ProfileFormProps {
@@ -17,14 +12,26 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm = ({ user }: ProfileFormProps) => {
+  const { token, setAuth } = useAuth();
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [email, setEmail] = useState(user.email);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notice, setNotice] = useState<{ text: string; isError: boolean } | null>(null);
 
-  const handleSave = () => {
-    // Pas d'endpoint backend disponible pour la mise à jour du profil.
-    setNotice("La modification du profil n'est pas encore disponible.");
+  const handleSave = async () => {
+    if (!token) return;
+    setIsLoading(true);
+    setNotice(null);
+    try {
+      const updatedUser = await updateProfile(token, { firstName, lastName, email });
+      setAuth(token, updatedUser);
+      setNotice({ text: "Profil mis à jour.", isError: false });
+    } catch (e) {
+      setNotice({ text: e instanceof Error ? e.message : "Erreur réseau", isError: true });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,10 +41,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
       <Input
         label="Prénom"
         value={firstName}
-        onChangeText={(v) => {
-          setFirstName(v);
-          setNotice(null);
-        }}
+        onChangeText={(v) => { setFirstName(v); setNotice(null); }}
         autoCapitalize="words"
         testID="profile-firstname"
       />
@@ -45,10 +49,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
       <Input
         label="Nom de famille"
         value={lastName}
-        onChangeText={(v) => {
-          setLastName(v);
-          setNotice(null);
-        }}
+        onChangeText={(v) => { setLastName(v); setNotice(null); }}
         autoCapitalize="words"
         testID="profile-lastname"
       />
@@ -56,24 +57,25 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
       <Input
         label="Adresse mail"
         value={email}
-        onChangeText={(v) => {
-          setEmail(v);
-          setNotice(null);
-        }}
+        onChangeText={(v) => { setEmail(v); setNotice(null); }}
         keyboardType="email-address"
         autoCapitalize="none"
         testID="profile-email"
       />
 
       {notice && (
-        <Text style={styles.notice} testID="profile-notice">
-          {notice}
+        <Text
+          style={[styles.notice, notice.isError && styles.noticeError]}
+          testID="profile-notice"
+        >
+          {notice.text}
         </Text>
       )}
 
       <Button
-        title="Enregistrer"
+        title={isLoading ? "Enregistrement..." : "Enregistrer"}
         onPress={handleSave}
+        disabled={isLoading}
         testID="profile-save-btn"
       />
     </View>
@@ -92,5 +94,8 @@ const styles = StyleSheet.create({
     color: colors.mainDark,
     marginBottom: 12,
     textAlign: "center",
+  },
+  noticeError: {
+    color: colors.error ?? "#e53e3e",
   },
 });

@@ -1,4 +1,11 @@
-import { Body, Controller, Param, ParseIntPipe, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Request,
+} from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CancelCookRequestUseCase } from "@src/modules/cook-request/cancelCookRequest/cancelCookRequest.useCase";
 import { CancelCookRequestDto } from "@src/modules/cook-request/cancelCookRequest/cancelCookRequest.dto";
@@ -25,8 +32,9 @@ export class CancelCookRequestController {
   @ApiResponse({ status: 404, description: "Réservation introuvable" })
   cancel(
     @Param("id", ParseIntPipe) id: number,
-    @Body() dto: CancelCookRequestDto
+    @Body() dto: CancelCookRequestDto,
+    @Request() req
   ) {
-    return this.cancelCookRequestUseCase.execute(id, dto);
+    return this.cancelCookRequestUseCase.execute(id, dto, req.user.id);
   }
 }

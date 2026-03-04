@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Client } from "@src/modules/client/client.entity";
 import { Cook } from "@src/modules/cook/cook.entity";
@@ -27,6 +31,18 @@ export class CreateCookRequestUseCase {
   ) {}
 
   async execute(dto: CreateCookRequestDto, userId: number) {
+    const start = new Date(dto.startDate);
+    if (start <= new Date()) {
+      throw new BadRequestException(
+        "La date de début doit être dans le futur."
+      );
+    }
+    if (dto.endDate && new Date(dto.endDate) <= start) {
+      throw new BadRequestException(
+        "La date de fin doit être postérieure à la date de début."
+      );
+    }
+
     const client = await this.clientRepository.findOne({ where: { userId } });
     if (!client) throw new NotFoundException("Client introuvable");
 
@@ -42,6 +58,8 @@ export class CreateCookRequestUseCase {
       cookId: dto.cookId,
       clientId: client.id,
       status: CookRequestStatus.PENDING,
+      mealType: dto.mealType,
+      message: dto.message ?? null,
     });
     const saved = await this.cookRequestRepository.save(cookRequest);
 
@@ -65,6 +83,8 @@ export class CreateCookRequestUseCase {
       startDate: saved.startDate,
       endDate: saved.endDate ?? null,
       status: saved.status,
+      mealType: saved.mealType,
+      message: saved.message,
       cookId: saved.cookId,
       clientId: saved.clientId,
       conversationId: conversation.id,
