@@ -47,7 +47,7 @@ export default function CookMessagingPage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.replace("/cook/(tabs)/messages")} style={styles.backButton}>
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>

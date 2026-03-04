@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, typography } from "@/styles";
 import {
   ProfileCard,
@@ -33,7 +34,14 @@ export default function CookerProfilePage() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backText}>← Retour</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Profil du cuisinier</Text>
+        <View style={styles.headerRight} />
+      </View>
       {toastVisible && (
         <View style={styles.toast}>
           <Text style={styles.toastText}>
@@ -67,7 +75,7 @@ export default function CookerProfilePage() {
           />
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -76,6 +84,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.tertiary,
+  },
+  backButton: { padding: 4 },
+  backText: {
+    ...typography.styles.body1Regular,
+    color: colors.main,
+  },
+  headerTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+  },
+  headerRight: { width: 60 },
   scroll: {
     flexGrow: 1,
     padding: 24,

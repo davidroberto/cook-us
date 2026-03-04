@@ -1,8 +1,12 @@
+export type MealType = "breakfast" | "lunch" | "dinner";
+
 export type SendPropositionCommand = {
   cookId: string;
   cookUserId: number;
   numberOfGuests: number;
   startDate: string;
+  mealType: MealType;
+  message?: string;
 };
 
 export type CreatedCookRequest = {

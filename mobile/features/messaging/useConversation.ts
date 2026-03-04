@@ -15,7 +15,7 @@ export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
 
 function parseRequestData(
   raw: string,
-): { startDate: string; guestsNumber: number } | null {
+): { startDate: string; guestsNumber: number; mealType?: string; message?: string } | null {
   if (!raw.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) return null;
   try {
     return JSON.parse(raw.slice(COOK_REQUEST_MESSAGE_PREFIX.length));
