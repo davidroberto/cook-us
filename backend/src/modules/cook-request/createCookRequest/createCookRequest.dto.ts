@@ -49,7 +49,11 @@ export class CreateCookRequestDto {
   @IsInt()
   clientId?: number;
 
-  @ApiProperty({ description: "Type de repas", enum: MealType, example: MealType.DINNER })
+  @ApiProperty({
+    description: "Type de repas",
+    enum: MealType,
+    example: MealType.DINNER,
+  })
   @IsEnum(MealType)
   mealType: MealType;
 

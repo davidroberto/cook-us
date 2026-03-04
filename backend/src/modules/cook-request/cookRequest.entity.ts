@@ -63,7 +63,12 @@ export class CookRequestEntity {
   status: CookRequestStatus;
 
   @ApiProperty({ example: "dinner", enum: MealType })
-  @Column({ name: "meal_type", type: "enum", enum: MealType, default: MealType.DINNER })
+  @Column({
+    name: "meal_type",
+    type: "enum",
+    enum: MealType,
+    default: MealType.DINNER,
+  })
   mealType: MealType;
 
   @ApiPropertyOptional({ example: "Bonjour, je souhaite un menu végétarien." })

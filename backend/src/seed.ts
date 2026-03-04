@@ -321,7 +321,8 @@ async function seed() {
       clientId: clients[0].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
-      message: "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
+      message:
+        "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
     },
     {
       guestsNumber: 4,
@@ -340,7 +341,8 @@ async function seed() {
       clientId: clients[2].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
-      message: "Repas d'entreprise, une personne allergique aux fruits à coque.",
+      message:
+        "Repas d'entreprise, une personne allergique aux fruits à coque.",
     },
     {
       guestsNumber: 8,
@@ -368,7 +370,8 @@ async function seed() {
       clientId: clients[5].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
-      message: "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
+      message:
+        "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
     },
     {
       guestsNumber: 5,
@@ -396,7 +399,8 @@ async function seed() {
       clientId: clients[8].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
-      message: "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
+      message:
+        "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
     },
     {
       guestsNumber: 20,
