@@ -102,16 +102,25 @@ export function useConversation(conversationId: number) {
         };
       });
 
-      await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message: content }),
-      });
+      try {
+        const response = await fetch(
+          `${API_URL}/conversations/${conversationId}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ message: content }),
+          },
+        );
+        if (!response.ok) throw new Error();
+      } catch {
+        // Rollback: reload conversation from server to remove the optimistic message
+        load(true);
+      }
     },
-    [conversationId, token],
+    [conversationId, token, load],
   );
 
   return { state, retry: load, sendMessage };

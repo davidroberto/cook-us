@@ -16,7 +16,6 @@ import {
   View,
 } from "react-native";
 import { useProfile } from "../useProfile";
-import { OrderHistoryList } from "./OrderHistoryList";
 import { PasswordForm } from "./PasswordForm";
 import { ProfileForm } from "./ProfileForm";
 
@@ -78,8 +77,12 @@ export const ProfileScreen = () => {
         <PasswordForm />
       </View>
 
-      <View style={styles.section}>
-        <OrderHistoryList />
+      <View style={styles.historySection}>
+        <Button
+          title="Voir mon historique de réservations"
+          variant="primary"
+          onPress={() => router.push("/client/orderHistory")}
+        />
       </View>
 
       <View style={styles.logoutSection}>
@@ -142,6 +145,9 @@ const styles = StyleSheet.create({
     shadowOpacity: colors.opacity[8],
     shadowRadius: 4,
     elevation: 2,
+  },
+  historySection: {
+    marginBottom: 16,
   },
   logoutSection: {
     marginTop: 8,
