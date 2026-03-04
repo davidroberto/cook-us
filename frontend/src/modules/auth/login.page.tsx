@@ -13,15 +13,15 @@ export const LoginPage = () => {
 
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) =>
-            apiFetch<{ token: string; user: AuthUser }>('/api/auth/login', null, {
+            apiFetch<{ token: string; refreshToken: string; user: AuthUser }>('/api/auth/login', null, {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
             }),
-        onSuccess: ({ user, token }) => {
+        onSuccess: ({ user, token, refreshToken }) => {
             if (user.role !== 'admin') {
                 throw new Error('Accès réservé aux administrateurs.')
             }
-            login(user, token)
+            login(user, token, refreshToken)
             navigate('/users')
         },
     })
