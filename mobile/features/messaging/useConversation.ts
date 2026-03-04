@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import type { ApiConversation, Conversation, Message } from "./types";
+import { io, Socket } from "socket.io-client";
 
 import { getApiUrl } from "@/features/api/getApiUrl";
+import { getSocketUrl } from "@/features/api/getSocketUrl";
 
 const API_URL = getApiUrl();
+const SOCKET_URL = getSocketUrl();
 
 type ConversationState =
   | { status: "loading" }
@@ -46,9 +49,24 @@ function toConversation(
   };
 }
 
+function toMessage(
+  msg: { id: number; authorId: number; message: string; createdAt: string },
+  currentUserId: number,
+): Message {
+  const requestData = parseRequestData(msg.message);
+  return {
+    id: msg.id,
+    content: msg.message,
+    sender: msg.authorId === currentUserId ? "client" : "cook",
+    sentAt: msg.createdAt,
+    ...(requestData ? { requestData } : {}),
+  };
+}
+
 export function useConversation(conversationId: number) {
   const { token, user, isReady } = useAuth();
   const [state, setState] = useState<ConversationState>({ status: "loading" });
+  const socketRef = useRef<Socket | null>(null);
 
   const currentUserId = user?.id;
 
@@ -79,6 +97,49 @@ export function useConversation(conversationId: number) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Socket.IO connection for real-time messages
+  useEffect(() => {
+    if (!token || !conversationId || !currentUserId) return;
+
+    const socket = io(`${SOCKET_URL}/chat`, {
+      auth: { token },
+      transports: ["websocket"],
+    });
+
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      socket.emit("joinConversation", { conversationId });
+    });
+
+    socket.on("newMessage", (msg: { id: number; authorId: number; conversationId: number; message: string; createdAt: string }) => {
+      if (msg.conversationId !== conversationId) return;
+
+      // Skip our own messages (already handled by optimistic update)
+      if (msg.authorId === currentUserId) return;
+
+      setState((prev) => {
+        if (prev.status !== "success") return prev;
+
+        // Avoid duplicates
+        if (prev.conversation.messages.some((m) => m.id === msg.id)) return prev;
+
+        return {
+          status: "success",
+          conversation: {
+            ...prev.conversation,
+            messages: [...prev.conversation.messages, toMessage(msg, currentUserId)],
+          },
+        };
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [token, conversationId, currentUserId]);
 
   const sendMessage = useCallback(
     async (content: string) => {
