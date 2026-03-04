@@ -1,19 +1,29 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
+import { getApiUrl } from "@/features/api/getApiUrl";
 import { getCook, NotFoundError } from "./repository";
 import type { CookerProfile, CookerProfileState } from "./types";
 import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
-const mapToCookerProfile = (cook: Cook): CookerProfile => ({
-  id: cook.id,
-  userId: cook.user.id,
-  firstName: cook.user.firstName,
-  lastName: cook.user.lastName,
-  photoUrl: cook.user.thumbnail ?? cook.images[0]?.imgUrl ?? null,
-  description: cook.description,
-  speciality: cook.speciality,
-  hourlyRate: cook.hourlyRate,
-});
+const toAbsoluteUrl = (path: string): string => {
+  if (path.startsWith("http")) return path;
+  const baseUrl = getApiUrl().replace(/\/api$/, "");
+  return `${baseUrl}${path}`;
+};
+
+const mapToCookerProfile = (cook: Cook): CookerProfile => {
+  const rawPhoto = cook.user.thumbnail ?? cook.images[0]?.imgUrl ?? null;
+  return {
+    id: cook.id,
+    userId: cook.user.id,
+    firstName: cook.user.firstName,
+    lastName: cook.user.lastName,
+    photoUrl: rawPhoto ? toAbsoluteUrl(rawPhoto) : null,
+    description: cook.description,
+    speciality: cook.speciality,
+    hourlyRate: cook.hourlyRate,
+  };
+};
 
 export const useCookerProfile = (cookId: string) => {
   const { token } = useAuth();
