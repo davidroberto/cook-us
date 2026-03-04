@@ -114,10 +114,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
+    backgroundColor: colors.background,
   },
   list: {
     padding: 16,
     paddingBottom: 32,
+    backgroundColor: colors.background,
+    flexGrow: 1,
   },
   card: {
     backgroundColor: colors.white,
