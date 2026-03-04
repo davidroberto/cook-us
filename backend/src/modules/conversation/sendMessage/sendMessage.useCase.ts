@@ -19,13 +19,13 @@ export class SendMessageUseCase {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
     @Inject(forwardRef(() => ChatGateway))
-    private readonly chatGateway: ChatGateway,
+    private readonly chatGateway: ChatGateway
   ) {}
 
   async execute(
     conversationId: number,
     authorId: number,
-    dto: SendMessageDto,
+    dto: SendMessageDto
   ): Promise<Message> {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
@@ -46,7 +46,7 @@ export class SendMessageUseCase {
     this.chatGateway.emitToConversation(
       conversationId,
       "newMessage",
-      savedMessage,
+      savedMessage
     );
 
     return savedMessage;
