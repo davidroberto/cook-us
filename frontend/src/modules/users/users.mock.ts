@@ -24,10 +24,14 @@ export const usersMock: BackofficeUser[] = [
         updatedAt: '2026-02-01T08:00:00Z',
         deletedAt: null,
         cookProfile: {
+            id: 'mock-uuid-2',
             description: "Chef spécialisé en cuisine italienne avec 10 ans d'expérience dans des restaurants étoilés à Milan et Lyon.",
             speciality: 'italian_cooking',
             hourlyRate: 45,
             city: 'Lyon',
+            siret: null,
+            isValidated: true,
+            validationStatus: 'validated',
         },
     },
     {
@@ -41,10 +45,14 @@ export const usersMock: BackofficeUser[] = [
         updatedAt: '2026-02-01T09:20:00Z',
         deletedAt: null,
         cookProfile: {
+            id: 'mock-uuid-3',
             description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
             speciality: 'indian_cooking',
             hourlyRate: 52,
             city: 'Paris',
+            siret: null,
+            isValidated: false,
+            validationStatus: 'pending',
         },
     },
     {
@@ -82,10 +90,14 @@ export const usersMock: BackofficeUser[] = [
         updatedAt: '2026-02-20T11:00:00Z',
         deletedAt: null,
         cookProfile: {
+            id: 'mock-uuid-6',
             description: 'Cuisinier français formé à Lyon, spécialisé dans la cuisine traditionnelle et les plats mijotés.',
             speciality: 'french_cooking',
             hourlyRate: 38,
             city: 'Bordeaux',
+            siret: null,
+            isValidated: false,
+            validationStatus: 'pending',
         },
     },
 ]

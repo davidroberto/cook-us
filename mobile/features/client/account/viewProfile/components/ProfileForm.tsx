@@ -12,7 +12,7 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm = ({ user }: ProfileFormProps) => {
-  const { token, setAuth } = useAuth();
+  const { token, updateUser } = useAuth();
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [email, setEmail] = useState(user.email);
@@ -25,7 +25,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
     setNotice(null);
     try {
       const updatedUser = await updateProfile(token, { firstName, lastName, email });
-      setAuth(token, updatedUser);
+      updateUser(updatedUser);
       setNotice({ text: "Profil mis à jour.", isError: false });
     } catch (e) {
       setNotice({ text: e instanceof Error ? e.message : "Erreur réseau", isError: true });

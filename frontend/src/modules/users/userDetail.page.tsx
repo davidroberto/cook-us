@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useUser } from './useUser'
+import { useValidateCook } from './useValidateCook'
 import { useCookRequests } from '@src/modules/cookRequests/useCookRequests'
 import { formatDate } from '@src/utils/format'
 import { StatusBadge } from '@src/components/ui/StatusBadge'
@@ -30,6 +31,7 @@ export const UserDetailPage = () => {
 
     const { data: user, isLoading, isError } = useUser(userId)
     const { data: allRequests } = useCookRequests()
+    const validateCook = useValidateCook(userId)
 
     const linkedRequests = (allRequests ?? []).filter(
         (r) => r.cook.id === userId || r.client.id === userId,
@@ -111,7 +113,14 @@ export const UserDetailPage = () => {
                 {/* Profil cuisinier */}
                 {user.cookProfile && (
                     <section className="rounded-lg border border-border bg-card p-6">
-                        <h2 className="mb-4 text-lg font-semibold">Profil cuisinier</h2>
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-lg font-semibold">Profil cuisinier</h2>
+                            {{
+                                validated: <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800">Validé</span>,
+                                refused: <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800">Refusé</span>,
+                                pending: <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800">En attente de validation</span>,
+                            }[user.cookProfile.validationStatus]}
+                        </div>
                         <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
                             <div className="col-span-2">
                                 <dt className="mb-1 text-muted-foreground">Description</dt>
@@ -129,7 +138,32 @@ export const UserDetailPage = () => {
                                 <dt className="text-muted-foreground">Tarif horaire</dt>
                                 <dd>{user.cookProfile.hourlyRate}€/h</dd>
                             </div>
+                            <div>
+                                <dt className="text-muted-foreground">SIRET</dt>
+                                <dd className="font-mono">{user.cookProfile.siret ?? <span className="italic text-muted-foreground">Non renseigné</span>}</dd>
+                            </div>
                         </dl>
+                        <div className="mt-6 flex gap-3">
+                            <button
+                                onClick={() => validateCook.mutate({ cookId: user.cookProfile!.id, approve: true })}
+                                disabled={validateCook.isPending || user.cookProfile.validationStatus === 'validated'}
+                                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Approuver
+                            </button>
+                            <button
+                                onClick={() => validateCook.mutate({ cookId: user.cookProfile!.id, approve: false })}
+                                disabled={validateCook.isPending || user.cookProfile.validationStatus === 'refused'}
+                                className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Refuser
+                            </button>
+                            {validateCook.isError && (
+                                <span className="self-center text-sm text-red-600">
+                                    {(validateCook.error as Error).message}
+                                </span>
+                            )}
+                        </div>
                     </section>
                 )}
 

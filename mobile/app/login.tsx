@@ -12,7 +12,7 @@ export default function LoginPage() {
     <SafeAreaView style={styles.container}>
       <LoginForm
         onSuccess={(response) => {
-          setAuth(response.token, response.user);
+          setAuth(response.token, response.refreshToken, response.user);
           router.replace("/client/home");
         }}
         onNavigateRegister={() => router.push("/register")}

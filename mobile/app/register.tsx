@@ -11,8 +11,8 @@ export default function RegisterPage() {
   return (
     <SafeAreaView style={styles.container}>
       <RegisterForm
-        onSuccess={(token, user) => {
-          setAuth(token, user);
+        onSuccess={(token, refreshToken, user) => {
+          setAuth(token, refreshToken, user);
           router.replace("/client/home");
         }}
         onNavigateLogin={() => router.push("/login")}

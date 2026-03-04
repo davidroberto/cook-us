@@ -6,43 +6,24 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
+import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { Client } from "@src/modules/client/client.entity";
 import { Cook } from "@src/modules/cook/cook.entity";
-import { Conversation } from "@src/modules/conversation/conversation.entity";
-import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
 
 @Injectable()
-export class GetClientCookRequestsUseCase {
+export class GetCookRequestsByConversationUseCase {
   constructor(
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
+    @InjectRepository(Conversation)
+    private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     @InjectRepository(Cook)
-    private readonly cookRepository: Repository<Cook>,
-    @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>,
-    @InjectRepository(ConversationParticipant)
-    private readonly participantRepository: Repository<ConversationParticipant>
+    private readonly cookRepository: Repository<Cook>
   ) {}
 
-  async execute(userId: number): Promise<CookRequestEntity[]> {
-    const client = await this.clientRepository.findOne({
-      where: { userId },
-    });
-
-    if (!client) {
-      throw new NotFoundException("Client introuvable");
-    }
-
-    return this.cookRequestRepository.find({
-      where: { clientId: client.id },
-      relations: { cook: true },
-      order: { startDate: "DESC" },
-    });
-  }
-
-  async executeByConversation(conversationId: number, currentUserId: number) {
+  async execute(conversationId: number, currentUserId: number) {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
       relations: { participants: true },
@@ -73,8 +54,11 @@ export class GetClientCookRequestsUseCase {
       return [];
     }
 
+    const client = clients[0];
+    const cook = cooks[0];
+
     const requests = await this.cookRequestRepository.find({
-      where: { cookId: cooks[0].id, clientId: clients[0].id },
+      where: { cookId: cook.id, clientId: client.id },
       order: { startDate: "DESC" },
     });
 

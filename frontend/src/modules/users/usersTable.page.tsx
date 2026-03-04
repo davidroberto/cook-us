@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronUp, ChevronDown, ChevronsUpDown, Eye } from 'lucide-react'
+import { ChevronUp, ChevronDown, ChevronsUpDown, Eye, UserPlus } from 'lucide-react'
 import {
     Table,
     TableBody,
@@ -48,9 +48,18 @@ export const UsersTablePage = () => {
     return (
         <main className="p-6 text-foreground md:p-10">
             <section className="mx-auto w-full max-w-7xl space-y-4">
-                <header className="space-y-1">
-                    <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
-                    <p className="text-sm text-muted-foreground">Backoffice - gestion des utilisateurs Cook&apos;us</p>
+                <header className="flex items-start justify-between">
+                    <div className="space-y-1">
+                        <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+                        <p className="text-sm text-muted-foreground">Backoffice - gestion des utilisateurs Cook&apos;us</p>
+                    </div>
+                    <button
+                        onClick={() => navigate('/users/create')}
+                        className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                    >
+                        <UserPlus className="h-4 w-4" />
+                        Créer un admin
+                    </button>
                 </header>
 
                 <div className="rounded-lg border bg-card p-4">

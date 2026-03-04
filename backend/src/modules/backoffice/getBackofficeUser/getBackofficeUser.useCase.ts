@@ -38,10 +38,14 @@ export class GetBackofficeUserUseCase {
       deletedAt: user.deletedAt ?? null,
       cookProfile: cook
         ? {
+            id: cook.id,
             description: cook.description ?? "",
             speciality: cook.speciality,
             hourlyRate: cook.hourlyRate ?? null,
             city: cook.city ?? "",
+            siret: cook.siret ?? null,
+            isValidated: cook.isValidated,
+            validationStatus: cook.validationStatus,
           }
         : null,
     };
