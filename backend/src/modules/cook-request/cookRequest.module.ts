@@ -58,6 +58,7 @@ import { GetCookRequestPriceUseCase } from "@src/modules/cook-request/getCookReq
     CancelCookRequestUseCase,
     GetCookCookRequestsUseCase,
     PayCookRequestUseCase,
-    GetCookRequestPriceUseCase,],
+    GetCookRequestPriceUseCase,
+  ],
 })
 export class CookRequestModule {}

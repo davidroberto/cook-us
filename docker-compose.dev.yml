@@ -44,7 +44,6 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-      - /app/dist
     environment:
       - APP_PORT=${BACKEND_CONTAINER_PORT}
       - POSTGRES_HOST=${POSTGRES_HOST}
