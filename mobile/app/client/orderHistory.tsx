@@ -1,12 +1,16 @@
 import { useOrderHistory, type CookRequestStatus } from "@/features/client/account/viewProfile/useOrderHistory";
 import { colors } from "@/styles/colors";
+import { typography } from "@/styles/typography";
+import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/Button";
 
 const STATUS_LABEL: Record<CookRequestStatus, string> = {
@@ -24,91 +28,135 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
 };
 
 export default function OrderHistoryScreen() {
+  const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
+
+  const header = (
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Text style={styles.backText}>← Retour</Text>
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>Historique de réservations</Text>
+      <View style={styles.headerRight} />
+    </View>
+  );
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.main} />
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        {header}
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={colors.main} />
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-        <View style={{ marginTop: 12 }}>
-          <Button title="Réessayer" variant="outline" onPress={refresh} />
+      <SafeAreaView style={styles.safeArea}>
+        {header}
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>{error}</Text>
+          <View style={{ marginTop: 12 }}>
+            <Button title="Réessayer" variant="outline" onPress={refresh} />
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (orders.length === 0) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.emptyTitle}>Aucune réservation</Text>
-        <Text style={styles.emptyText}>
-          Vos réservations apparaîtront ici une fois que vous en aurez effectué.
-        </Text>
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        {header}
+        <View style={styles.centered}>
+          <Text style={styles.emptyTitle}>Aucune réservation</Text>
+          <Text style={styles.emptyText}>
+            Vos réservations apparaîtront ici une fois que vous en aurez effectué.
+          </Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <FlatList
-      data={orders}
-      keyExtractor={(item) => String(item.id)}
-      contentContainerStyle={styles.list}
-      renderItem={({ item }) => {
-        const date = new Date(item.startDate);
-        const formattedDate = date.toLocaleDateString("fr-FR", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
+    <SafeAreaView style={styles.safeArea}>
+      {header}
+      <FlatList
+        data={orders}
+        keyExtractor={(item) => String(item.id)}
+        contentContainerStyle={styles.list}
+        renderItem={({ item }) => {
+          const date = new Date(item.startDate);
+          const formattedDate = date.toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
 
-        return (
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cookName}>
-                {item.cook.firstName} {item.cook.lastName}
-              </Text>
-              <View
-                style={[
-                  styles.statusBadge,
-                  { backgroundColor: STATUS_COLOR[item.status] },
-                ]}
-              >
-                <Text style={styles.statusText}>
-                  {STATUS_LABEL[item.status]}
+          return (
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cookName}>
+                  {item.cook.firstName} {item.cook.lastName}
+                </Text>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: STATUS_COLOR[item.status] },
+                  ]}
+                >
+                  <Text style={styles.statusText}>
+                    {STATUS_LABEL[item.status]}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.cardBody}>
+                <Text style={styles.detail}>{formattedDate}</Text>
+                <Text style={styles.detail}>
+                  {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
                 </Text>
               </View>
-            </View>
 
-            <View style={styles.cardBody}>
-              <Text style={styles.detail}>
-                {formattedDate}
-              </Text>
-              <Text style={styles.detail}>
-                {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
-              </Text>
+              {item.cancellationReason && (
+                <Text style={styles.cancellationReason}>
+                  Motif : {item.cancellationReason}
+                </Text>
+              )}
             </View>
-
-            {item.cancellationReason && (
-              <Text style={styles.cancellationReason}>
-                Motif : {item.cancellationReason}
-              </Text>
-            )}
-          </View>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.tertiary,
+  },
+  backButton: { padding: 4 },
+  backText: {
+    ...typography.styles.body1Regular,
+    color: colors.main,
+  },
+  headerTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+  },
+  headerRight: { width: 60 },
   centered: {
     flex: 1,
     alignItems: "center",
