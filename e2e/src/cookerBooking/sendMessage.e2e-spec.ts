@@ -39,7 +39,7 @@ async function createClientConversation(browser: Browser) {
   await expect(page).toHaveURL(/\/client\/viewCook\/booking\//, { timeout: TIMEOUT });
 
   await page.getByTestId("number-of-guests-input").pressSequentially("2");
-  await page.getByTestId("start-date-input").pressSequentially("20062027");
+  await page.getByTestId("start-date-input").fill("20-06-2027");
   await page.getByTestId("meal-type-lunch").click();
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/messaging\/(\d+)/, { timeout: TIMEOUT });

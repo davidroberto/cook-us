@@ -35,32 +35,32 @@ test.describe("Voir les infos d'une demande client", () => {
   });
 
   test("affiche la carte de demande reçue", async ({ page }) => {
-    await expect(page.getByTestId("request-summary-card")).toBeVisible({
+    await expect(page.getByTestId("request-summary-card").first()).toBeVisible({
       timeout: TIMEOUT,
     });
   });
 
   test("affiche la date de la demande", async ({ page }) => {
-    const date = page.getByTestId("request-date");
+    const date = page.getByTestId("request-date").first();
     await expect(date).toBeVisible({ timeout: TIMEOUT });
     await expect(date).not.toHaveText("");
   });
 
   test("affiche le nombre de convives", async ({ page }) => {
-    const guests = page.getByTestId("request-guests");
+    const guests = page.getByTestId("request-guests").first();
     await expect(guests).toBeVisible({ timeout: TIMEOUT });
     await expect(guests).not.toHaveText("");
   });
 
   test("affiche le type de repas", async ({ page }) => {
-    const mealType = page.getByTestId("request-meal-type");
+    const mealType = page.getByTestId("request-meal-type").first();
     await expect(mealType).toBeVisible({ timeout: TIMEOUT });
     await expect(mealType).not.toHaveText("");
   });
 
   test("affiche le message du client si présent", async ({ page }) => {
-    const messageEl = page.getByTestId("request-message");
-    const count = await messageEl.count();
+    const messageEl = page.getByTestId("request-message").first();
+    const count = await page.getByTestId("request-message").count();
     if (count > 0) {
       await expect(messageEl).toBeVisible({ timeout: TIMEOUT });
       await expect(messageEl).not.toHaveText("");
