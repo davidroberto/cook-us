@@ -1,5 +1,6 @@
 import { useConversation } from "@/features/messaging/useConversation";
 import { ConversationView } from "@/features/messaging/components/ConversationView";
+import { ConversationOrdersButton } from "@/features/messaging/components/ConversationOrdersButton";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -57,7 +58,7 @@ export default function MessagingPage() {
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
-        <View style={styles.headerRight} />
+        <ConversationOrdersButton conversationId={parseInt(requestId ?? "0", 10)} />
       </View>
       <ConversationView
         conversation={state.conversation}
