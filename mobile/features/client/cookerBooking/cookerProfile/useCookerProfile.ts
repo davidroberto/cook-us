@@ -22,6 +22,11 @@ const mapToCookerProfile = (cook: Cook): CookerProfile => {
     description: cook.description,
     speciality: cook.speciality,
     hourlyRate: cook.hourlyRate,
+    images: cook.images.map((img) => ({
+      id: img.id,
+      url: toAbsoluteUrl(img.imgUrl),
+      description: img.description,
+    })),
   };
 };
 
