@@ -13,7 +13,7 @@ import {
 import { CreateCookRequestDto } from "@src/modules/cook-request/createCookRequest/createCookRequest.dto";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 
 @Injectable()
 export class CreateCookRequestUseCase {
@@ -51,19 +51,44 @@ export class CreateCookRequestUseCase {
     });
     if (!cook) throw new NotFoundException("Cuisinier introuvable");
 
-    const conversation = await this.conversationRepository.save(
-      this.conversationRepository.create()
-    );
-    await this.participantRepository.save([
-      this.participantRepository.create({
-        authorId: client.userId,
-        conversationId: conversation.id,
-      }),
-      this.participantRepository.create({
-        authorId: cook.userId,
-        conversationId: conversation.id,
-      }),
-    ]);
+    const clientParticipations = await this.participantRepository.find({
+      where: { authorId: client.userId },
+      select: { conversationId: true },
+    });
+
+    let existingConversation: Conversation | null = null;
+    if (clientParticipations.length > 0) {
+      const sharedParticipation = await this.participantRepository.findOne({
+        where: {
+          authorId: cook.userId,
+          conversationId: In(clientParticipations.map((p) => p.conversationId)),
+        },
+      });
+      if (sharedParticipation) {
+        existingConversation = await this.conversationRepository.findOne({
+          where: { id: sharedParticipation.conversationId },
+        });
+      }
+    }
+
+    const conversation =
+      existingConversation ??
+      (await this.conversationRepository.save(
+        this.conversationRepository.create()
+      ));
+
+    if (!existingConversation) {
+      await this.participantRepository.save([
+        this.participantRepository.create({
+          authorId: client.userId,
+          conversationId: conversation.id,
+        }),
+        this.participantRepository.create({
+          authorId: cook.userId,
+          conversationId: conversation.id,
+        }),
+      ]);
+    }
 
     const cookRequest = this.cookRequestRepository.create({
       guestsNumber: dto.guestsNumber,
