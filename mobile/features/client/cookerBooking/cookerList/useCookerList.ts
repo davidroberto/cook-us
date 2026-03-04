@@ -22,6 +22,8 @@ export const useCookerList = (): UseCookerListResult => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!token) return;
+
     let cancelled = false;
 
     const load = async () => {
@@ -29,7 +31,7 @@ export const useCookerList = (): UseCookerListResult => {
         setLoading(true);
         setError(null);
 
-        const data = await getCooks(token!);
+        const data = await getCooks(token);
 
         if (!cancelled) {
           setCooks(mapCooksToCardData(data));
@@ -50,7 +52,7 @@ export const useCookerList = (): UseCookerListResult => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [token]);
 
   return { cooks, loading, error };
 };
