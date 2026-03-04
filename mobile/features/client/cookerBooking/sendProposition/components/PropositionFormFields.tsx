@@ -5,7 +5,15 @@ import DateTimePicker, {
   type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import type { MealType } from "../types";
 
 function getTomorrow(): Date {
   const d = new Date();
@@ -20,11 +28,21 @@ function formatDate(date: Date): string {
   return `${day}-${month}-${year}`;
 }
 
+const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
+  { value: "breakfast", label: "Petit-déjeuner" },
+  { value: "lunch", label: "Déjeuner" },
+  { value: "dinner", label: "Dîner" },
+];
+
 type PropositionFormFieldsProps = {
   numberOfGuests: string;
   onNumberOfGuestsChange: (text: string) => void;
   startDate: string;
   onStartDateChange: (text: string) => void;
+  mealType: MealType | null;
+  onMealTypeChange: (type: MealType) => void;
+  message: string;
+  onMessageChange: (text: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
   error: string | null;
@@ -35,6 +53,10 @@ export function PropositionFormFields({
   onNumberOfGuestsChange,
   startDate,
   onStartDateChange,
+  mealType,
+  onMealTypeChange,
+  message,
+  onMessageChange,
   onSubmit,
   isLoading,
   error,
@@ -132,6 +154,44 @@ export function PropositionFormFields({
         )}
       </View>
 
+      <View style={styles.mealTypeContainer}>
+        <Text style={styles.mealTypeLabel}>Type de repas</Text>
+        <View style={styles.mealTypeOptions}>
+          {MEAL_TYPE_OPTIONS.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              testID={`meal-type-${option.value}`}
+              style={[
+                styles.mealTypeOption,
+                mealType === option.value && styles.mealTypeOptionSelected,
+              ]}
+              onPress={() => onMealTypeChange(option.value)}
+            >
+              <Text
+                style={[
+                  styles.mealTypeOptionText,
+                  mealType === option.value &&
+                    styles.mealTypeOptionTextSelected,
+                ]}
+              >
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <Input
+        testID="message-input"
+        label="Message au cuisinier"
+        value={message}
+        onChangeText={onMessageChange}
+        placeholder="Précisez vos attentes, allergies, préférences..."
+        multiline
+        numberOfLines={4}
+        style={styles.messageInput}
+      />
+
       <Button
         testID="submit-button"
         title="Envoyer la proposition"
@@ -207,6 +267,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: colors.white,
+  },
+  mealTypeContainer: {
+    marginBottom: 20,
+  },
+  mealTypeLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.main,
+    marginBottom: 8,
+  },
+  mealTypeOptions: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  mealTypeOption: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+    backgroundColor: colors.white,
+    alignItems: "center",
+  },
+  mealTypeOptionSelected: {
+    borderColor: colors.main,
+    backgroundColor: colors.main,
+    borderWidth: 2,
+  },
+  mealTypeOptionText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: colors.text,
+  },
+  mealTypeOptionTextSelected: {
+    color: colors.white,
+    fontWeight: "700",
+  },
+  messageInput: {
+    height: 100,
+    textAlignVertical: "top",
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",

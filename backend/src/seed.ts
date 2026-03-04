@@ -7,6 +7,7 @@ import { Client } from "@src/modules/client/client.entity";
 import {
   CookRequestEntity,
   CookRequestStatus,
+  MealType,
 } from "@src/modules/cook-request/cookRequest.entity";
 
 const dataSource = new DataSource({
@@ -252,6 +253,7 @@ async function seed() {
 
   const userRepo = dataSource.getRepository(User);
   const cookRepo = dataSource.getRepository(Cook);
+  const cookImageRepo = dataSource.getRepository(CookImage);
   const clientRepo = dataSource.getRepository(Client);
   const cookRequestRepo = dataSource.getRepository(CookRequestEntity);
 
@@ -292,6 +294,228 @@ async function seed() {
   }
   console.log(`${cooks.length} cooks créés`);
 
+  // --- Cook images (photos de plats) ---
+  const COOK_IMAGES: {
+    cookIndex: number;
+    description: string;
+    imgUrl: string;
+  }[] = [
+    // Pierre Martin — french_cooking
+    {
+      cookIndex: 0,
+      description: "Bœuf bourguignon traditionnel",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600",
+    },
+    {
+      cookIndex: 0,
+      description: "Tarte tatin aux pommes caramélisées",
+      imgUrl:
+        "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=600",
+    },
+    {
+      cookIndex: 0,
+      description: "Coq au vin sauce onctueuse",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600",
+    },
+    // Marie Dupont — italian_cooking
+    {
+      cookIndex: 1,
+      description: "Tagliatelles fraîches aux truffes",
+      imgUrl: "https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600",
+    },
+    {
+      cookIndex: 1,
+      description: "Risotto alla milanese au safran",
+      imgUrl:
+        "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600",
+    },
+    {
+      cookIndex: 1,
+      description: "Tiramisu maison au café",
+      imgUrl:
+        "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
+    },
+    // Jean-Baptiste Moreau — asian_cooking
+    {
+      cookIndex: 2,
+      description: "Pad thaï aux crevettes",
+      imgUrl: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
+    },
+    {
+      cookIndex: 2,
+      description: "Ramen tonkotsu maison",
+      imgUrl:
+        "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600",
+    },
+    {
+      cookIndex: 2,
+      description: "Rouleaux de printemps frais",
+      imgUrl: "https://images.unsplash.com/photo-1562967916-eb82221dfb44?w=600",
+    },
+    // Maxence Dorizon — vegetarian_cooking
+    {
+      cookIndex: 3,
+      description: "Bowl végétarien quinoa et avocat",
+      imgUrl:
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
+    },
+    {
+      cookIndex: 3,
+      description: "Curry de légumes au lait de coco",
+      imgUrl:
+        "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600",
+    },
+    {
+      cookIndex: 3,
+      description: "Lasagnes végétariennes aux épinards",
+      imgUrl:
+        "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=600",
+    },
+    // Antoine Rousseau — autre (barbecue)
+    {
+      cookIndex: 4,
+      description: "Côte de bœuf grillée au feu de bois",
+      imgUrl: "https://images.unsplash.com/photo-1558030006-450675393462?w=600",
+    },
+    {
+      cookIndex: 4,
+      description: "Brochettes marinées aux herbes",
+      imgUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600",
+    },
+    // Camille Petit — pastry_cooking
+    {
+      cookIndex: 5,
+      description: "Paris-Brest praliné noisette",
+      imgUrl:
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600",
+    },
+    {
+      cookIndex: 5,
+      description: "Éclairs au chocolat noir",
+      imgUrl:
+        "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?w=600",
+    },
+    {
+      cookIndex: 5,
+      description: "Tarte aux fruits rouges",
+      imgUrl:
+        "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600",
+    },
+    {
+      cookIndex: 5,
+      description: "Macarons assortis",
+      imgUrl:
+        "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600",
+    },
+    // Nicolas Leblanc — autre (méditerranéen)
+    {
+      cookIndex: 6,
+      description: "Bouillabaisse marseillaise",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600",
+    },
+    {
+      cookIndex: 6,
+      description: "Ratatouille provençale",
+      imgUrl:
+        "https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=600",
+    },
+    // Isabelle Garnier — japanese_cooking
+    {
+      cookIndex: 7,
+      description: "Assortiment de sushis et makis",
+      imgUrl:
+        "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600",
+    },
+    {
+      cookIndex: 7,
+      description: "Tempura de crevettes et légumes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1615361200141-f45040f367be?w=600",
+    },
+    {
+      cookIndex: 7,
+      description: "Gyozas porc et gingembre",
+      imgUrl:
+        "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600",
+    },
+    // Thomas Mercier — autre (gastronomique)
+    {
+      cookIndex: 8,
+      description: "Foie gras poêlé aux figues",
+      imgUrl:
+        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
+    },
+    {
+      cookIndex: 8,
+      description: "Saint-Jacques snackées au beurre noisette",
+      imgUrl:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600",
+    },
+    {
+      cookIndex: 8,
+      description: "Soufflé au Grand Marnier",
+      imgUrl:
+        "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=600",
+    },
+    // Léa Fontaine — french_cooking (provençal)
+    {
+      cookIndex: 9,
+      description: "Aïoli provençal aux légumes du marché",
+      imgUrl:
+        "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600",
+    },
+    {
+      cookIndex: 9,
+      description: "Tian de légumes du soleil",
+      imgUrl:
+        "https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=600",
+    },
+    // Clara Roux — mexican_cooking
+    {
+      cookIndex: 11,
+      description: "Tacos al pastor maison",
+      imgUrl:
+        "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600",
+    },
+    {
+      cookIndex: 11,
+      description: "Guacamole frais et chips tortilla",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600",
+    },
+    {
+      cookIndex: 11,
+      description: "Enchiladas au poulet et mole",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534352956036-cd81e27dd615?w=600",
+    },
+    // Étienne Bernard — autre (world food)
+    {
+      cookIndex: 12,
+      description: "Curry indien butter chicken",
+      imgUrl:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600",
+    },
+    {
+      cookIndex: 12,
+      description: "Empanadas argentines",
+      imgUrl:
+        "https://images.unsplash.com/photo-1604467707321-70d009801bf4?w=600",
+    },
+  ];
+
+  for (const img of COOK_IMAGES) {
+    await cookImageRepo.save({
+      cookId: cooks[img.cookIndex].id,
+      imgUrl: img.imgUrl,
+      description: img.description,
+    });
+  }
+  console.log(`${COOK_IMAGES.length} photos de plats créées`);
+
   // --- Clients ---
   const hashedClientPassword = await bcrypt.hash(CLIENT_PASSWORD, 10);
   const clients: Client[] = [];
@@ -319,6 +543,9 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[0].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message:
+        "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
     },
     {
       guestsNumber: 4,
@@ -327,6 +554,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[1].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 10,
@@ -335,6 +563,9 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[2].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message:
+        "Repas d'entreprise, une personne allergique aux fruits à coque.",
     },
     {
       guestsNumber: 8,
@@ -343,6 +574,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[3].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -351,6 +583,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[4].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 12,
@@ -359,6 +592,9 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[5].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message:
+        "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
     },
     {
       guestsNumber: 5,
@@ -367,6 +603,7 @@ async function seed() {
       cookId: cooks[6].id,
       clientId: clients[6].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 7,
@@ -375,6 +612,7 @@ async function seed() {
       cookId: cooks[3].id,
       clientId: clients[7].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 2,
@@ -383,6 +621,9 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[8].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message:
+        "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
     },
     {
       guestsNumber: 20,
@@ -391,6 +632,7 @@ async function seed() {
       cookId: cooks[4].id,
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     // Passées - refused
     {
@@ -400,6 +642,7 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[2].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 4,
@@ -408,6 +651,7 @@ async function seed() {
       cookId: cooks[9].id,
       clientId: clients[10].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -416,6 +660,7 @@ async function seed() {
       cookId: cooks[11].id,
       clientId: clients[11].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.LUNCH,
     },
     // Passées - cancelled
     {
@@ -425,6 +670,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[0].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 5,
@@ -433,6 +679,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[12].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -441,6 +688,7 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[13].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     // À venir - pending
     {
@@ -450,6 +698,8 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[0].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
+      message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
     },
     {
       guestsNumber: 8,
@@ -458,6 +708,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[1].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 2,
@@ -466,6 +717,8 @@ async function seed() {
       cookId: cooks[6].id,
       clientId: clients[2].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.LUNCH,
+      message: "Déjeuner d'affaires, cuisine légère et raffinée souhaitée.",
     },
     {
       guestsNumber: 14,
@@ -474,6 +727,7 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[3].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -482,6 +736,7 @@ async function seed() {
       cookId: cooks[3].id,
       clientId: clients[4].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 10,
@@ -490,6 +745,7 @@ async function seed() {
       cookId: cooks[10].id,
       clientId: clients[5].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 5,
@@ -498,6 +754,7 @@ async function seed() {
       cookId: cooks[13].id,
       clientId: clients[6].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -506,6 +763,7 @@ async function seed() {
       cookId: cooks[9].id,
       clientId: clients[7].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     // À venir - accepted
     {
@@ -515,6 +773,8 @@ async function seed() {
       cookId: cooks[4].id,
       clientId: clients[8].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Événement associatif, budget maîtrisé, cuisine conviviale.",
     },
     {
       guestsNumber: 7,
@@ -523,6 +783,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 4,
@@ -531,6 +792,7 @@ async function seed() {
       cookId: cooks[14].id,
       clientId: clients[10].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 16,
@@ -539,6 +801,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[11].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 9,
@@ -547,6 +810,7 @@ async function seed() {
       cookId: cooks[11].id,
       clientId: clients[12].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -555,6 +819,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[13].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 12,
@@ -563,6 +828,7 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[14].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
   ];
 

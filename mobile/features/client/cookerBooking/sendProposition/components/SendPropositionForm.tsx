@@ -4,6 +4,7 @@ import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
+import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
 import { PropositionFormFields } from "./PropositionFormFields";
 
@@ -24,6 +25,8 @@ export function SendPropositionForm({
 }: Props) {
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [mealType, setMealType] = useState<MealType | null>(null);
+  const [message, setMessage] = useState("");
 
   const router = useRouter();
   const { error, isLoading, sendProposition } = useSendProposition();
@@ -34,6 +37,8 @@ export function SendPropositionForm({
       cookUserId,
       numberOfGuests: parseInt(numberOfGuests, 10),
       startDate,
+      mealType: mealType!,
+      message,
     });
 
     if (result) {
@@ -70,6 +75,10 @@ export function SendPropositionForm({
         onNumberOfGuestsChange={setNumberOfGuests}
         startDate={startDate}
         onStartDateChange={setStartDate}
+        mealType={mealType}
+        onMealTypeChange={setMealType}
+        message={message}
+        onMessageChange={setMessage}
         onSubmit={handleSubmit}
         isLoading={isLoading}
         error={error}

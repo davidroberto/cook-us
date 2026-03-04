@@ -29,7 +29,7 @@ export default function CookLayout() {
         headerTintColor: colors.main,
         headerTitleStyle: { color: colors.text },
         headerShadowVisible: false,
-        headerBackTitle: "",
+        headerBackVisible: false,
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

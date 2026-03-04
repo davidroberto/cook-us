@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   Column,
   Entity,
@@ -14,6 +14,13 @@ export enum CookRequestStatus {
   ACCEPTED = "accepted",
   REFUSED = "refused",
   CANCELLED = "cancelled",
+  PAID = "paid",
+}
+
+export enum MealType {
+  BREAKFAST = "breakfast",
+  LUNCH = "lunch",
+  DINNER = "dinner",
 }
 
 @Entity("cook_request")
@@ -55,6 +62,23 @@ export class CookRequestEntity {
     default: CookRequestStatus.PENDING,
   })
   status: CookRequestStatus;
+
+  @ApiProperty({ example: "dinner", enum: MealType })
+  @Column({
+    name: "meal_type",
+    type: "enum",
+    enum: MealType,
+    default: MealType.DINNER,
+  })
+  mealType: MealType;
+
+  @ApiPropertyOptional({ example: "Bonjour, je souhaite un menu végétarien." })
+  @Column({ type: "text", nullable: true })
+  message: string | null;
+
+  @ApiPropertyOptional({ example: 1 })
+  @Column({ name: "conversation_id", type: "int", nullable: true })
+  conversationId: number | null;
 
   @ApiProperty({
     example: "Je ne suis plus disponible à cette date",

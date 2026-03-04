@@ -1,3 +1,9 @@
+export type CookerProfileImage = {
+  id: number;
+  url: string;
+  description: string | null;
+};
+
 export type CookerProfile = {
   id: string;
   userId: number;
@@ -7,6 +13,7 @@ export type CookerProfile = {
   description: string | null;
   speciality: string;
   hourlyRate: number | null;
+  images: CookerProfileImage[];
 };
 
 export type CookerProfileState =
