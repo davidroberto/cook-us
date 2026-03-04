@@ -28,6 +28,10 @@ export class RegisterCookProfileDto {
   @IsEnum(CookSpeciality)
   speciality: CookSpeciality;
 
+  @ApiProperty({ example: "81234567800015", description: "Numéro SIRET (14 chiffres)" })
+  @IsString()
+  siret: string;
+
   @ApiPropertyOptional({
     example: "Passionné de pâtes fraîches depuis 10 ans.",
   })

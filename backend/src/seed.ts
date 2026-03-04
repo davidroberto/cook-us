@@ -45,6 +45,7 @@ const COOKS_DATA = [
     hourlyRate: 45,
     city: "Paris",
     isValidated: true,
+    siret: "81234567800015",
     description:
       "Chef formé à l'École Ferrandi, spécialisé dans la bistronomy moderne. Je cuisine des plats du terroir revisités avec des produits de saison.",
   },
@@ -56,6 +57,7 @@ const COOKS_DATA = [
     hourlyRate: 55,
     city: "Lyon",
     isValidated: true,
+    siret: "32987654300028",
     description:
       "Passionnée par la cuisine italienne authentique, j'ai vécu 5 ans à Rome et Florence. Pâtes fraîches, risottos et tiramisu maison sont mes spécialités.",
   },
@@ -67,6 +69,7 @@ const COOKS_DATA = [
     hourlyRate: 40,
     city: "Marseille",
     isValidated: true,
+    siret: "55112233400041",
     description:
       "Autodidacte passionné par l'Asie du Sud-Est. Je propose des menus thaïlandais, vietnamiens et japonais avec des produits frais et authentiques.",
   },
@@ -78,6 +81,7 @@ const COOKS_DATA = [
     hourlyRate: 1000000,
     city: "Bordeaux",
     isValidated: true,
+    siret: "77665544300059",
     description:
       "Diététicien et chef cuisinier, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
   },
@@ -89,6 +93,7 @@ const COOKS_DATA = [
     hourlyRate: 38,
     city: "Toulouse",
     isValidated: true,
+    siret: "44332211500067",
     description:
       "Champion régional de barbecue 2023. Viandes, poissons et légumes sur le grill, marinades maison et sauces artisanales. L'été à volonté.",
   },
@@ -100,6 +105,7 @@ const COOKS_DATA = [
     hourlyRate: 62,
     city: "Paris",
     isValidated: true,
+    siret: "90123456700074",
     description:
       "Ancienne pâtissière dans un palace parisien, je propose des buffets de desserts et des pièces montées pour vos événements. Créations sur mesure.",
   },
@@ -111,6 +117,7 @@ const COOKS_DATA = [
     hourlyRate: 48,
     city: "Nice",
     isValidated: true,
+    siret: "12398765400082",
     description:
       "Né à Nice, je cuisine la Méditerranée : bouillabaisse, socca, ratatouille et mezze. Des saveurs solaires pour vos repas en famille ou entre amis.",
   },
@@ -122,6 +129,7 @@ const COOKS_DATA = [
     hourlyRate: 70,
     city: "Paris",
     isValidated: true,
+    siret: "65412378900096",
     description:
       "Formée à Paris et Tokyo, je propose une cuisine fusion qui marie techniques françaises et saveurs japonaises. Une expérience gastronomique unique.",
   },
@@ -133,6 +141,7 @@ const COOKS_DATA = [
     hourlyRate: 95,
     city: "Paris",
     isValidated: true,
+    siret: "23456789100103",
     description:
       "Étoilé Michelin pendant 3 ans, je propose une expérience gastronomique à domicile. Menus dégustation 7 ou 9 services avec accords mets et vins.",
   },
@@ -144,6 +153,7 @@ const COOKS_DATA = [
     hourlyRate: 42,
     city: "Aix-en-Provence",
     isValidated: true,
+    siret: "87654321200118",
     description:
       "Fille de restaurateurs provençaux, je transmets la chaleur de la cuisine du Sud. Produits du marché, herbes fraîches et huile d'olive de qualité.",
   },
@@ -154,7 +164,8 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 68,
     city: "Paris",
-    isValidated: true,
+    isValidated: false,
+    siret: "34567890100125",
     description:
       "Formé au Japon pendant 2 ans, je prépare sushis, sashimis et yakitoris devant vos invités. Poissons sourcés directement chez les pêcheurs.",
   },
@@ -166,6 +177,7 @@ const COOKS_DATA = [
     hourlyRate: 36,
     city: "Nantes",
     isValidated: true,
+    siret: "56789012300133",
     description:
       "Revenue du Mexique après 18 mois d'immersion, je propose des tacos, enchiladas et guacamole authentiques. Épices et piments sélectionnés avec soin.",
   },
@@ -177,6 +189,7 @@ const COOKS_DATA = [
     hourlyRate: 32,
     city: "Lille",
     isValidated: true,
+    siret: "78901234500148",
     description:
       "Globe-trotter culinaire, j'ai voyagé dans 30 pays et rapporté leurs recettes authentiques. Curry indien, pad thaï, shawarma et empanadas au programme.",
   },
@@ -187,7 +200,8 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 52,
     city: "Rennes",
-    isValidated: true,
+    isValidated: false,
+    siret: "91234567800156",
     description:
       "Originaire de Bretagne, je travaille avec les pêcheurs locaux pour vous proposer des fruits de mer ultra-frais. Plateaux, bisques et crepes salées.",
   },
@@ -199,6 +213,7 @@ const COOKS_DATA = [
     hourlyRate: 58,
     city: "Strasbourg",
     isValidated: true,
+    siret: "13579024600163",
     description:
       "Chef créatif formé dans les grandes maisons alsaciennes, je propose une cuisine contemporaine alliant tradition et innovation. Menus personnalisés.",
   },
@@ -298,6 +313,7 @@ async function seed() {
       firstName: data.firstName,
       lastName: data.lastName,
       speciality: data.speciality,
+      siret: data.siret,
       hourlyRate: data.hourlyRate,
       city: data.city,
       isActive: true,

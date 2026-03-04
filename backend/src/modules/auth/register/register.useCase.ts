@@ -36,6 +36,12 @@ export class RegisterUseCase {
       );
     }
 
+    if (role === UserRole.COOK && !dto.cookProfile?.siret) {
+      throw new BadRequestException(
+        "Le SIRET est obligatoire pour un profil cuisinier."
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = this.userRepository.create({
@@ -52,7 +58,8 @@ export class RegisterUseCase {
       const cook = this.cookRepository.create({
         firstName: dto.firstName,
         lastName: dto.lastName,
-        speciality: dto.cookProfile?.speciality,
+        speciality: dto.cookProfile!.speciality,
+        siret: dto.cookProfile!.siret,
         description: dto.cookProfile?.description ?? null,
         hourlyRate: dto.cookProfile?.hourlyRate ?? null,
         photoUrl: dto.thumbnail ?? null,

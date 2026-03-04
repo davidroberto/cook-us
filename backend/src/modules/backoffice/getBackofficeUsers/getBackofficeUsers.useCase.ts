@@ -76,6 +76,7 @@ export class GetBackofficeUsersUseCase {
               speciality: cook.speciality,
               hourlyRate: cook.hourlyRate ?? null,
               city: cook.city ?? "",
+              siret: cook.siret ?? null,
             }
           : null,
       };
