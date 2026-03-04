@@ -1,7 +1,9 @@
 import { useState } from "react";
 import type { AuthResponse, LoginCommand } from "./types";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost/api";
+import { getApiUrl } from "@/features/api/getApiUrl";
+
+const API_URL = getApiUrl();
 
 export function useLogin() {
   const [error, setError] = useState<string | null>(null);

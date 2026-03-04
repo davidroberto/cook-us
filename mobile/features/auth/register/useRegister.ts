@@ -1,7 +1,9 @@
 import { useState } from "react";
 import type { AuthResponse, RegisterCommand } from "./types";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost/api";
+import { getApiUrl } from "@/features/api/getApiUrl";
+
+const API_URL = getApiUrl();
 
 function validateCommand(command: RegisterCommand): void {
   if (!command.firstName.trim()) throw new Error("Le prénom est requis.");

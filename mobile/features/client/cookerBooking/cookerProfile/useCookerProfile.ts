@@ -6,7 +6,7 @@ import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
 const mapToCookerProfile = (cook: Cook): CookerProfile => ({
   id: cook.id,
-  userId: cook.userId,
+  userId: cook.user.id,
   firstName: cook.user.firstName,
   lastName: cook.user.lastName,
   photoUrl: cook.user.thumbnail ?? cook.images[0]?.imgUrl ?? null,

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { COOK_REQUEST_MESSAGE_PREFIX } from "@/features/messaging/useConversation";
+import { getApiUrl } from "@/features/api/getApiUrl";
 import type { CreatedCookRequest, SendPropositionCommand } from "./types";
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+const BASE_URL = getApiUrl();
 const API_URL = `${BASE_URL}/cook-request`;
 
 function parseDDMMYYYY(value: string): Date {

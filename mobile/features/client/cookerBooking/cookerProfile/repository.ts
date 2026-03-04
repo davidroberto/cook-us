@@ -1,8 +1,9 @@
+import { getApiUrl } from "@/features/api/getApiUrl";
 import type { Cook } from "@/features/client/cookerBooking/cookerList/types";
 
 export const getCook = async (cookId: string, token: string): Promise<Cook> => {
   const response = await fetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/cooks/${cookId}`,
+    `${getApiUrl()}/cooks/${cookId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 

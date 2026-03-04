@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import type { ApiConversation, Conversation, Message } from "./types";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+import { getApiUrl } from "@/features/api/getApiUrl";
+
+const API_URL = getApiUrl();
 
 type ConversationState =
   | { status: "loading" }
