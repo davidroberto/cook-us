@@ -53,7 +53,7 @@ function ConversationItem({
   const name = other ? `${other.author.firstName} ${other.author.lastName}` : "Inconnu";
 
   return (
-    <TouchableOpacity style={styles.item} onPress={onPress}>
+    <TouchableOpacity style={styles.item} onPress={onPress} testID="conversation-item">
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
       </View>

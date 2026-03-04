@@ -83,6 +83,7 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
       (async () => {
         await page.getByTestId("number-of-guests-input").pressSequentially("4");
         await page.getByTestId("start-date-input").pressSequentially("15062026");
+        await page.getByTestId("meal-type-dinner").click();
         await page.getByTestId("submit-button").click();
       })(),
     ]);
