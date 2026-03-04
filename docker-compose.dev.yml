@@ -27,6 +27,7 @@ services:
       cook-us-app:
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     environment:
       - SERVER_NAME=${SERVER_NAME}
       - FRONTEND_CONTAINER_PORT=${FRONTEND_CONTAINER_PORT}
@@ -42,6 +43,7 @@ services:
       cook-us-app:
     volumes:
       - ./backend:/app
+      - /app/node_modules
       - /app/dist
     environment:
       - APP_PORT=${BACKEND_CONTAINER_PORT}
