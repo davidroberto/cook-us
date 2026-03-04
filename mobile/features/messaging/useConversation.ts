@@ -42,13 +42,13 @@ function toConversation(api: ApiConversation, currentUserId: number): Conversati
 }
 
 export function useConversation(conversationId: number) {
-  const { token, user } = useAuth();
+  const { token, user, isReady } = useAuth();
   const [state, setState] = useState<ConversationState>({ status: "loading" });
 
   const currentUserId = user?.id;
 
   const load = useCallback(async () => {
-    if (!conversationId || !currentUserId) return;
+    if (!isReady || !conversationId || !currentUserId) return;
     setState({ status: "loading" });
     try {
       const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
@@ -60,7 +60,7 @@ export function useConversation(conversationId: number) {
     } catch {
       setState({ status: "error" });
     }
-  }, [conversationId, token, currentUserId]);
+  }, [isReady, conversationId, token, currentUserId]);
 
   useEffect(() => {
     load();
