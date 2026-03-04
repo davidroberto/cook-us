@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { IoAdapter } from "@nestjs/platform-socket.io";
 import { AppModule } from "@src/app.module";
 import { join } from "path";
 import { existsSync, mkdirSync } from "fs";
@@ -11,6 +12,7 @@ async function bootstrap() {
   if (!existsSync(uploadsDir)) mkdirSync(uploadsDir);
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useWebSocketAdapter(new IoAdapter(app));
   app.useStaticAssets(uploadsDir, { prefix: "/api/uploads" });
   app.setGlobalPrefix("api");
 
