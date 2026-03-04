@@ -6,7 +6,7 @@ export type SendPropositionCommand = {
   numberOfGuests: number;
   startDate: string;
   mealType: MealType;
-  message: string;
+  message?: string;
 };
 
 export type CreatedCookRequest = {
