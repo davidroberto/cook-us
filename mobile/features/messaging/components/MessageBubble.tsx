@@ -29,6 +29,7 @@ export function MessageBubble({ message }: Props) {
         <RequestSummaryCard
           startDate={message.requestData.startDate}
           guestsNumber={message.requestData.guestsNumber}
+          isSentByMe={isClient}
         />
       ) : (
         <View style={[styles.bubble, isClient ? styles.clientBubble : styles.cookBubble]}>
