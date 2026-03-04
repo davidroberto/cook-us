@@ -9,8 +9,13 @@ export class UpdateProfileController {
   constructor(private readonly updateProfileUseCase: UpdateProfileUseCase) {}
 
   @Patch("me")
-  @ApiOperation({ summary: "Mettre à jour son profil (firstName, lastName, email)" })
-  updateProfile(@Request() req: { user: { id: number } }, @Body() dto: UpdateProfileDto) {
+  @ApiOperation({
+    summary: "Mettre à jour son profil (firstName, lastName, email)",
+  })
+  updateProfile(
+    @Request() req: { user: { id: number } },
+    @Body() dto: UpdateProfileDto
+  ) {
     return this.updateProfileUseCase.execute(req.user.id, dto);
   }
 }

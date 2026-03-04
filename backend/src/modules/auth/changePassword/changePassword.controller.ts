@@ -10,7 +10,10 @@ export class ChangePasswordController {
 
   @Post("change-password")
   @ApiOperation({ summary: "Changer son mot de passe" })
-  changePassword(@Request() req: { user: { id: number } }, @Body() dto: ChangePasswordDto) {
+  changePassword(
+    @Request() req: { user: { id: number } },
+    @Body() dto: ChangePasswordDto
+  ) {
     return this.changePasswordUseCase.execute(req.user.id, dto);
   }
 }

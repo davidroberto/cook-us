@@ -25,8 +25,19 @@ import { ChangePasswordUseCase } from "@src/modules/auth/changePassword/changePa
     }),
     TypeOrmModule.forFeature([User, Cook, Client]),
   ],
-  controllers: [RegisterController, LoginController, UpdateProfileController, ChangePasswordController],
-  providers: [JwtStrategy, RegisterUseCase, LoginUseCase, UpdateProfileUseCase, ChangePasswordUseCase],
+  controllers: [
+    RegisterController,
+    LoginController,
+    UpdateProfileController,
+    ChangePasswordController,
+  ],
+  providers: [
+    JwtStrategy,
+    RegisterUseCase,
+    LoginUseCase,
+    UpdateProfileUseCase,
+    ChangePasswordUseCase,
+  ],
   exports: [JwtModule],
 })
 export class AuthModule {}
