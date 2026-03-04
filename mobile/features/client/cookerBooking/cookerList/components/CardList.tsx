@@ -34,6 +34,7 @@ export const CookerList = () => {
         (c) =>
           c.first_name.toLowerCase().includes(q) ||
           c.last_name.toLowerCase().includes(q) ||
+          `${c.first_name} ${c.last_name}`.toLowerCase().includes(q) ||
           c.city.toLowerCase().includes(q),
       );
     }
