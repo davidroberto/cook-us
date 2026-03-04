@@ -50,6 +50,7 @@ export interface Cook {
   speciality: CookSpeciality;
   hourlyRate: number | null;
   photoUrl: string | null;
+  city: string | null;
   isActive: boolean;
   isValidated: boolean;
   /** Relation : users */
