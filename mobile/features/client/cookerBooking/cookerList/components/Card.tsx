@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { colors } from "@/styles/colors";
+import { Card } from "@/components/ui/Card";
 import type { CookerCardData } from "../types";
 
 interface CookerCardProps {
@@ -7,23 +8,37 @@ interface CookerCardProps {
   onPress: () => void;
 }
 
-const SPECIALITY_LABEL: Record<CookerCardData["speciality"], string> = {
-  indian: "Cuisine indienne",
-  french: "Cuisine française",
-  italian: "Cuisine italienne",
-  japanese: "Cuisine japonaise",
-  mexican: "Cuisine mexicaine",
+const SPECIALITY_LABEL: Record<string, string> = {
+  french_cooking: "Cuisine française",
+  italian_cooking: "Cuisine italienne",
+  asian_cooking: "Cuisine asiatique",
+  mexican_cooking: "Cuisine mexicaine",
+  vegetarian_cooking: "Cuisine végétarienne",
+  japanese_cooking: "Cuisine japonaise",
+  indian_cooking: "Cuisine indienne",
+  autre: "Autre",
+};
+
+const capitalize = (s: string) =>
+  s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
+const formatRate = (rate: unknown): string => {
+  const num = Number(rate);
+  if (!num || isNaN(num)) return "Tarif sur demande";
+  return `${num % 1 === 0 ? num : num.toFixed(2)} €/h`;
 };
 
 export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {
+  const firstName = capitalize(cooker.first_name);
+  const lastName = capitalize(cooker.last_name);
   return (
-    <TouchableOpacity style={styles.card} testID="cooker-card" onPress={onPress} activeOpacity={0.7}>
+    <Card style={styles.cardLayout} testID="cooker-card" onPress={onPress}>
       <View style={styles.avatarContainer}>
         {cooker.thumbnail ? (
           <Image
             source={{ uri: cooker.thumbnail }}
             style={styles.avatar}
-            accessibilityLabel={`Photo de ${cooker.first_name} ${cooker.last_name}`}
+            accessibilityLabel={`Photo de ${firstName} ${lastName}`}
             testID="cooker-thumbnail"
           />
         ) : (
@@ -38,11 +53,11 @@ export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {
 
       <View style={styles.info}>
         <Text style={styles.name} testID="cooker-name">
-          {`${cooker.first_name} ${cooker.last_name}`}
+          {`${firstName} ${lastName}`}
         </Text>
 
         <Text style={styles.speciality} testID="cooker-speciality">
-          {SPECIALITY_LABEL[cooker.speciality]}
+          {SPECIALITY_LABEL[cooker.speciality] ?? cooker.speciality}
         </Text>
 
         <View style={styles.meta}>
@@ -50,28 +65,20 @@ export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {
             {cooker.city}
           </Text>
           <Text style={styles.rate} testID="cooker-rate">
-            {`${cooker.hourly_rate} €/h`}
+            {formatRate(cooker.hourly_rate)}
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
+  cardLayout: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 12,
     marginHorizontal: 16,
     marginVertical: 6,
-    shadowColor: colors.text,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: colors.opacity[8],
-    shadowRadius: 4,
-    elevation: 2,
   },
   avatarContainer: {
     marginRight: 12,
