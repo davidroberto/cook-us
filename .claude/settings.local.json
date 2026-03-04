@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm install -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom)",
       "Bash(npm test)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(npm install @nestjs/websockets @nestjs/platform-socket.io socket.io)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(npm install socket.io-client)"
     ]
   }
 }

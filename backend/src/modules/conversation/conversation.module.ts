@@ -20,10 +20,13 @@ import { GetMyConversationsUseCase } from "@src/modules/conversation/getMyConver
 import { GetConversationMessagesController } from "@src/modules/conversation/getConversationMessages/getConversationMessages.controller";
 import { GetConversationMessagesUseCase } from "@src/modules/conversation/getConversationMessages/getConversationMessages.useCase";
 import { ConversationParticipantGuard } from "@src/modules/conversation/conversationParticipant.guard";
+import { ChatGateway } from "@src/modules/conversation/chat.gateway";
+import { AuthModule } from "@src/modules/auth/auth.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Conversation, ConversationParticipant, Message]),
+    AuthModule,
   ],
   controllers: [
     CreateConversationController,
@@ -45,6 +48,7 @@ import { ConversationParticipantGuard } from "@src/modules/conversation/conversa
     AddParticipantUseCase,
     RemoveParticipantUseCase,
     ConversationParticipantGuard,
+    ChatGateway,
   ],
 })
 export class ConversationModule {}

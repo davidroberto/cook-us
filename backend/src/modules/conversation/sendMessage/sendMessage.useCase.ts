@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  forwardRef,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Message } from "@src/modules/conversation/message.entity";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { SendMessageDto } from "@src/modules/conversation/sendMessage/sendMessage.dto";
+import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 
 @Injectable()
 export class SendMessageUseCase {
@@ -11,7 +17,9 @@ export class SendMessageUseCase {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(Conversation)
-    private readonly conversationRepository: Repository<Conversation>
+    private readonly conversationRepository: Repository<Conversation>,
+    @Inject(forwardRef(() => ChatGateway))
+    private readonly chatGateway: ChatGateway
   ) {}
 
   async execute(
@@ -33,6 +41,14 @@ export class SendMessageUseCase {
       message: dto.message,
     });
 
-    return this.messageRepository.save(message);
+    const savedMessage = await this.messageRepository.save(message);
+
+    this.chatGateway.emitToConversation(
+      conversationId,
+      "newMessage",
+      savedMessage
+    );
+
+    return savedMessage;
   }
 }
