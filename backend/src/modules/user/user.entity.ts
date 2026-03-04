@@ -36,6 +36,16 @@ export class User {
   @Column({ select: false })
   password: string;
 
+  @Column({ name: "refresh_token", nullable: true, select: false })
+  refreshToken: string | null;
+
+  @Column({
+    name: "refresh_token_expires_at",
+    type: "timestamp",
+    nullable: true,
+  })
+  refreshTokenExpiresAt: Date | null;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 

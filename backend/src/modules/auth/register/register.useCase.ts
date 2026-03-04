@@ -17,7 +17,7 @@ export class RegisterUseCase {
     private readonly cookRepository: Repository<Cook>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async execute(dto: RegisterDto) {
@@ -32,7 +32,7 @@ export class RegisterUseCase {
 
     if (role === UserRole.COOK && !dto.cookProfile?.speciality) {
       throw new BadRequestException(
-        "La spécialité est obligatoire pour un profil cuisinier."
+        "La spécialité est obligatoire pour un profil cuisinier.",
       );
     }
 
@@ -64,14 +64,28 @@ export class RegisterUseCase {
       await this.clientRepository.save(client);
     }
 
-    const token = this.jwtService.sign({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
+    const payload = { sub: user.id, email: user.email, role: user.role };
+
+    const token = this.jwtService.sign(payload);
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN as any,
+    });
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    const refreshTokenExpiresAt = new Date();
+    refreshTokenExpiresAt.setDate(refreshTokenExpiresAt.getDate() + 30);
+
+    await this.userRepository.update(user.id, {
+      refreshToken: hashedRefreshToken,
+      refreshTokenExpiresAt,
     });
 
     return {
       token,
+      refreshToken,
       user: {
         id: user.id,
         firstName: user.firstName,
