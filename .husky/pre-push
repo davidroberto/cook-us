@@ -16,4 +16,13 @@ cd ../frontend && npm run lint
 echo "=== Frontend: build (typecheck) ==="
 npm run build
 
+echo "=== E2E tests ==="
+cd ../e2e
+if curl -s --head http://localhost | grep -q "200"; then
+  npm run test:e2e
+else
+  echo "L'app n'est pas en cours d'exécution. Veuillez démarrer l'application avant de push"
+  exit 1
+fi
+
 echo "=== All checks passed ==="
