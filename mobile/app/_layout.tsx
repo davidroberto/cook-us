@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { useFonts } from "expo-font";
 import {
@@ -35,7 +35,12 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Slot />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <Slot />
+      </KeyboardAvoidingView>
     </AuthProvider>
   );
 }
