@@ -7,6 +7,7 @@ import { Client } from "@src/modules/client/client.entity";
 import {
   CookRequestEntity,
   CookRequestStatus,
+  MealType,
 } from "@src/modules/cook-request/cookRequest.entity";
 
 const dataSource = new DataSource({
@@ -319,6 +320,8 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[0].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
     },
     {
       guestsNumber: 4,
@@ -327,6 +330,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[1].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 10,
@@ -335,6 +339,8 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[2].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Repas d'entreprise, une personne allergique aux fruits à coque.",
     },
     {
       guestsNumber: 8,
@@ -343,6 +349,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[3].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -351,6 +358,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[4].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 12,
@@ -359,6 +367,8 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[5].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
     },
     {
       guestsNumber: 5,
@@ -367,6 +377,7 @@ async function seed() {
       cookId: cooks[6].id,
       clientId: clients[6].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 7,
@@ -375,6 +386,7 @@ async function seed() {
       cookId: cooks[3].id,
       clientId: clients[7].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 2,
@@ -383,6 +395,8 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[8].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
     },
     {
       guestsNumber: 20,
@@ -391,6 +405,7 @@ async function seed() {
       cookId: cooks[4].id,
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     // Passées - refused
     {
@@ -400,6 +415,7 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[2].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 4,
@@ -408,6 +424,7 @@ async function seed() {
       cookId: cooks[9].id,
       clientId: clients[10].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -416,6 +433,7 @@ async function seed() {
       cookId: cooks[11].id,
       clientId: clients[11].id,
       status: CookRequestStatus.REFUSED,
+      mealType: MealType.LUNCH,
     },
     // Passées - cancelled
     {
@@ -425,6 +443,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[0].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 5,
@@ -433,6 +452,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[12].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -441,6 +461,7 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[13].id,
       status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
     },
     // À venir - pending
     {
@@ -450,6 +471,8 @@ async function seed() {
       cookId: cooks[0].id,
       clientId: clients[0].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
+      message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
     },
     {
       guestsNumber: 8,
@@ -458,6 +481,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[1].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 2,
@@ -466,6 +490,8 @@ async function seed() {
       cookId: cooks[6].id,
       clientId: clients[2].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.LUNCH,
+      message: "Déjeuner d'affaires, cuisine légère et raffinée souhaitée.",
     },
     {
       guestsNumber: 14,
@@ -474,6 +500,7 @@ async function seed() {
       cookId: cooks[8].id,
       clientId: clients[3].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -482,6 +509,7 @@ async function seed() {
       cookId: cooks[3].id,
       clientId: clients[4].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 10,
@@ -490,6 +518,7 @@ async function seed() {
       cookId: cooks[10].id,
       clientId: clients[5].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 5,
@@ -498,6 +527,7 @@ async function seed() {
       cookId: cooks[13].id,
       clientId: clients[6].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 3,
@@ -506,6 +536,7 @@ async function seed() {
       cookId: cooks[9].id,
       clientId: clients[7].id,
       status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
     },
     // À venir - accepted
     {
@@ -515,6 +546,8 @@ async function seed() {
       cookId: cooks[4].id,
       clientId: clients[8].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Événement associatif, budget maîtrisé, cuisine conviviale.",
     },
     {
       guestsNumber: 7,
@@ -523,6 +556,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 4,
@@ -531,6 +565,7 @@ async function seed() {
       cookId: cooks[14].id,
       clientId: clients[10].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 16,
@@ -539,6 +574,7 @@ async function seed() {
       cookId: cooks[5].id,
       clientId: clients[11].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 9,
@@ -547,6 +583,7 @@ async function seed() {
       cookId: cooks[11].id,
       clientId: clients[12].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
     {
       guestsNumber: 6,
@@ -555,6 +592,7 @@ async function seed() {
       cookId: cooks[2].id,
       clientId: clients[13].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.LUNCH,
     },
     {
       guestsNumber: 12,
@@ -563,6 +601,7 @@ async function seed() {
       cookId: cooks[7].id,
       clientId: clients[14].id,
       status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
     },
   ];
 
