@@ -15,7 +15,7 @@ import { COOK_SPECIALITIES, type CookSpeciality, type AuthUser } from "../types"
 import { useRegister } from "../useRegister";
 
 type Props = {
-  onSuccess: (token: string, user: AuthUser) => void;
+  onSuccess: (token: string, refreshToken: string, user: AuthUser) => void;
   onNavigateLogin: () => void;
 };
 
@@ -62,7 +62,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           }
         : {}),
     });
-    if (result) onSuccess(result.token, result.user);
+    if (result) onSuccess(result.token, result.refreshToken, result.user);
   };
 
   return (

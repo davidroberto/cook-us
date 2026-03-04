@@ -5,8 +5,9 @@ export type AuthContextValue = {
     user: AuthUser | null
     token: string | null
     isLoading: boolean
-    login: (user: AuthUser, token: string) => void
+    login: (user: AuthUser, token: string, refreshToken: string) => void
     logout: () => void
+    apiFetch: <T>(url: string, options?: RequestInit) => Promise<T>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
