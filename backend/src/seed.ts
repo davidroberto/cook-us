@@ -246,7 +246,7 @@ async function seed() {
   console.log("Connecté à la base de données");
 
   await dataSource.query(
-    "TRUNCATE TABLE cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE",
+    "TRUNCATE TABLE cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
   );
   console.log("Tables vidées");
 
