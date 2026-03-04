@@ -6,7 +6,10 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CookRequestEntity, CookRequestStatus } from "@src/modules/cook-request/cookRequest.entity";
+import {
+  CookRequestEntity,
+  CookRequestStatus,
+} from "@src/modules/cook-request/cookRequest.entity";
 import { Client } from "@src/modules/client/client.entity";
 import { UserRole } from "@src/modules/user/user.entity";
 
@@ -56,7 +59,8 @@ export class GetCookRequestPriceUseCase {
     }
 
     const hourlyRate = Number(cookRequest.cook.hourlyRate);
-    const durationMs = cookRequest.endDate.getTime() - cookRequest.startDate.getTime();
+    const durationMs =
+      cookRequest.endDate.getTime() - cookRequest.startDate.getTime();
     const hours = durationMs / (1000 * 60 * 60);
     const subtotal = hourlyRate * hours;
     const commission = subtotal * PLATFORM_COMMISSION_RATE;

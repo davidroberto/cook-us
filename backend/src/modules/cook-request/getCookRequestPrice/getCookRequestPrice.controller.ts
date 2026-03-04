@@ -21,7 +21,10 @@ class CookRequestPriceResponse {
   @ApiProperty({ example: 135, description: "Sous-total avant commission (€)" })
   subtotal: number;
 
-  @ApiProperty({ example: 0.15, description: "Taux de commission de la plateforme" })
+  @ApiProperty({
+    example: 0.15,
+    description: "Taux de commission de la plateforme",
+  })
   commissionRate: number;
 
   @ApiProperty({ example: 20.25, description: "Montant de la commission (€)" })
@@ -41,14 +44,19 @@ export class GetCookRequestPriceController {
   ) {}
 
   @Get(":id/price")
-  @ApiOperation({ summary: "Consulter le détail du prix d'une réservation acceptée (client)" })
+  @ApiOperation({
+    summary: "Consulter le détail du prix d'une réservation acceptée (client)",
+  })
   @ApiParam({ name: "id", type: Number, description: "ID de la réservation" })
   @ApiResponse({
     status: 200,
     description: "Détail du prix : tarif horaire × heures + commission = total",
     type: CookRequestPriceResponse,
   })
-  @ApiResponse({ status: 400, description: "Réservation non acceptée ou date de fin manquante" })
+  @ApiResponse({
+    status: 400,
+    description: "Réservation non acceptée ou date de fin manquante",
+  })
   @ApiResponse({ status: 401, description: "Non authentifié" })
   @ApiResponse({ status: 403, description: "Accès non autorisé" })
   @ApiResponse({ status: 404, description: "Réservation non trouvée" })
