@@ -1,35 +1,17 @@
-/**
- * Écran de profil complet assemblant les composants de la slice.
- * Réutilisé par la page Stack (viewProfile/profile.tsx) et l'onglet (tabs/compte.tsx).
- */
-
-import { Button } from "@/components/ui/Button";
-import { useAuth } from "@/features/auth/AuthContext";
-import { colors } from "@/styles/colors";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { useProfile } from "../useProfile";
-import { PasswordForm } from "./PasswordForm";
-import { ProfileForm } from "./ProfileForm";
+import { useAuth } from "@/features/auth/AuthContext";
+import { Button } from "@/components/ui/Button";
+import { colors } from "@/styles/colors";
+import { typography } from "@/styles/typography";
 
-export const ProfileScreen = () => {
-  const { user } = useProfile();
-  const { clearAuth } = useAuth();
+export function CookProfileScreen() {
+  const { user, clearAuth } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
     Alert.alert("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", [
-      {
-        text: "Annuler",
-        style: "cancel",
-      },
+      { text: "Annuler", style: "cancel" },
       {
         text: "Se déconnecter",
         style: "destructive",
@@ -41,13 +23,7 @@ export const ProfileScreen = () => {
     ]);
   };
 
-  if (!user) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.main} />
-      </View>
-    );
-  }
+  if (!user) return null;
 
   return (
     <ScrollView
@@ -64,44 +40,34 @@ export const ProfileScreen = () => {
         <Text style={styles.userName}>
           {user.firstName} {user.lastName}
         </Text>
-        <Text style={styles.userRole}>
-          {user.role === "cook" ? "Cuisinier" : "Client"}
+        <Text style={styles.userRole}>Cuisinier</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Informations du compte</Text>
+        <Text style={styles.label}>Prénom</Text>
+        <Text style={styles.value}>{user.firstName}</Text>
+        <Text style={styles.label}>Nom</Text>
+        <Text style={styles.value}>{user.lastName}</Text>
+        <Text style={styles.label}>Email</Text>
+        <Text style={styles.value}>{user.email}</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Informations cuisinier</Text>
+        <Text style={styles.notice}>
+          La modification du profil n'est pas encore disponible.
         </Text>
       </View>
 
-      <View style={styles.section}>
-        <ProfileForm user={user} />
-      </View>
-
-      <View style={styles.section}>
-        <PasswordForm />
-      </View>
-
-      <View style={styles.historySection}>
-        <Button
-          title="Voir mon historique de réservations"
-          variant="primary"
-          onPress={() => router.push("/client/orderHistory")}
-        />
-      </View>
-
       <View style={styles.logoutSection}>
-        <Button
-          title="Se déconnecter"
-          variant="outline"
-          onPress={handleLogout}
-        />
+        <Button title="Se déconnecter" variant="outline" onPress={handleLogout} />
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   content: {
     padding: 20,
     paddingBottom: 40,
@@ -146,8 +112,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  historySection: {
-    marginBottom: 16,
+  sectionTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+    marginBottom: 12,
+  },
+  label: {
+    ...typography.styles.body2Regular,
+    color: colors.text,
+    opacity: 0.6,
+    marginTop: 8,
+  },
+  value: {
+    ...typography.styles.body1Regular,
+    color: colors.text,
+    marginTop: 2,
+  },
+  notice: {
+    ...typography.styles.body2Regular,
+    color: colors.text,
+    opacity: 0.6,
+    fontStyle: "italic",
   },
   logoutSection: {
     marginTop: 8,

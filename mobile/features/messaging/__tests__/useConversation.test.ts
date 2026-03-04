@@ -42,8 +42,8 @@ describe("useConversation", () => {
     const { result } = renderHook(() => useConversation(42));
     await act(async () => {});
     if (result.current.state.status !== "success") throw new Error("not success");
-    expect(result.current.state.conversation.cookFirstName).toBe("Marie");
-    expect(result.current.state.conversation.cookLastName).toBe("Dupont");
+    expect(result.current.state.conversation.otherFirstName).toBe("Marie");
+    expect(result.current.state.conversation.otherLastName).toBe("Dupont");
   });
 
   it("sendMessage ajoute un message client à la conversation", async () => {

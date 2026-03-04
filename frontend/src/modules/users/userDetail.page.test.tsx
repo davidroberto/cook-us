@@ -29,7 +29,7 @@ const cookUser: BackofficeUser = {
     thumbnail: null, role: 'cook',
     createdAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-01T00:00:00Z',
     deletedAt: null,
-    cookProfile: { description: 'Chef italien', speciality: 'italien', hourlyRate: '45', city: 'Lyon' },
+    cookProfile: { description: 'Chef italien', speciality: 'italian_cooking', hourlyRate: 45, city: 'Lyon' },
 }
 
 const clientUser: BackofficeUser = {

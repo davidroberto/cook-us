@@ -10,6 +10,10 @@ import { RegisterController } from "@src/modules/auth/register/register.controll
 import { RegisterUseCase } from "@src/modules/auth/register/register.useCase";
 import { LoginController } from "@src/modules/auth/login/login.controller";
 import { LoginUseCase } from "@src/modules/auth/login/login.useCase";
+import { UpdateProfileController } from "@src/modules/auth/updateProfile/updateProfile.controller";
+import { UpdateProfileUseCase } from "@src/modules/auth/updateProfile/updateProfile.useCase";
+import { ChangePasswordController } from "@src/modules/auth/changePassword/changePassword.controller";
+import { ChangePasswordUseCase } from "@src/modules/auth/changePassword/changePassword.useCase";
 
 @Module({
   imports: [
@@ -21,8 +25,19 @@ import { LoginUseCase } from "@src/modules/auth/login/login.useCase";
     }),
     TypeOrmModule.forFeature([User, Cook, Client]),
   ],
-  controllers: [RegisterController, LoginController],
-  providers: [JwtStrategy, RegisterUseCase, LoginUseCase],
+  controllers: [
+    RegisterController,
+    LoginController,
+    UpdateProfileController,
+    ChangePasswordController,
+  ],
+  providers: [
+    JwtStrategy,
+    RegisterUseCase,
+    LoginUseCase,
+    UpdateProfileUseCase,
+    ChangePasswordUseCase,
+  ],
   exports: [JwtModule],
 })
 export class AuthModule {}

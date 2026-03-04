@@ -49,7 +49,7 @@ function validateCommand(command: SendPropositionCommand): void {
 }
 
 export function useSendProposition() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -75,7 +75,6 @@ export function useSendProposition() {
           startDate: parseDDMMYYYY(command.startDate).toISOString(),
           endDate: null,
           cookId: command.cookId,
-          clientId: user!.id,
         }),
       });
 
@@ -87,39 +86,8 @@ export function useSendProposition() {
         );
       }
 
-      const myConversationsResponse = await fetch(`${BASE_URL}/conversations/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!myConversationsResponse.ok) {
-        throw new Error("Impossible de récupérer les conversations.");
-      }
-
-      const myConversations: { id: number; participants: { authorId: number }[] }[] =
-        await myConversationsResponse.json();
-
-      const existing = myConversations.find((c) =>
-        c.participants.some((p) => p.authorId === command.cookUserId)
-      );
-
-      let conversationId: number;
-
-      if (existing) {
-        conversationId = existing.id;
-      } else {
-        const conversationResponse = await fetch(`${BASE_URL}/conversations`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ participantIds: [user!.id, command.cookUserId] }),
-        });
-
-        if (!conversationResponse.ok) {
-          throw new Error("Impossible de créer la conversation.");
-        }
-
-        const conversation: { id: number } = await conversationResponse.json();
-        conversationId = conversation.id;
-      }
+      const createdRequest: CreatedCookRequest = await cookRequestResponse.json();
+      const conversationId = createdRequest.conversationId;
 
       await fetch(`${BASE_URL}/conversations/${conversationId}/messages`, {
         method: "POST",
@@ -130,7 +98,11 @@ export function useSendProposition() {
         body: JSON.stringify({
           message:
             COOK_REQUEST_MESSAGE_PREFIX +
-            JSON.stringify({ startDate: command.startDate, guestsNumber: command.numberOfGuests }),
+            JSON.stringify({
+              startDate: command.startDate,
+              guestsNumber: command.numberOfGuests,
+              cookRequestId: createdRequest.id,
+            }),
         }),
       });
 

@@ -13,7 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useStaticAssets(uploadsDir, { prefix: "/api/uploads" });
   app.setGlobalPrefix("api");
-  app.enableCors();
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   const config = new DocumentBuilder()

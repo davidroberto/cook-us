@@ -18,14 +18,14 @@ export function buildMockApiConversation(seed: ConversationSeedData): ApiConvers
 export function toConversation(
   api: ApiConversation,
   currentUserId: number,
-  cookFirstName: string,
-  cookLastName: string,
+  otherFirstName: string,
+  otherLastName: string,
   requestData?: { startDate: string; guestsNumber: number }
 ): Conversation {
   return {
     id: api.id,
-    cookFirstName,
-    cookLastName,
+    otherFirstName,
+    otherLastName,
     messages: api.messages.map((m) => ({
       id: m.id,
       content: m.message,

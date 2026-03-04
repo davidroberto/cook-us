@@ -34,8 +34,7 @@ export const mapCookToCardData = (cook: Cook): CookerCardData => ({
   speciality: cook.speciality,
   thumbnail: resolveThumbnail(cook),
   hourly_rate: cook.hourlyRate ?? 0,
-  // city n'existe pas encore dans l'entité backend
-  city: "",
+  city: cook.city ?? "",
 });
 
 export const mapCooksToCardData = (cooks: Cook[]): CookerCardData[] =>

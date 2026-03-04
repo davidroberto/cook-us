@@ -7,6 +7,7 @@ dist
 # Environment
 .env.local
 .env.prod
+*/uploads
 
 # IDE
 .idea

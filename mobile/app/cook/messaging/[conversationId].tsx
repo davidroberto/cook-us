@@ -12,22 +12,16 @@ import {
   View,
 } from "react-native";
 
-export default function MessagingPage() {
+export default function CookMessagingPage() {
   const router = useRouter();
-  const { requestId, otherFirstName, otherLastName } = useLocalSearchParams<{
-    requestId: string;
-    otherFirstName?: string;
-    otherLastName?: string;
-  }>();
+  const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
-  const { state, retry, sendMessage } = useConversation(parseInt(requestId ?? "0", 10));
+  const { state, retry, sendMessage } = useConversation(parseInt(conversationId ?? "0", 10));
 
   const headerTitle =
     state.status === "success"
       ? `${state.conversation.otherFirstName} ${state.conversation.otherLastName}`
-      : otherFirstName && otherLastName
-        ? `${otherFirstName} ${otherLastName}`
-        : "Messagerie";
+      : "Messagerie";
 
   if (state.status === "loading") {
     return (

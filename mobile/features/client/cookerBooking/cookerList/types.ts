@@ -8,11 +8,15 @@
 export type UserRole = "client" | "cook" | "admin";
 
 export type CookSpeciality =
-  | "indian"
-  | "french"
-  | "italian"
-  | "japanese"
-  | "mexican";
+  | "french_cooking"
+  | "italian_cooking"
+  | "asian_cooking"
+  | "mexican_cooking"
+  | "vegetarian_cooking"
+  | "pastry_cooking"
+  | "japanese_cooking"
+  | "indian_cooking"
+  | "autre";
 
 // ─── Modèles bruts (miroir des tables DB) ───────────────────────────────────
 
@@ -46,6 +50,7 @@ export interface Cook {
   speciality: CookSpeciality;
   hourlyRate: number | null;
   photoUrl: string | null;
+  city: string | null;
   isActive: boolean;
   isValidated: boolean;
   /** Relation : users */

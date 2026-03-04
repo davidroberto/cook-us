@@ -1,10 +1,10 @@
-import { Stack, Redirect } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
+import { Redirect, Stack } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
 
 export default function ClientLayout() {
-  const { token, isReady } = useAuth();
+  const { token, user, isReady } = useAuth();
 
   if (!isReady) {
     return (
@@ -16,6 +16,10 @@ export default function ClientLayout() {
 
   if (!token) {
     return <Redirect href="/login" />;
+  }
+
+  if (user?.role === "cook") {
+    return <Redirect href="/cook" />;
   }
 
   return (
@@ -41,6 +45,10 @@ export default function ClientLayout() {
       <Stack.Screen
         name="viewProfile/profile"
         options={{ title: "Mon profil" }}
+      />
+      <Stack.Screen
+        name="orderHistory"
+        options={{ title: "Historique de réservations" }}
       />
       <Stack.Screen
         name="messaging/[requestId]"

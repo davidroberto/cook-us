@@ -8,12 +8,13 @@ interface CookerCardProps {
   onPress: () => void;
 }
 
-const SPECIALITY_LABEL: Record<string, string> = {
+const SPECIALITY_LABEL: Record<CookerCardData["speciality"], string> = {
   french_cooking: "Cuisine française",
   italian_cooking: "Cuisine italienne",
   asian_cooking: "Cuisine asiatique",
   mexican_cooking: "Cuisine mexicaine",
   vegetarian_cooking: "Cuisine végétarienne",
+  pastry_cooking: "Pâtisserie & Desserts",
   japanese_cooking: "Cuisine japonaise",
   indian_cooking: "Cuisine indienne",
   autre: "Autre",

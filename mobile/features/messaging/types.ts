@@ -52,7 +52,7 @@ export type Message = {
 
 export type Conversation = {
   id: number;
-  cookFirstName: string;
-  cookLastName: string;
+  otherFirstName: string;
+  otherLastName: string;
   messages: Message[];
 };
