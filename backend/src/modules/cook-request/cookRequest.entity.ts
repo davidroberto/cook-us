@@ -14,6 +14,7 @@ export enum CookRequestStatus {
   ACCEPTED = "accepted",
   REFUSED = "refused",
   CANCELLED = "cancelled",
+  PAID = "paid",
 }
 
 export enum MealType {
@@ -74,6 +75,10 @@ export class CookRequestEntity {
   @ApiPropertyOptional({ example: "Bonjour, je souhaite un menu végétarien." })
   @Column({ type: "text", nullable: true })
   message: string | null;
+
+  @ApiPropertyOptional({ example: 1 })
+  @Column({ name: "conversation_id", type: "int", nullable: true })
+  conversationId: number | null;
 
   @ApiProperty({
     example: "Je ne suis plus disponible à cette date",
