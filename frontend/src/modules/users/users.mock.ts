@@ -26,7 +26,7 @@ export const usersMock: BackofficeUser[] = [
         cookProfile: {
             description: "Chef spécialisé en cuisine italienne avec 10 ans d'expérience dans des restaurants étoilés à Milan et Lyon.",
             speciality: 'italian_cooking',
-            hourlyRate: '45',
+            hourlyRate: 45,
             city: 'Lyon',
         },
     },
@@ -43,7 +43,7 @@ export const usersMock: BackofficeUser[] = [
         cookProfile: {
             description: 'Cuisinière passionnée par les épices et la gastronomie indienne, propose des menus végétariens et végans sur demande.',
             speciality: 'indian_cooking',
-            hourlyRate: '52',
+            hourlyRate: 52,
             city: 'Paris',
         },
     },
@@ -84,7 +84,7 @@ export const usersMock: BackofficeUser[] = [
         cookProfile: {
             description: 'Cuisinier français formé à Lyon, spécialisé dans la cuisine traditionnelle et les plats mijotés.',
             speciality: 'french_cooking',
-            hourlyRate: '38',
+            hourlyRate: 38,
             city: 'Bordeaux',
         },
     },

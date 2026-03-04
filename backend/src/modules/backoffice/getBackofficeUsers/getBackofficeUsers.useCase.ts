@@ -43,7 +43,7 @@ export class GetBackofficeUsersUseCase {
           ? {
               description: cook.description ?? "",
               speciality: cook.speciality,
-              hourlyRate: cook.hourlyRate?.toString() ?? "0",
+              hourlyRate: cook.hourlyRate ?? null,
               city: cook.city ?? "",
             }
           : null,

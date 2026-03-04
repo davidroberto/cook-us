@@ -14,7 +14,7 @@ export type BackofficeUser = {
     cookProfile: {
         description: string
         speciality: CookSpeciality
-        hourlyRate: string
+        hourlyRate: number | null
         city: string
     } | null
 }
