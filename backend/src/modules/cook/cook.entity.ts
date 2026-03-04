@@ -9,6 +9,12 @@ import {
 import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { User } from "@src/modules/user/user.entity";
 
+export enum CookValidationStatus {
+  PENDING = "pending",
+  VALIDATED = "validated",
+  REFUSED = "refused",
+}
+
 @Entity()
 export class Cook {
   @PrimaryGeneratedColumn("uuid") id: string;
@@ -21,7 +27,14 @@ export class Cook {
   hourlyRate: number | null;
   @Column({ default: true }) isActive: boolean;
   @Column({ default: false }) isValidated: boolean;
+  @Column({
+    type: "enum",
+    enum: CookValidationStatus,
+    default: CookValidationStatus.PENDING,
+  })
+  validationStatus: CookValidationStatus;
   @Column({ nullable: true }) city: string | null;
+  @Column({ nullable: true }) siret: string | null;
 
   @Column({ name: "user_id", nullable: true })
   userId: number;
