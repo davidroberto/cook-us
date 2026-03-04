@@ -1,7 +1,7 @@
-import { Stack, Redirect } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
+import { Redirect, Stack } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
 
 export default function ClientLayout() {
   const { token, user, isReady } = useAuth();
@@ -46,7 +46,10 @@ export default function ClientLayout() {
         name="viewProfile/profile"
         options={{ title: "Mon profil" }}
       />
-      <Stack.Screen name="messaging/[requestId]" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="messaging/[requestId]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

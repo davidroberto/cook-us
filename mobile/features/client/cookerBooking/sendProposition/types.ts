@@ -11,6 +11,7 @@ export type CreatedCookRequest = {
   guestsNumber: number;
   startDate: string;
   endDate: string | null;
+  conversationId: number;
 };
 
 export type Proposition = {
