@@ -1,4 +1,4 @@
-import { Controller, Param, ParseIntPipe, Patch } from "@nestjs/common";
+import { Controller, Param, ParseIntPipe, Patch, Request } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,7 +28,7 @@ export class AcceptCookRequestController {
   })
   @ApiResponse({ status: 400, description: "Statut non acceptable" })
   @ApiResponse({ status: 404, description: "Réservation introuvable" })
-  accept(@Param("id", ParseIntPipe) id: number) {
-    return this.acceptCookRequestUseCase.execute(id);
+  accept(@Param("id", ParseIntPipe) id: number, @Request() req) {
+    return this.acceptCookRequestUseCase.execute(id, req.user.id);
   }
 }

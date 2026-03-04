@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -17,13 +18,20 @@ export class AcceptCookRequestUseCase {
     private readonly cookRequestRepository: Repository<CookRequestEntity>
   ) {}
 
-  async execute(id: number): Promise<CookRequestEntity> {
+  async execute(id: number, currentUserId: number): Promise<CookRequestEntity> {
     const cookRequest = await this.cookRequestRepository.findOne({
       where: { id },
+      relations: ["cook"],
     });
 
     if (!cookRequest) {
       throw new NotFoundException(`La réservation #${id} n'existe pas`);
+    }
+
+    if (cookRequest.cook.userId !== currentUserId) {
+      throw new ForbiddenException(
+        `Vous n'êtes pas autorisé à accepter cette réservation`
+      );
     }
 
     if (cookRequest.status !== CookRequestStatus.PENDING) {

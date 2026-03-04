@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -20,14 +21,22 @@ export class CancelCookRequestUseCase {
 
   async execute(
     id: number,
-    dto: CancelCookRequestDto
+    dto: CancelCookRequestDto,
+    currentUserId: number
   ): Promise<CookRequestEntity> {
     const cookRequest = await this.cookRequestRepository.findOne({
       where: { id },
+      relations: ["client"],
     });
 
     if (!cookRequest) {
       throw new NotFoundException(`La réservation #${id} n'existe pas`);
+    }
+
+    if (cookRequest.client.userId !== currentUserId) {
+      throw new ForbiddenException(
+        `Vous n'êtes pas autorisé à annuler cette réservation`
+      );
     }
 
     if (
