@@ -17,6 +17,8 @@ import { AcceptCookRequestController } from "@src/modules/cook-request/acceptCoo
 import { AcceptCookRequestUseCase } from "@src/modules/cook-request/acceptCookRequest/acceptCookRequest.useCase";
 import { RefuseCookRequestController } from "@src/modules/cook-request/refuseCookRequest/refuseCookRequest.controller";
 import { RefuseCookRequestUseCase } from "@src/modules/cook-request/refuseCookRequest/refuseCookRequest.useCase";
+import { GetCookCookRequestsController } from "@src/modules/cook-request/getCookCookRequests/getCookCookRequests.controller";
+import { GetCookCookRequestsUseCase } from "@src/modules/cook-request/getCookCookRequests/getCookCookRequests.useCase";
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { RefuseCookRequestUseCase } from "@src/modules/cook-request/refuseCookRe
   controllers: [
     CreateCookRequestController,
     GetClientCookRequestsController,
+    GetCookCookRequestsController,
     GetCookRequestController,
     AcceptCookRequestController,
     RefuseCookRequestController,
@@ -43,6 +46,7 @@ import { RefuseCookRequestUseCase } from "@src/modules/cook-request/refuseCookRe
     AcceptCookRequestUseCase,
     RefuseCookRequestUseCase,
     CancelCookRequestUseCase,
+    GetCookCookRequestsUseCase,
   ],
 })
 export class CookRequestModule {}

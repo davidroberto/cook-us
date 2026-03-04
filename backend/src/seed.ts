@@ -59,15 +59,15 @@ const COOKS_DATA = [
       "Autodidacte passionné par l'Asie du Sud-Est. Je propose des menus thaïlandais, vietnamiens et japonais avec des produits frais et authentiques.",
   },
   {
-    firstName: "Sophie",
-    lastName: "Lambert",
-    email: "sophie.lambert@cookus.app",
+    firstName: "Maxence",
+    lastName: "Dorizon",
+    email: "maxence.dorizon@cookus.app",
     speciality: "vegetarian_cooking",
-    hourlyRate: 50,
+    hourlyRate: 1000000,
     city: "Bordeaux",
     isValidated: true,
     description:
-      "Diététicienne et cheffe cuisinière, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
+      "Diététicien et chef cuisinier, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
   },
   {
     firstName: "Antoine",
