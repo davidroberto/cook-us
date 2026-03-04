@@ -19,7 +19,15 @@ import { RefuseCookRequestController } from "@src/modules/cook-request/refuseCoo
 import { RefuseCookRequestUseCase } from "@src/modules/cook-request/refuseCookRequest/refuseCookRequest.useCase";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CookRequestEntity, Cook, Client, Conversation, ConversationParticipant])],
+  imports: [
+    TypeOrmModule.forFeature([
+      CookRequestEntity,
+      Cook,
+      Client,
+      Conversation,
+      ConversationParticipant,
+    ]),
+  ],
   controllers: [
     CreateCookRequestController,
     GetClientCookRequestsController,

@@ -30,7 +30,9 @@ export class CreateCookRequestUseCase {
     const client = await this.clientRepository.findOne({ where: { userId } });
     if (!client) throw new NotFoundException("Client introuvable");
 
-    const cook = await this.cookRepository.findOne({ where: { id: dto.cookId } });
+    const cook = await this.cookRepository.findOne({
+      where: { id: dto.cookId },
+    });
     if (!cook) throw new NotFoundException("Cuisinier introuvable");
 
     const cookRequest = this.cookRequestRepository.create({
@@ -47,8 +49,14 @@ export class CreateCookRequestUseCase {
       this.conversationRepository.create()
     );
     await this.participantRepository.save([
-      this.participantRepository.create({ authorId: client.userId, conversationId: conversation.id }),
-      this.participantRepository.create({ authorId: cook.userId, conversationId: conversation.id }),
+      this.participantRepository.create({
+        authorId: client.userId,
+        conversationId: conversation.id,
+      }),
+      this.participantRepository.create({
+        authorId: cook.userId,
+        conversationId: conversation.id,
+      }),
     ]);
 
     return {
