@@ -29,6 +29,8 @@ export function MessageBubble({ message }: Props) {
         <RequestSummaryCard
           startDate={message.requestData.startDate}
           guestsNumber={message.requestData.guestsNumber}
+          mealType={message.requestData.mealType}
+          message={message.requestData.message}
           isSentByMe={isClient}
         />
       ) : (
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   clientSide: { alignItems: "flex-end" },
   cookSide: { alignItems: "flex-start" },
   bubble: {
-    maxWidth: "78%",
+    maxWidth: "75%",
     borderRadius: 16,
     paddingVertical: 10,
     paddingHorizontal: 14,

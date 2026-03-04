@@ -1,6 +1,7 @@
 import { useCookerProfile } from "@/features/client/cookerBooking/cookerProfile/useCookerProfile";
 import { SendPropositionForm } from "@/features/client/cookerBooking/sendProposition/components/SendPropositionForm";
 import { colors } from "@/styles/colors";
+import { typography } from "@/styles/typography";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
@@ -9,43 +10,64 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BookingPage() {
   const { cookId } = useLocalSearchParams<{ cookId: string }>();
   const router = useRouter();
   const { state, retry } = useCookerProfile(cookId ?? "");
 
+  const header = (
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Text style={styles.backText}>← Retour</Text>
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>Réserver</Text>
+      <View style={styles.headerRight} />
+    </View>
+  );
+
   if (state.status === "loading") {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.main} />
-      </View>
+      <SafeAreaView style={styles.container}>
+        {header}
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={colors.main} />
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (state.status === "not_found") {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.notFoundText}>Ce cuisinier est introuvable.</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        {header}
+        <View style={styles.centered}>
+          <Text style={styles.notFoundText}>Ce cuisinier est introuvable.</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (state.status === "error") {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>
-          Une erreur est survenue. Veuillez réessayer.
-        </Text>
-        <TouchableOpacity onPress={retry} style={styles.retryButton}>
-          <Text style={styles.retryText}>Réessayer</Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={styles.container}>
+        {header}
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>
+            Une erreur est survenue. Veuillez réessayer.
+          </Text>
+          <TouchableOpacity onPress={retry} style={styles.retryButton}>
+            <Text style={styles.retryText}>Réessayer</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      {header}
       <SendPropositionForm
         cookId={cookId ?? ""}
         cookUserId={state.cook.userId}
@@ -53,7 +75,7 @@ export default function BookingPage() {
         cookLastName={state.cook.lastName}
         cookSpeciality={state.cook.speciality}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -62,6 +84,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.tertiary,
+  },
+  backButton: { padding: 4 },
+  backText: {
+    ...typography.styles.body1Regular,
+    color: colors.main,
+  },
+  headerTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+  },
+  headerRight: { width: 60 },
   centered: {
     flex: 1,
     alignItems: "center",

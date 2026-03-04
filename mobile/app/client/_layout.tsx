@@ -29,18 +29,18 @@ export default function ClientLayout() {
         headerTintColor: colors.main,
         headerTitleStyle: { color: colors.text },
         headerShadowVisible: false,
-        headerBackTitle: "",
+        headerBackVisible: false,
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="viewCook/profile/[cookId]"
-        options={{ title: "Profil du cuisinier" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="viewCook/booking/[cookId]"
-        options={{ title: "Réserver" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="viewProfile/profile"
@@ -48,7 +48,7 @@ export default function ClientLayout() {
       />
       <Stack.Screen
         name="orderHistory"
-        options={{ title: "Historique de réservations" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="messaging/[requestId]"

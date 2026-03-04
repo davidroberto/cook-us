@@ -46,6 +46,9 @@ function validateCommand(command: SendPropositionCommand): void {
   if (!isDateTodayOrFuture(command.startDate)) {
     throw new Error("La date de début doit être aujourd'hui ou dans le futur.");
   }
+  if (!command.mealType) {
+    throw new Error("Le type de repas est requis.");
+  }
 }
 
 export function useSendProposition() {
@@ -75,6 +78,8 @@ export function useSendProposition() {
           startDate: parseDDMMYYYY(command.startDate).toISOString(),
           endDate: null,
           cookId: command.cookId,
+          mealType: command.mealType,
+          message: command.message || undefined,
         }),
       });
 
@@ -101,6 +106,8 @@ export function useSendProposition() {
             JSON.stringify({
               startDate: command.startDate,
               guestsNumber: command.numberOfGuests,
+              mealType: command.mealType,
+              message: command.message || undefined,
               cookRequestId: createdRequest.id,
             }),
         }),
