@@ -4,6 +4,18 @@ import { colors, typography } from "@/styles";
 import type { CookerProfile } from "../types";
 import { Button } from "@/components/ui/Button";
 
+const SPECIALITY_LABEL: Record<string, string> = {
+  french_cooking: "Cuisine française",
+  italian_cooking: "Cuisine italienne",
+  asian_cooking: "Cuisine asiatique",
+  mexican_cooking: "Cuisine mexicaine",
+  vegetarian_cooking: "Cuisine végétarienne",
+  pastry_cooking: "Pâtisserie & Desserts",
+  japanese_cooking: "Cuisine japonaise",
+  indian_cooking: "Cuisine indienne",
+  autre: "Autre",
+};
+
 interface ProfileCardProps {
   cook: CookerProfile;
   onProposeCreneau: () => void;
@@ -26,7 +38,7 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
       </Text>
 
       <Text style={styles.speciality} testID="profile-speciality">
-        {cook.speciality}
+        {SPECIALITY_LABEL[cook.speciality] ?? cook.speciality}
       </Text>
 
       <Text style={styles.rate} testID="profile-rate">

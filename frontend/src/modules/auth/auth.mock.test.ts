@@ -4,7 +4,7 @@ import { mockLogin, mockMe } from './auth.mock'
 describe('mockLogin', () => {
     it('résout avec le user admin pour les bons identifiants', async () => {
         const user = await mockLogin('admin@cookus.app', 'admin1234')
-        expect(user).toEqual({ id: 4, email: 'admin@cookus.app', role: 'admin' })
+        expect(user).toEqual({ id: 4, firstName: 'Admin', lastName: "Cook'us", email: 'admin@cookus.app', role: 'admin' })
     })
 
     it('rejette avec un message d\'erreur pour un mauvais mot de passe', async () => {

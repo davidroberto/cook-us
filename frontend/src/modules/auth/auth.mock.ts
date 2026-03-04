@@ -7,6 +7,8 @@ const ADMIN_CREDENTIALS = {
 
 const ADMIN_USER: AuthUser = {
     id: 4,
+    firstName: 'Admin',
+    lastName: 'Cook\'us',
     email: 'admin@cookus.app',
     role: 'admin',
 }

@@ -14,7 +14,7 @@ import { CreateConversationDto } from "@src/modules/conversation/createConversat
 @ApiTags("Conversations")
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@Roles(UserRole.ADMIN)
+@Roles(UserRole.CLIENT, UserRole.ADMIN)
 @Controller("conversations")
 export class CreateConversationController {
   constructor(

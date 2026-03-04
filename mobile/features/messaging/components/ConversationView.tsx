@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
 import { MessageBubble } from "./MessageBubble";
@@ -20,7 +20,11 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
   }, [conversation.messages.length]);
 
   return (
-    <View style={styles.container} testID="conversation-view">
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      testID="conversation-view"
+    >
       <FlatList<Message>
         ref={listRef}
         testID="message-list"
@@ -31,7 +35,7 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
         showsVerticalScrollIndicator={false}
       />
       <MessageInput onSend={onSendMessage} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

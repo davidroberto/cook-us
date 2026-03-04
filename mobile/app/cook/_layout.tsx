@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 
-export default function ClientLayout() {
+export default function CookLayout() {
   const { token, user, isReady } = useAuth();
 
   if (!isReady) {
@@ -18,8 +18,8 @@ export default function ClientLayout() {
     return <Redirect href="/login" />;
   }
 
-  if (user?.role === "cook") {
-    return <Redirect href="/cook" />;
+  if (user?.role !== "cook") {
+    return <Redirect href="/client" />;
   }
 
   return (
@@ -33,20 +33,7 @@ export default function ClientLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="viewCook/profile/[cookId]"
-        options={{ title: "Profil du cuisinier" }}
-      />
-      <Stack.Screen
-        name="viewCook/booking/[cookId]"
-        options={{ title: "Réserver" }}
-      />
-      <Stack.Screen
-        name="viewProfile/profile"
-        options={{ title: "Mon profil" }}
-      />
-      <Stack.Screen name="messaging/[requestId]" options={{ headerShown: false }} />
+      <Stack.Screen name="messaging/[conversationId]" options={{ headerShown: false }} />
     </Stack>
   );
 }

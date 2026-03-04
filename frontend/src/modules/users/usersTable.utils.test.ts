@@ -37,9 +37,9 @@ describe('getSortValue', () => {
 
     it('retourne la speciality si cookProfile existe', () => {
         const user = baseUser({
-            cookProfile: { description: '', speciality: 'french', hourlyRate: '40', city: 'Paris' },
+            cookProfile: { description: '', speciality: 'french_cooking', hourlyRate: 40, city: 'Paris' },
         })
-        expect(getSortValue(user, 'speciality')).toBe('french')
+        expect(getSortValue(user, 'speciality')).toBe('french_cooking')
     })
 
     it('retourne 99999 pour hourlyRate si pas de cookProfile', () => {

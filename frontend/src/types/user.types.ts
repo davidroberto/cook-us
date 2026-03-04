@@ -1,5 +1,5 @@
 export type UserRole = 'client' | 'cook' | 'admin'
-export type CookSpeciality = 'indian' | 'french' | 'italien'
+export type CookSpeciality = 'french_cooking' | 'italian_cooking' | 'asian_cooking' | 'mexican_cooking' | 'vegetarian_cooking' | 'pastry_cooking' | 'japanese_cooking' | 'indian_cooking' | 'autre'
 
 export type BackofficeUser = {
     id: number
@@ -14,7 +14,7 @@ export type BackofficeUser = {
     cookProfile: {
         description: string
         speciality: CookSpeciality
-        hourlyRate: string
+        hourlyRate: number | null
         city: string
     } | null
 }
