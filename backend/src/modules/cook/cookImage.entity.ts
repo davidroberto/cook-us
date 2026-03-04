@@ -15,8 +15,8 @@ export class CookImage {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "cook_id" })
-  cookId: number;
+  @Column({ name: "cook_id", type: "uuid" })
+  cookId: string;
 
   @ManyToOne(() => Cook, (cook) => cook.images)
   @JoinColumn({ name: "cook_id" })
