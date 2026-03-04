@@ -78,8 +78,6 @@ export function useConversation(conversationId: number) {
 
   useEffect(() => {
     load();
-    const interval = setInterval(() => load(true), 5000);
-    return () => clearInterval(interval);
   }, [load]);
 
   const sendMessage = useCallback(
