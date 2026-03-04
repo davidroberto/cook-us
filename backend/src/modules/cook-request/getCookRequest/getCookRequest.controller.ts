@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { Controller, Get, Param, ParseIntPipe, Request } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -33,7 +33,10 @@ export class GetCookRequestController {
     description: "Rôle non autorisé (cook ou admin requis)",
   })
   @ApiResponse({ status: 404, description: "Réservation non trouvée" })
-  getCookRequest(@Param("id", ParseIntPipe) id: number) {
-    return this.getCookRequestUseCase.execute(id);
+  getCookRequest(
+    @Param("id", ParseIntPipe) id: number,
+    @Request() req: { user: { id: number; role: UserRole } }
+  ) {
+    return this.getCookRequestUseCase.execute(id, req.user);
   }
 }
