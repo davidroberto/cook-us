@@ -1,30 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const MOBILE_URL = process.env.E2E_MOBILE_URL ?? "http://localhost:8081";
-const API_URL = process.env.E2E_API_URL ?? "http://localhost:8080/api";
 
 const PROFILE_TIMEOUT = 10_000;
 
 // ─── Auth helper ──────────────────────────────────────────────────────────────
 
 async function loginAsClient(page: Page) {
-  const response = await page.request.post(`${API_URL}/auth/login`, {
-    data: {
-      email: process.env.E2E_CLIENT_EMAIL ?? "",
-      password: process.env.E2E_CLIENT_PASSWORD ?? "",
-    },
-  });
-
-  const { token, user } = await response.json();
-
-  await page.goto(MOBILE_URL);
-  await page.evaluate(
-    ({ token, user }) => {
-      localStorage.setItem("auth_token", token);
-      localStorage.setItem("auth_user", JSON.stringify(user));
-    },
-    { token, user },
-  );
+  await page.goto(`${MOBILE_URL}/login`);
+  await expect(page.getByTestId("login-form")).toBeVisible({ timeout: PROFILE_TIMEOUT });
+  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
+  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("submit-button").click();
+  await expect(page).toHaveURL(/\/client\/home/, { timeout: PROFILE_TIMEOUT });
 }
 
 // ─── Scénario : Client connecté — Voir les informations du cuisinier ─────────
@@ -32,7 +20,6 @@ async function loginAsClient(page: Page) {
 test.describe("Profil cuisinier", () => {
   test.beforeEach(async ({ page }) => {
     await loginAsClient(page);
-    await page.goto(`${MOBILE_URL}/client/home`);
     await expect(page.getByTestId("cooker-card").first()).toBeVisible({
       timeout: PROFILE_TIMEOUT,
     });
