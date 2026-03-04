@@ -5,12 +5,13 @@ import { StyleSheet, Text, View } from "react-native";
 type Props = {
   startDate: string;
   guestsNumber: number;
+  isSentByMe: boolean;
 };
 
-export function RequestSummaryCard({ startDate, guestsNumber }: Props) {
+export function RequestSummaryCard({ startDate, guestsNumber, isSentByMe }: Props) {
   return (
     <View style={styles.card} testID="request-summary-card">
-      <Text style={styles.title}>Demande envoyée</Text>
+      <Text style={styles.title}>{isSentByMe ? "Demande envoyée" : "Demande reçue"}</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Date</Text>
         <Text style={styles.value}>{startDate}</Text>
