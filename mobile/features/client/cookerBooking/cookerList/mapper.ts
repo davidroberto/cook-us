@@ -3,7 +3,17 @@
  * Centralise la logique de transformation pour éviter de la dupliquer dans les composants.
  */
 
+import { getApiUrl } from "@/features/api/getApiUrl";
 import type { Cook, CookerCardData } from "./types";
+
+/**
+ * Transforme un chemin relatif (/api/uploads/…) en URL absolue.
+ */
+const toAbsoluteUrl = (path: string): string => {
+  if (path.startsWith("http")) return path;
+  const baseUrl = getApiUrl().replace(/\/api$/, "");
+  return `${baseUrl}${path}`;
+};
 
 /**
  * Résout la miniature à afficher :
@@ -12,8 +22,8 @@ import type { Cook, CookerCardData } from "./types";
  * - sinon null
  */
 const resolveThumbnail = (cook: Cook): string | null => {
-  if (cook.user.thumbnail) return cook.user.thumbnail;
-  if (cook.images.length > 0) return cook.images[0].imgUrl;
+  if (cook.user.thumbnail) return toAbsoluteUrl(cook.user.thumbnail);
+  if (cook.images.length > 0) return toAbsoluteUrl(cook.images[0].imgUrl);
   return null;
 };
 
