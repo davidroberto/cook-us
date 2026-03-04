@@ -51,18 +51,6 @@ export class CreateCookRequestUseCase {
     });
     if (!cook) throw new NotFoundException("Cuisinier introuvable");
 
-    const cookRequest = this.cookRequestRepository.create({
-      guestsNumber: dto.guestsNumber,
-      startDate: new Date(dto.startDate),
-      endDate: dto.endDate ? new Date(dto.endDate) : null,
-      cookId: dto.cookId,
-      clientId: client.id,
-      status: CookRequestStatus.PENDING,
-      mealType: dto.mealType,
-      message: dto.message ?? null,
-    });
-    const saved = await this.cookRequestRepository.save(cookRequest);
-
     const conversation = await this.conversationRepository.save(
       this.conversationRepository.create()
     );
@@ -76,6 +64,19 @@ export class CreateCookRequestUseCase {
         conversationId: conversation.id,
       }),
     ]);
+
+    const cookRequest = this.cookRequestRepository.create({
+      guestsNumber: dto.guestsNumber,
+      startDate: new Date(dto.startDate),
+      endDate: dto.endDate ? new Date(dto.endDate) : null,
+      cookId: dto.cookId,
+      clientId: client.id,
+      status: CookRequestStatus.PENDING,
+      mealType: dto.mealType,
+      message: dto.message ?? null,
+      conversationId: conversation.id,
+    });
+    const saved = await this.cookRequestRepository.save(cookRequest);
 
     return {
       id: saved.id,

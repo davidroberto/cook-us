@@ -5,6 +5,10 @@ import { Cook } from "@src/modules/cook/cook.entity";
 import { Client } from "@src/modules/client/client.entity";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
+import { Message } from "@src/modules/conversation/message.entity";
+import { User } from "@src/modules/user/user.entity";
+import { PayCookRequestController } from "@src/modules/cook-request/payCookRequest/payCookRequest.controller";
+import { PayCookRequestUseCase } from "@src/modules/cook-request/payCookRequest/payCookRequest.useCase";
 import { CreateCookRequestController } from "@src/modules/cook-request/createCookRequest/createCookRequest.controller";
 import { CreateCookRequestUseCase } from "@src/modules/cook-request/createCookRequest/createCookRequest.useCase";
 import { GetCookRequestController } from "@src/modules/cook-request/getCookRequest/getCookRequest.controller";
@@ -28,6 +32,8 @@ import { GetCookCookRequestsUseCase } from "@src/modules/cook-request/getCookCoo
       Client,
       Conversation,
       ConversationParticipant,
+      Message,
+      User,
     ]),
   ],
   controllers: [
@@ -38,6 +44,7 @@ import { GetCookCookRequestsUseCase } from "@src/modules/cook-request/getCookCoo
     AcceptCookRequestController,
     RefuseCookRequestController,
     CancelCookRequestController,
+    PayCookRequestController,
   ],
   providers: [
     CreateCookRequestUseCase,
@@ -47,6 +54,7 @@ import { GetCookCookRequestsUseCase } from "@src/modules/cook-request/getCookCoo
     RefuseCookRequestUseCase,
     CancelCookRequestUseCase,
     GetCookCookRequestsUseCase,
+    PayCookRequestUseCase,
   ],
 })
 export class CookRequestModule {}
