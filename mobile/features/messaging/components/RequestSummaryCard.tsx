@@ -35,9 +35,9 @@ export function RequestSummaryCard({ startDate, guestsNumber, mealType, message,
         </View>
       )}
       {message && (
-        <View style={styles.messageContainer}>
+        <View style={styles.row}>
           <Text style={styles.label}>Message</Text>
-          <Text style={styles.messageText}>{message}</Text>
+          <Text style={[styles.value, styles.messageValue]}>{message}</Text>
         </View>
       )}
     </View>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tertiary,
     borderRadius: 12,
     padding: 14,
-    maxWidth: "78%",
+    maxWidth: "75%",
   },
   title: {
     ...typography.styles.body2Bold,
@@ -70,12 +70,8 @@ const styles = StyleSheet.create({
     ...typography.styles.body2Bold,
     color: colors.text,
   },
-  messageContainer: {
-    marginTop: 8,
-  },
-  messageText: {
-    ...typography.styles.body2Regular,
-    color: colors.text,
-    marginTop: 2,
+  messageValue: {
+    flexShrink: 1,
+    textAlign: "right",
   },
 });

@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   clientSide: { alignItems: "flex-end" },
   cookSide: { alignItems: "flex-start" },
   bubble: {
-    maxWidth: "78%",
+    maxWidth: "75%",
     borderRadius: 16,
     paddingVertical: 10,
     paddingHorizontal: 14,
