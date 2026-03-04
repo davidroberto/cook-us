@@ -42,6 +42,10 @@ export default function ClientLayout() {
         name="viewProfile/profile"
         options={{ title: "Mon profil" }}
       />
+      <Stack.Screen
+        name="messaging/[requestId]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
