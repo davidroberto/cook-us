@@ -40,6 +40,8 @@ export class GetCooksUseCase {
         "images.description",
       ]);
 
+    qb.andWhere("cook.isValidated = true").andWhere("cook.isActive = true");
+
     if (speciality) {
       qb.andWhere("LOWER(cook.speciality) LIKE LOWER(:speciality)", {
         speciality: `%${speciality}%`,
