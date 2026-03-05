@@ -21,4 +21,19 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   thumbnail?: string;
+
+  @ApiPropertyOptional({ example: "12 rue de la Paix" })
+  @IsOptional()
+  @IsString()
+  street?: string;
+
+  @ApiPropertyOptional({ example: "75001" })
+  @IsOptional()
+  @IsString()
+  postalCode?: string;
+
+  @ApiPropertyOptional({ example: "Paris" })
+  @IsOptional()
+  @IsString()
+  city?: string;
 }
