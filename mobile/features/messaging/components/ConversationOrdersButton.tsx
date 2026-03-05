@@ -6,14 +6,38 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
+import { useAuth } from "@/features/auth/AuthContext";
+import { getApiUrl } from "@/features/api/getApiUrl";
 import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import type { CookRequestSummary } from "@/features/messaging/useConversationRequests";
 import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
+
+const EDITABLE_STATUSES = ["pending", "accepted", "refused", "cancelled"];
+
+async function updateRequestAddress(
+  token: string,
+  requestId: number,
+  address: { street: string; postalCode: string; city: string }
+): Promise<void> {
+  const res = await fetch(`${getApiUrl()}/cook-request/${requestId}/address`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(address),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message ?? "Erreur réseau");
+  }
+}
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "En attente",
@@ -46,16 +70,60 @@ function formatDate(iso: string): string {
 
 const CANCELLABLE_STATUSES = ["pending", "accepted"];
 
-type RequestItemProps = {
+function RequestItem({
+  item,
+  cookName,
+  isClient,
+  token,
+  onCancelSuccess,
+  onAddressUpdated,
+}: {
   item: CookRequestSummary;
   cookName?: string;
+  isClient: boolean;
+  token: string | null;
   onCancelSuccess?: () => void;
-};
-
-function RequestItem({ item, cookName, onCancelSuccess }: RequestItemProps) {
+  onAddressUpdated: () => void;
+}) {
   const statusColor = STATUS_COLOR[item.status] ?? "#9E9E9E";
   const statusLabel = STATUS_LABEL[item.status] ?? item.status;
   const canCancel = !!cookName && CANCELLABLE_STATUSES.includes(item.status);
+  const canEditAddress = isClient && EDITABLE_STATUSES.includes(item.status);
+
+  const [editing, setEditing] = useState(false);
+  const [street, setStreet] = useState(item.street ?? "");
+  const [postalCode, setPostalCode] = useState(item.postalCode ?? "");
+  const [city, setCity] = useState(item.city ?? "");
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    if (!street.trim() || !postalCode.trim() || !city.trim()) {
+      setEditError("Tous les champs sont requis.");
+      return;
+    }
+    if (!token) return;
+    setSaving(true);
+    setEditError(null);
+    try {
+      await updateRequestAddress(token, item.id, {
+        street: street.trim(),
+        postalCode: postalCode.trim(),
+        city: city.trim(),
+      });
+      setEditing(false);
+      onAddressUpdated();
+    } catch (e) {
+      setEditError(e instanceof Error ? e.message : "Erreur réseau");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const address = item.street
+    ? `${item.street}, ${item.postalCode} ${item.city}`
+    : null;
+
   return (
     <View style={styles.requestItem}>
       <View style={styles.requestRow}>
@@ -70,12 +138,64 @@ function RequestItem({ item, cookName, onCancelSuccess }: RequestItemProps) {
           ? ` · ${MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}`
           : ""}
       </Text>
+      {address && !editing && (
+        <Text style={styles.requestAddress}>{address}</Text>
+      )}
       {canCancel && (
         <CancelBookingButton
           requestId={item.id}
           cookName={cookName!}
           onSuccess={onCancelSuccess ?? (() => {})}
         />
+      )}
+      {editing && (
+        <View style={styles.editForm}>
+          <TextInput
+            style={styles.editInput}
+            value={street}
+            onChangeText={setStreet}
+            placeholder="Rue"
+            autoCapitalize="sentences"
+            autoCorrect={false}
+          />
+          <TextInput
+            style={styles.editInput}
+            value={postalCode}
+            onChangeText={setPostalCode}
+            placeholder="Code postal"
+            keyboardType="numeric"
+            autoCorrect={false}
+          />
+          <TextInput
+            style={styles.editInput}
+            value={city}
+            onChangeText={setCity}
+            placeholder="Ville"
+            autoCapitalize="words"
+            autoCorrect={false}
+          />
+          {editError && <Text style={styles.editError}>{editError}</Text>}
+          <View style={styles.editActions}>
+            <TouchableOpacity
+              onPress={() => { setEditing(false); setEditError(null); }}
+              style={styles.editCancel}
+              disabled={saving}
+            >
+              <Text style={styles.editCancelText}>Annuler</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={[styles.editSave, saving && styles.editSaveDisabled]}
+              disabled={saving}
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Text style={styles.editSaveText}>Enregistrer</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
     </View>
   );
@@ -89,6 +209,8 @@ type Props = {
 export function ConversationOrdersButton({ conversationId, cookName }: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
+  const { user, token } = useAuth();
+  const isClient = user?.role === "client";
 
   const open = useCallback(() => {
     setVisible(true);
@@ -152,6 +274,9 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
                   item={item}
                   cookName={cookName}
                   onCancelSuccess={load}
+                  isClient={isClient}
+                  token={token}
+                  onAddressUpdated={load}
                 />
               )}
               contentContainerStyle={styles.list}
@@ -259,5 +384,59 @@ const styles = StyleSheet.create({
     color: colors.text,
     opacity: 0.5,
     textAlign: "center",
+  },
+  requestAddress: {
+    ...typography.styles.body2Regular,
+    color: colors.text,
+    opacity: 0.6,
+    marginTop: 4,
+  },
+  editForm: {
+    marginTop: 8,
+    gap: 6,
+  },
+  editInput: {
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    color: colors.text,
+  },
+  editError: {
+    fontSize: 12,
+    color: colors.mainDark,
+  },
+  editActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 8,
+    marginTop: 4,
+  },
+  editCancel: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+  },
+  editCancelText: {
+    ...typography.styles.body2Regular,
+    color: colors.text,
+  },
+  editSave: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: colors.main,
+  },
+  editSaveDisabled: {
+    opacity: 0.6,
+  },
+  editSaveText: {
+    ...typography.styles.body2Bold,
+    color: colors.white,
   },
 });

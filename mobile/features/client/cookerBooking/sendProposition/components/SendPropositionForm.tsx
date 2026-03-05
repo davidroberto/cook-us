@@ -27,6 +27,9 @@ export function SendPropositionForm({
   const [startDate, setStartDate] = useState("");
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [message, setMessage] = useState("");
+  const [street, setStreet] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [city, setCity] = useState("");
 
   const router = useRouter();
   const { error, isLoading, sendProposition } = useSendProposition();
@@ -39,6 +42,9 @@ export function SendPropositionForm({
       startDate,
       mealType: mealType!,
       message,
+      street,
+      postalCode,
+      city,
     });
 
     if (result) {
@@ -79,6 +85,12 @@ export function SendPropositionForm({
         onMealTypeChange={setMealType}
         message={message}
         onMessageChange={setMessage}
+        street={street}
+        onStreetChange={setStreet}
+        postalCode={postalCode}
+        onPostalCodeChange={setPostalCode}
+        city={city}
+        onCityChange={setCity}
         onSubmit={handleSubmit}
         isLoading={isLoading}
         error={error}

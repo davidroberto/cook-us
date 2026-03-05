@@ -43,6 +43,12 @@ type PropositionFormFieldsProps = {
   onMealTypeChange: (type: MealType) => void;
   message: string;
   onMessageChange: (text: string) => void;
+  street: string;
+  onStreetChange: (text: string) => void;
+  postalCode: string;
+  onPostalCodeChange: (text: string) => void;
+  city: string;
+  onCityChange: (text: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
   error: string | null;
@@ -57,6 +63,12 @@ export function PropositionFormFields({
   onMealTypeChange,
   message,
   onMessageChange,
+  street,
+  onStreetChange,
+  postalCode,
+  onPostalCodeChange,
+  city,
+  onCityChange,
   onSubmit,
   isLoading,
   error,
@@ -208,6 +220,38 @@ export function PropositionFormFields({
         style={styles.messageInput}
       />
 
+      <Text style={styles.addressTitle}>Adresse de la prestation</Text>
+
+      <Input
+        testID="street-input"
+        label="Rue"
+        value={street}
+        onChangeText={onStreetChange}
+        placeholder="12 rue de la Paix"
+        autoCapitalize="sentences"
+        autoCorrect={false}
+      />
+
+      <Input
+        testID="postalcode-input"
+        label="Code postal"
+        value={postalCode}
+        onChangeText={onPostalCodeChange}
+        placeholder="75001"
+        keyboardType="numeric"
+        autoCorrect={false}
+      />
+
+      <Input
+        testID="city-input"
+        label="Ville"
+        value={city}
+        onChangeText={onCityChange}
+        placeholder="Paris"
+        autoCapitalize="words"
+        autoCorrect={false}
+      />
+
       <Button
         testID="submit-button"
         title="Envoyer la proposition"
@@ -323,6 +367,13 @@ const styles = StyleSheet.create({
   messageInput: {
     height: 100,
     textAlignVertical: "top",
+  },
+  addressTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.main,
+    marginBottom: 8,
+    marginTop: 4,
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",
