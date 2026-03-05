@@ -58,6 +58,7 @@ test.describe("Filtrer les cuisiniers", () => {
 
   test("sélectionner une spécialité sans résultat affiche le message vide", async ({ page }) => {
     await page.getByTestId("speciality-chip-japanese_cooking").click();
+    await expect(page.getByTestId("loading-indicator")).toBeHidden({ timeout: TIMEOUT });
     const hasResults = await page.getByTestId("cooker-card").first().isVisible();
     if (!hasResults) {
       await expect(page.getByTestId("empty-message")).toBeVisible({ timeout: TIMEOUT });
