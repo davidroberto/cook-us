@@ -26,6 +26,11 @@ import { User } from "@src/modules/user/user.entity";
     ]),
   ],
   controllers: [GetCooksController, GetCookController, CookProfileController],
-  providers: [GetCooksUseCase, GetCookUseCase, GetCookProfileUseCase, UpdateCookProfileUseCase],
+  providers: [
+    GetCooksUseCase,
+    GetCookUseCase,
+    GetCookProfileUseCase,
+    UpdateCookProfileUseCase,
+  ],
 })
 export class CookModule {}

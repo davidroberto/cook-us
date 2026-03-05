@@ -1,15 +1,11 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import {
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from "class-validator";
+import { IsEnum, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { CookSpeciality } from "@src/modules/auth/register/register.dto";
 
 export class UpdateCookProfileDto {
-  @ApiPropertyOptional({ example: "Passionné de cuisine italienne depuis 10 ans." })
+  @ApiPropertyOptional({
+    example: "Passionné de cuisine italienne depuis 10 ans.",
+  })
   @IsOptional()
   @IsString()
   description?: string;
