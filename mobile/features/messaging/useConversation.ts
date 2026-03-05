@@ -33,6 +33,9 @@ function parseRequestData(
   guestsNumber: number;
   mealType?: string;
   message?: string;
+  street?: string;
+  postalCode?: string;
+  city?: string;
 } | null {
   if (!raw.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) return null;
   try {

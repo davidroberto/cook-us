@@ -60,6 +60,9 @@ export type Message = {
     guestsNumber: number;
     mealType?: string;
     message?: string;
+    street?: string;
+    postalCode?: string;
+    city?: string;
   };
 };
 

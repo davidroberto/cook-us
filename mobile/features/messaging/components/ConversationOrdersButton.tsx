@@ -1,73 +1,28 @@
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useAuth } from "@/features/auth/AuthContext";
-import { getApiUrl } from "@/features/api/getApiUrl";
 import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import type { CookRequestSummary } from "@/features/messaging/useConversationRequests";
-import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
+import {
+  CookRequestCard,
+  type CookRequestCardStatus,
+} from "@/features/client/cookRequest/components/CookRequestCard";
+import { AddressEditor } from "@/features/client/cookRequest/components/AddressEditor";
 
 const EDITABLE_STATUSES = ["pending", "accepted", "refused", "cancelled"];
-
-async function updateRequestAddress(
-  token: string,
-  requestId: number,
-  address: { street: string; postalCode: string; city: string }
-): Promise<void> {
-  const res = await fetch(`${getApiUrl()}/cook-request/${requestId}/address`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(address),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { message?: string }).message ?? "Erreur réseau");
-  }
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  pending: "En attente",
-  accepted: "Acceptée",
-  refused: "Refusée",
-  cancelled: "Annulée",
-};
-
-const STATUS_COLOR: Record<string, string> = {
-  pending: colors.secondary,
-  accepted: "#4CAF50",
-  refused: colors.mainDark,
-  cancelled: "#9E9E9E",
-};
-
-const MEAL_TYPE_LABELS: Record<string, string> = {
-  breakfast: "Petit-déjeuner",
-  lunch: "Déjeuner",
-  dinner: "Dîner",
-};
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
 const CANCELLABLE_STATUSES = ["pending", "accepted"];
 
 function RequestItem({
@@ -85,128 +40,44 @@ function RequestItem({
   onCancelSuccess?: () => void;
   onAddressUpdated: () => void;
 }) {
-  const statusColor = STATUS_COLOR[item.status] ?? "#9E9E9E";
-  const statusLabel = STATUS_LABEL[item.status] ?? item.status;
   const canCancel = !!cookName && CANCELLABLE_STATUSES.includes(item.status);
   const canEditAddress = isClient && EDITABLE_STATUSES.includes(item.status);
-
-  const [editing, setEditing] = useState(false);
-  const [street, setStreet] = useState(item.street ?? "");
-  const [postalCode, setPostalCode] = useState(item.postalCode ?? "");
-  const [city, setCity] = useState(item.city ?? "");
-  const [saving, setSaving] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
-
-  const handleSave = async () => {
-    if (!street.trim() || !postalCode.trim() || !city.trim()) {
-      setEditError("Tous les champs sont requis.");
-      return;
-    }
-    if (!token) return;
-    setSaving(true);
-    setEditError(null);
-    try {
-      await updateRequestAddress(token, item.id, {
-        street: street.trim(),
-        postalCode: postalCode.trim(),
-        city: city.trim(),
-      });
-      setEditing(false);
-      onAddressUpdated();
-    } catch (e) {
-      setEditError(e instanceof Error ? e.message : "Erreur réseau");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const address = item.street
     ? `${item.street}, ${item.postalCode} ${item.city}`
     : null;
 
   return (
-    <View style={styles.requestItem}>
-      <View style={styles.requestRow}>
-        <Text style={styles.requestDate}>{formatDate(item.startDate)}</Text>
-        <View style={[styles.badge, { backgroundColor: statusColor }]}>
-          <Text style={styles.badgeText}>{statusLabel}</Text>
-        </View>
-      </View>
-      <Text style={styles.requestDetail}>
-        {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
-        {item.mealType
-          ? ` · ${MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}`
-          : ""}
-      </Text>
-      {address && !editing && (
-        <Text style={styles.requestAddress}>{address}</Text>
-      )}
-      {canCancel && (
-        <CancelBookingButton
-          requestId={item.id}
-          cookName={cookName!}
-          onSuccess={onCancelSuccess ?? (() => {})}
-        />
-      )}
-      {editing && (
-        <View style={styles.editForm}>
-          <TextInput
-            style={styles.editInput}
-            value={street}
-            onChangeText={setStreet}
-            placeholder="Rue"
-            autoCapitalize="sentences"
-            autoCorrect={false}
-          />
-          <TextInput
-            style={styles.editInput}
-            value={postalCode}
-            onChangeText={setPostalCode}
-            placeholder="Code postal"
-            keyboardType="numeric"
-            autoCorrect={false}
-          />
-          <TextInput
-            style={styles.editInput}
-            value={city}
-            onChangeText={setCity}
-            placeholder="Ville"
-            autoCapitalize="words"
-            autoCorrect={false}
-          />
-          {editError && <Text style={styles.editError}>{editError}</Text>}
-          <View style={styles.editActions}>
-            <TouchableOpacity
-              onPress={() => { setEditing(false); setEditError(null); }}
-              style={styles.editCancel}
-              disabled={saving}
-            >
-              <Text style={styles.editCancelText}>Annuler</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleSave}
-              style={[styles.editSave, saving && styles.editSaveDisabled]}
-              disabled={saving}
-            >
-              {saving ? (
-                <ActivityIndicator size="small" color={colors.white} />
-              ) : (
-                <Text style={styles.editSaveText}>Enregistrer</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
+    <CookRequestCard
+      id={item.id}
+      startDate={item.startDate}
+      status={item.status as CookRequestCardStatus}
+      guestsNumber={item.guestsNumber}
+      mealType={item.mealType}
+      cookName={cookName}
+      canCancel={canCancel}
+      onCancelSuccess={onCancelSuccess}
+      address={address}
+    >
+      <AddressEditor
+        id={item.id}
+        street={item.street}
+        postalCode={item.postalCode}
+        city={item.city}
+        token={token}
+        canEdit={canEditAddress}
+        onUpdated={onAddressUpdated}
+      />
+    </CookRequestCard>
   );
 }
 
 type Props = {
   conversationId: number;
   cookName?: string;
+  onClose?: () => void;
 };
 
-export function ConversationOrdersButton({ conversationId, cookName }: Props) {
+export function ConversationOrdersButton({ conversationId, cookName, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
   const { user, token } = useAuth();
@@ -216,6 +87,11 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
     setVisible(true);
     load();
   }, [load]);
+
+  const close = useCallback(() => {
+    setVisible(false);
+    onClose?.();
+  }, [onClose]);
 
   return (
     <>
@@ -227,13 +103,17 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
         visible={visible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={close}
       >
         <SafeAreaView style={styles.modal}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Commandes</Text>
             <TouchableOpacity
-              onPress={() => setVisible(false)}
+              onPress={close}
               style={styles.closeButton}
             >
               <Text style={styles.closeText}>Fermer</Text>
@@ -266,22 +146,24 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
           )}
 
           {state.status === "success" && state.requests.length > 0 && (
-            <FlatList
-              data={state.requests}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => (
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.list}
+            >
+              {state.requests.map((item) => (
                 <RequestItem
+                  key={String(item.id)}
                   item={item}
                   cookName={cookName}
-                  onCancelSuccess={load}
                   isClient={isClient}
                   token={token}
+                  onCancelSuccess={load}
                   onAddressUpdated={load}
                 />
-              )}
-              contentContainerStyle={styles.list}
-            />
+              ))}
+            </ScrollView>
           )}
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </Modal>
     </>
@@ -329,38 +211,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   list: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  requestItem: {
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.tertiary,
-  },
-  requestRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  requestDate: {
-    ...typography.styles.body2Bold,
-    color: colors.text,
-  },
-  requestDetail: {
-    ...typography.styles.body2Regular,
-    color: colors.text,
-    opacity: 0.6,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.white,
+    padding: 16,
+    paddingBottom: 32,
   },
   errorText: {
     ...typography.styles.body1Regular,
@@ -384,59 +236,5 @@ const styles = StyleSheet.create({
     color: colors.text,
     opacity: 0.5,
     textAlign: "center",
-  },
-  requestAddress: {
-    ...typography.styles.body2Regular,
-    color: colors.text,
-    opacity: 0.6,
-    marginTop: 4,
-  },
-  editForm: {
-    marginTop: 8,
-    gap: 6,
-  },
-  editInput: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.tertiary,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 14,
-    color: colors.text,
-  },
-  editError: {
-    fontSize: 12,
-    color: colors.mainDark,
-  },
-  editActions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 8,
-    marginTop: 4,
-  },
-  editCancel: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.tertiary,
-  },
-  editCancelText: {
-    ...typography.styles.body2Regular,
-    color: colors.text,
-  },
-  editSave: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-    backgroundColor: colors.main,
-  },
-  editSaveDisabled: {
-    opacity: 0.6,
-  },
-  editSaveText: {
-    ...typography.styles.body2Bold,
-    color: colors.white,
   },
 });
