@@ -625,7 +625,7 @@ async function seed() {
     cookUserId: number
   ): Promise<number> {
     const key = `${clientUserId}-${cookUserId}`;
-    if (conversationMap.has(key)) return conversationMap.get(key)!;
+    if (conversationMap.has(key)) return conversationMap.get(key);
 
     const conversation = await conversationRepo.save(conversationRepo.create());
     await participantRepo.save([
@@ -941,8 +941,8 @@ async function seed() {
   ];
 
   for (const reqData of requests) {
-    const cook = cooks.find((c) => c.id === reqData.cookId)!;
-    const client = clients.find((c) => c.id === reqData.clientId)!;
+    const cook = cooks.find((c) => c.id === reqData.cookId);
+    const client = clients.find((c) => c.id === reqData.clientId);
     const clientUserId = client.userId;
     const cookUserId = cook.userId;
 

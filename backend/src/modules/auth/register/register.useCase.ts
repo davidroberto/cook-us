@@ -58,8 +58,8 @@ export class RegisterUseCase {
       const cook = this.cookRepository.create({
         firstName: dto.firstName,
         lastName: dto.lastName,
-        speciality: dto.cookProfile!.speciality,
-        siret: dto.cookProfile!.siret,
+        speciality: dto.cookProfile?.speciality,
+        siret: dto.cookProfile?.siret,
         description: dto.cookProfile?.description ?? null,
         hourlyRate: dto.cookProfile?.hourlyRate ?? null,
         photoUrl: dto.thumbnail ?? null,
@@ -99,7 +99,7 @@ export class RegisterUseCase {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        ...(role === UserRole.COOK && { siret: dto.cookProfile!.siret }),
+        ...(role === UserRole.COOK && { siret: dto.cookProfile?.siret }),
       },
     };
   }

@@ -26,7 +26,7 @@ export class GetPendingCooksUseCase {
     const userById = new Map(users.map((u) => [u.id, u]));
 
     return pendingCooks.map((cook) => {
-      const user = userById.get(cook.userId)!;
+      const user = userById.get(cook.userId);
       return {
         id: user.id,
         firstName: user.firstName,
