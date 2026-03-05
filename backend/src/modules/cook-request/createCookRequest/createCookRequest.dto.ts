@@ -64,4 +64,19 @@ export class CreateCookRequestDto {
   @IsOptional()
   @IsString()
   message?: string;
+
+  @ApiProperty({ description: "Rue de la prestation", example: "12 rue de la Paix" })
+  @IsString()
+  @IsNotEmpty()
+  street: string;
+
+  @ApiProperty({ description: "Code postal de la prestation", example: "75001" })
+  @IsString()
+  @IsNotEmpty()
+  postalCode: string;
+
+  @ApiProperty({ description: "Ville de la prestation", example: "Paris" })
+  @IsString()
+  @IsNotEmpty()
+  city: string;
 }

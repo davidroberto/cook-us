@@ -32,6 +32,8 @@ import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCo
 import { CreateReviewController } from "@src/modules/cook-request/createReview/createReview.controller";
 import { CreateReviewUseCase } from "@src/modules/cook-request/createReview/createReview.useCase";
 import { Review } from "@src/modules/cook-request/review.entity";
+import { UpdateCookRequestAddressController } from "@src/modules/cook-request/updateCookRequestAddress/updateCookRequestAddress.controller";
+import { UpdateCookRequestAddressUseCase } from "@src/modules/cook-request/updateCookRequestAddress/updateCookRequestAddress.useCase";
 import { NotificationModule } from "@src/modules/notification/notification.module";
 
 @Module({
@@ -61,6 +63,7 @@ import { NotificationModule } from "@src/modules/notification/notification.modul
     GetCookRequestsByConversationController,
     CompleteCookRequestController,
     CreateReviewController,
+    UpdateCookRequestAddressController,
   ],
   providers: [
     CreateCookRequestUseCase,
@@ -75,6 +78,7 @@ import { NotificationModule } from "@src/modules/notification/notification.modul
     GetCookRequestsByConversationUseCase,
     CompleteCookRequestUseCase,
     CreateReviewUseCase,
+    UpdateCookRequestAddressUseCase,
   ],
 })
 export class CookRequestModule {}
