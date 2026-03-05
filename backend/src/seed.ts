@@ -259,7 +259,7 @@ async function seed() {
   console.log("Connecté à la base de données");
 
   await dataSource.query(
-    "TRUNCATE TABLE conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE",
+    "TRUNCATE TABLE conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
   );
   console.log("Tables vidées");
 
@@ -551,7 +551,7 @@ async function seed() {
   // --- Conversation pour Pierre Martin (cooks[0]) et Lucas Bernard (clients[0]) ---
   // Créée avant les cook requests pour que le PENDING request puisse y référencer
   const pierreConversation = await conversationRepo.save(
-    conversationRepo.create(),
+    conversationRepo.create()
   );
   await participantRepo.save([
     participantRepo.create({
@@ -866,7 +866,7 @@ async function seed() {
   ];
 
   const savedRequests = (await cookRequestRepo.save(
-    requests,
+    requests
   )) as CookRequestEntity[];
   console.log(`${savedRequests.length} demandes de cook créées`);
 
@@ -875,7 +875,7 @@ async function seed() {
     (r) =>
       r.cookId === cooks[0].id &&
       r.clientId === clients[0].id &&
-      r.status === CookRequestStatus.PENDING,
+      r.status === CookRequestStatus.PENDING
   );
   if (pierreRequest) {
     await messageRepo.save(
@@ -889,7 +889,7 @@ async function seed() {
           message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
           cookRequestId: pierreRequest.id,
         })}`,
-      }),
+      })
     );
     console.log("Message __COOK_REQUEST__ créé pour Pierre Martin");
   }
