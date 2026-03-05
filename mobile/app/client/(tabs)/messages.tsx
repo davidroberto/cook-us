@@ -1,12 +1,12 @@
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useMyConversations } from "@/features/messaging/useMyConversations";
@@ -75,7 +75,7 @@ export default function MessagesTab() {
 
   if (state.status === "loading") {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={["top"]}>
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.main} />
         </View>
@@ -85,7 +85,7 @@ export default function MessagesTab() {
 
   if (state.status === "error") {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={["top"]}>
         <View style={styles.centered}>
           <Text style={styles.errorText}>Impossible de charger les conversations.</Text>
           <TouchableOpacity onPress={retry} style={styles.retryButton}>
@@ -97,7 +97,7 @@ export default function MessagesTab() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <Text style={styles.title}>Messages</Text>
       {state.conversations.length === 0 ? (
         <View style={styles.centered}>

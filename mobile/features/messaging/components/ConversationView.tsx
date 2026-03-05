@@ -1,10 +1,14 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
 import { MessageBubble } from "./MessageBubble";
@@ -25,6 +29,9 @@ export function ConversationView({
   hasMore,
   loadingMore,
 }: Props) {
+  const insets = useSafeAreaInsets();
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
   // Messages are in DESC order (newest first) — find the most recent read message from current user
   const lastReadMessageId = useMemo(() => {
     for (let i = 0; i < conversation.messages.length; i++) {
@@ -34,11 +41,34 @@ export function ConversationView({
     return null;
   }, [conversation.messages]);
 
-  return (
-    <View style={styles.container} testID="conversation-view">
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, (e) =>
+      setKeyboardHeight(e.endCoordinates.height),
+    );
+    const hideSub = Keyboard.addListener(hideEvent, () =>
+      setKeyboardHeight(0),
+    );
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  const keyboardVisible = keyboardHeight > 0;
+  const bottomInset = keyboardVisible ? 0 : insets.bottom;
+
+  const content = (
+    <>
       <FlatList<Message>
         testID="message-list"
         inverted
+        style={styles.list}
         data={conversation.messages}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
@@ -63,8 +93,32 @@ export function ConversationView({
           ) : null
         }
       />
-      <MessageInput onSend={onSendMessage} />
-    </View>
+      <MessageInput onSend={onSendMessage} bottomInset={bottomInset} />
+    </>
+  );
+
+  if (Platform.OS === "android") {
+    return (
+      <View
+        style={[
+          styles.container,
+          keyboardVisible && { paddingBottom: keyboardHeight + insets.bottom },
+        ]}
+        testID="conversation-view"
+      >
+        {content}
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+      testID="conversation-view"
+    >
+      {content}
+    </KeyboardAvoidingView>
   );
 }
 
@@ -72,6 +126,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingVertical: 12,

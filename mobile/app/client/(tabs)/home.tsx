@@ -1,10 +1,11 @@
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
 import { CookerList } from "@/features/client/cookerBooking/cookerList";
 
 export default function HomeTab() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <Text style={styles.title}>Trouver un cuisinier</Text>
       <CookerList />
     </SafeAreaView>

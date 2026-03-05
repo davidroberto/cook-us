@@ -1,5 +1,7 @@
 import { Slot } from "expo-router";
-import { View, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { useFonts } from "expo-font";
 import {
@@ -27,21 +29,21 @@ export default function RootLayout() {
 
   if (!fontsLoaded) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" />
-      </View>
+      <SafeAreaProvider>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" />
+        </View>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <AuthProvider>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+    <SafeAreaProvider>
+      <StatusBar style="dark" />
+      <AuthProvider>
         <Slot />
-      </KeyboardAvoidingView>
-    </AuthProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 

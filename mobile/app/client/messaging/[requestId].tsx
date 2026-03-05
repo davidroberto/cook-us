@@ -6,12 +6,12 @@ import { typography } from "@/styles/typography";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MessagingPage() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function MessagingPage() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.replace("/client/(tabs)/messages")} style={styles.backButton}>
           <Text style={styles.backText}>← Retour</Text>
