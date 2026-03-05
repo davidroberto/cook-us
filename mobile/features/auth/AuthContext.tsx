@@ -156,6 +156,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [token],
   );
 
+  async function fetchFreshUser(validToken: string) {
+    try {
+      const res = await fetch(`${getApiUrl()}/auth/me`, {
+        headers: { Authorization: `Bearer ${validToken}` },
+      });
+      if (res.ok) {
+        const freshUser = (await res.json()) as AuthUser;
+        setUser(freshUser);
+        AsyncStorage.setItem(STORAGE_KEY_USER, JSON.stringify(freshUser));
+      }
+    } catch {
+      // silently fail — keep cached user
+    }
+  }
+
   useEffect(() => {
     async function restore() {
       const [storedToken, storedRefreshToken, storedUser] = await Promise.all([
@@ -177,6 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // corrupted data — ignore
           }
         }
+        fetchFreshUser(storedToken);
       } else if (storedRefreshToken) {
         // Access token expiré mais refresh token disponible → refresh
         const newToken = await refreshAccessToken();
@@ -186,6 +202,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } catch {
             // corrupted data — ignore
           }
+          fetchFreshUser(newToken);
         } else {
           // Refresh échoué → nettoyage
           AsyncStorage.multiRemove([

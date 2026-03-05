@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   ScrollView,
@@ -10,11 +11,17 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/features/auth/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
+import { getApiUrl } from "@/features/api/getApiUrl";
+import {
+  uploadProfileThumbnail,
+  updateProfile,
+} from "@/features/client/account/viewProfile/repository";
 import { useUpdateCookProfile } from "./useUpdateCookProfile";
 import { changePassword } from "./repository";
 import type { CookProfile } from "./repository";
@@ -33,8 +40,13 @@ const SPECIALITY_LABELS: Record<string, string> = {
 
 const SPECIALITY_OPTIONS = Object.keys(SPECIALITY_LABELS);
 
+function toAbsoluteUrl(url: string): string {
+  if (url.startsWith("http")) return url;
+  return `${getApiUrl().replace(/\/api$/, "")}${url}`;
+}
+
 export function CookProfileScreen() {
-  const { user, token, clearAuth } = useAuth();
+  const { user, token, updateUser, clearAuth } = useAuth();
   const router = useRouter();
   const { isLoading, error, loadProfile, save, upload } =
     useUpdateCookProfile();
@@ -55,6 +67,8 @@ export function CookProfileScreen() {
   const [city, setCity] = useState("");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState(false);
 
   useEffect(() => {
     loadProfile().then((p) => {
@@ -68,6 +82,29 @@ export function CookProfileScreen() {
       }
     });
   }, []);
+
+  const handlePickProfilePhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (result.canceled || !token) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      const url = await uploadProfileThumbnail(result.assets[0].uri);
+      const updatedUser = await updateProfile(token, { thumbnail: url });
+      updateUser(updatedUser);
+      setThumbnailError(false);
+    } catch {
+      Alert.alert("Erreur", "Impossible de mettre à jour la photo de profil.");
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handleLogout = () => {
     Alert.alert("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", [
@@ -131,7 +168,9 @@ export function CookProfileScreen() {
       return;
     }
     if (newPassword.length < 6) {
-      setPwdError("Le nouveau mot de passe doit contenir au moins 6 caractères.");
+      setPwdError(
+        "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+      );
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -177,43 +216,33 @@ export function CookProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.avatarContainer}>
-        {isEditing ? (
-          <TouchableOpacity
-            onPress={handlePickPhoto}
-            style={styles.avatarButton}
-          >
-            {displayPhotoUri ? (
-              <Image
-                source={{ uri: displayPhotoUri }}
-                style={styles.avatarImage}
-              />
+        <TouchableOpacity
+          onPress={handlePickProfilePhoto}
+          disabled={isUploadingPhoto}
+          style={styles.avatarWrapper}
+        >
+          {user.thumbnail && !thumbnailError ? (
+            <Image
+              source={{ uri: toAbsoluteUrl(user.thumbnail) }}
+              style={styles.avatarImage}
+              onError={() => setThumbnailError(true)}
+            />
+          ) : (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarInitials}>
+                {user.firstName[0].toUpperCase()}
+                {user.lastName[0].toUpperCase()}
+              </Text>
+            </View>
+          )}
+          <View style={styles.avatarEditBadge}>
+            {isUploadingPhoto ? (
+              <ActivityIndicator size="small" color={colors.white} />
             ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarInitials}>
-                  {user.firstName[0].toUpperCase()}
-                  {user.lastName[0].toUpperCase()}
-                </Text>
-              </View>
+              <Ionicons name="camera" size={14} color={colors.white} />
             )}
-            <Text style={styles.changePhotoText}>Changer la photo</Text>
-          </TouchableOpacity>
-        ) : (
-          <>
-            {displayPhotoUri ? (
-              <Image
-                source={{ uri: displayPhotoUri }}
-                style={styles.avatarImage}
-              />
-            ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarInitials}>
-                  {user.firstName[0].toUpperCase()}
-                  {user.lastName[0].toUpperCase()}
-                </Text>
-              </View>
-            )}
-          </>
-        )}
+          </View>
+        </TouchableOpacity>
         <Text style={styles.userName}>
           {user.firstName} {user.lastName}
         </Text>
@@ -330,20 +359,32 @@ export function CookProfileScreen() {
         <Input
           label="Mot de passe actuel"
           value={currentPassword}
-          onChangeText={(v) => { setCurrentPassword(v); setPwdError(null); setPwdNotice(null); }}
+          onChangeText={(v) => {
+            setCurrentPassword(v);
+            setPwdError(null);
+            setPwdNotice(null);
+          }}
           secureTextEntry
         />
         <Input
           label="Nouveau mot de passe"
           value={newPassword}
-          onChangeText={(v) => { setNewPassword(v); setPwdError(null); setPwdNotice(null); }}
+          onChangeText={(v) => {
+            setNewPassword(v);
+            setPwdError(null);
+            setPwdNotice(null);
+          }}
           secureTextEntry
           hint="6 caractères minimum"
         />
         <Input
           label="Confirmer le mot de passe"
           value={confirmPassword}
-          onChangeText={(v) => { setConfirmPassword(v); setPwdError(null); setPwdNotice(null); }}
+          onChangeText={(v) => {
+            setConfirmPassword(v);
+            setPwdError(null);
+            setPwdNotice(null);
+          }}
           secureTextEntry
           error={pwdError ?? undefined}
         />
@@ -376,9 +417,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  avatarButton: {
-    alignItems: "center",
-    marginBottom: 4,
+  avatarWrapper: {
+    position: "relative",
+    marginBottom: 12,
   },
   avatar: {
     width: 80,
@@ -387,23 +428,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tertiary,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 12,
   },
   avatarImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 12,
+  },
+  avatarEditBadge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.main,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: colors.background,
   },
   avatarInitials: {
     fontSize: 28,
     fontWeight: "700",
     color: colors.mainDark,
-  },
-  changePhotoText: {
-    ...typography.styles.body2Regular,
-    color: colors.main,
-    marginBottom: 8,
   },
   userName: {
     fontSize: 22,
