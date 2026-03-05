@@ -10,7 +10,7 @@ export class GetCookCookRequestsUseCase {
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
     @InjectRepository(Cook)
-    private readonly cookRepository: Repository<Cook>,
+    private readonly cookRepository: Repository<Cook>
   ) {}
 
   async execute(userId: number) {
