@@ -47,6 +47,7 @@ const COOKS_DATA = [
     hourlyRate: 45,
     city: "Paris",
     isValidated: true,
+    siret: "52384710900041",
     description:
       "Chef formé à l'École Ferrandi, spécialisé dans la bistronomy moderne. Je cuisine des plats du terroir revisités avec des produits de saison.",
   },
@@ -58,6 +59,7 @@ const COOKS_DATA = [
     hourlyRate: 55,
     city: "Lyon",
     isValidated: true,
+    siret: "78234501200082",
     description:
       "Passionnée par la cuisine italienne authentique, j'ai vécu 5 ans à Rome et Florence. Pâtes fraîches, risottos et tiramisu maison sont mes spécialités.",
   },
@@ -69,6 +71,7 @@ const COOKS_DATA = [
     hourlyRate: 40,
     city: "Marseille",
     isValidated: true,
+    siret: "31928456700013",
     description:
       "Autodidacte passionné par l'Asie du Sud-Est. Je propose des menus thaïlandais, vietnamiens et japonais avec des produits frais et authentiques.",
   },
@@ -80,6 +83,7 @@ const COOKS_DATA = [
     hourlyRate: 1000000,
     city: "Bordeaux",
     isValidated: true,
+    siret: "66172839400057",
     description:
       "Diététicien et chef cuisinier, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
   },
@@ -103,6 +107,7 @@ const COOKS_DATA = [
     hourlyRate: 62,
     city: "Paris",
     isValidated: true,
+    siret: "49038271500029",
     description:
       "Ancienne pâtissière dans un palace parisien, je propose des buffets de desserts et des pièces montées pour vos événements. Créations sur mesure.",
   },
@@ -114,6 +119,7 @@ const COOKS_DATA = [
     hourlyRate: 48,
     city: "Nice",
     isValidated: true,
+    siret: "83920165400074",
     description:
       "Né à Nice, je cuisine la Méditerranée : bouillabaisse, socca, ratatouille et mezze. Des saveurs solaires pour vos repas en famille ou entre amis.",
   },
@@ -125,6 +131,7 @@ const COOKS_DATA = [
     hourlyRate: 70,
     city: "Paris",
     isValidated: true,
+    siret: "27463801900048",
     description:
       "Formée à Paris et Tokyo, je propose une cuisine fusion qui marie techniques françaises et saveurs japonaises. Une expérience gastronomique unique.",
   },
@@ -136,6 +143,7 @@ const COOKS_DATA = [
     hourlyRate: 95,
     city: "Paris",
     isValidated: true,
+    siret: "61583920700061",
     description:
       "Étoilé Michelin pendant 3 ans, je propose une expérience gastronomique à domicile. Menus dégustation 7 ou 9 services avec accords mets et vins.",
   },
@@ -147,6 +155,7 @@ const COOKS_DATA = [
     hourlyRate: 42,
     city: "Aix-en-Provence",
     isValidated: true,
+    siret: "94712038300036",
     description:
       "Fille de restaurateurs provençaux, je transmets la chaleur de la cuisine du Sud. Produits du marché, herbes fraîches et huile d'olive de qualité.",
   },
@@ -170,6 +179,7 @@ const COOKS_DATA = [
     hourlyRate: 36,
     city: "Nantes",
     isValidated: true,
+    siret: "38201947600019",
     description:
       "Revenue du Mexique après 18 mois d'immersion, je propose des tacos, enchiladas et guacamole authentiques. Épices et piments sélectionnés avec soin.",
   },
@@ -181,6 +191,7 @@ const COOKS_DATA = [
     hourlyRate: 32,
     city: "Lille",
     isValidated: true,
+    siret: "72094831500053",
     description:
       "Globe-trotter culinaire, j'ai voyagé dans 30 pays et rapporté leurs recettes authentiques. Curry indien, pad thaï, shawarma et empanadas au programme.",
   },
@@ -192,6 +203,7 @@ const COOKS_DATA = [
     hourlyRate: 52,
     city: "Rennes",
     isValidated: false,
+    siret: "55318264900087",
     thumbnail:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
     description:
