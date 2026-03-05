@@ -16,6 +16,8 @@ import { ChangePasswordController } from "@src/modules/auth/changePassword/chang
 import { ChangePasswordUseCase } from "@src/modules/auth/changePassword/changePassword.useCase";
 import { RefreshTokenController } from "@src/modules/auth/refreshToken/refreshToken.controller";
 import { RefreshTokenUseCase } from "@src/modules/auth/refreshToken/refreshToken.useCase";
+import { GetProfileController } from "@src/modules/auth/getProfile/getProfile.controller";
+import { GetProfileUseCase } from "@src/modules/auth/getProfile/getProfile.useCase";
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { RefreshTokenUseCase } from "@src/modules/auth/refreshToken/refreshToken
   controllers: [
     RegisterController,
     LoginController,
+    GetProfileController,
     UpdateProfileController,
     ChangePasswordController,
     RefreshTokenController,
@@ -38,6 +41,7 @@ import { RefreshTokenUseCase } from "@src/modules/auth/refreshToken/refreshToken
     JwtStrategy,
     RegisterUseCase,
     LoginUseCase,
+    GetProfileUseCase,
     UpdateProfileUseCase,
     ChangePasswordUseCase,
     RefreshTokenUseCase,

@@ -50,6 +50,11 @@ export class GetCookRequestUseCase {
         id: cookRequest.client.userId,
         firstName: cookRequest.client.user.firstName,
         lastName: cookRequest.client.user.lastName,
+        address: {
+          street: cookRequest.street ?? null,
+          postalCode: cookRequest.postalCode ?? null,
+          city: cookRequest.city ?? null,
+        },
       },
     };
   }
