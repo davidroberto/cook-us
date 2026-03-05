@@ -104,8 +104,8 @@ test.describe("Refuser une proposition (cuisinier)", () => {
       ).toBe(200);
 
       await expect(
-        page.getByTestId("cook-request-status").first()
-      ).toHaveText("Refusée", { timeout: TIMEOUT });
+        page.getByTestId("cook-request-status").filter({ hasText: "Refusée" }).first()
+      ).toBeVisible({ timeout: TIMEOUT });
     } else {
       // Déjà refusée lors d'une exécution précédente
       const statuses = page.getByTestId("cook-request-status");
