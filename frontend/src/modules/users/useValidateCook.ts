@@ -7,7 +7,7 @@ export const useValidateCook = (userId: number) => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ approve }: { cookId: string; approve: boolean }) =>
+        mutationFn: ({ approve }: { approve: boolean }) =>
             apiFetch(
                 `/api/backoffice/users/${userId}/${approve ? 'validate' : 'reject'}`,
                 token,
