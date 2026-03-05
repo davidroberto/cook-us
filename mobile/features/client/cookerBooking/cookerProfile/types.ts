@@ -4,6 +4,14 @@ export type CookerProfileImage = {
   description: string | null;
 };
 
+export type CookerProfileReview = {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  clientFirstName: string;
+};
+
 export type CookerProfile = {
   id: string;
   userId: number;
@@ -14,6 +22,8 @@ export type CookerProfile = {
   speciality: string;
   hourlyRate: number | null;
   images: CookerProfileImage[];
+  reviews: CookerProfileReview[];
+  averageRating: number | null;
 };
 
 export type CookerProfileState =
