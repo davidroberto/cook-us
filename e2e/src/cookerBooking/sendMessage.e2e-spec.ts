@@ -41,6 +41,9 @@ async function createClientConversation(browser: Browser) {
   await page.getByTestId("number-of-guests-input").pressSequentially("2");
   await page.getByTestId("start-date-input").fill("20-06-2027");
   await page.getByTestId("meal-type-lunch").click();
+  await page.getByTestId("street-input").fill("15 rue de Rivoli");
+  await page.getByTestId("postalcode-input").fill("75001");
+  await page.getByTestId("city-input").fill("Paris");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/messaging\/(\d+)/, { timeout: TIMEOUT });
 
@@ -101,5 +104,10 @@ test.describe("Envoi d'un message — Client", () => {
 
   test("ne peut pas envoyer un message vide", async ({ page }) => {
     await expect(page.getByTestId("message-send-button")).toBeDisabled();
+  });
+
+  test("affiche l'adresse dans la bulle de demande", async ({ page }) => {
+    await expect(page.getByTestId("request-address").first()).toBeVisible({ timeout: TIMEOUT });
+    await expect(page.getByTestId("request-address").first()).toContainText("15 rue de Rivoli");
   });
 });
