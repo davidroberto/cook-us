@@ -14,6 +14,8 @@ import { ValidateCookController } from "./validateCook/validateCook.controller";
 import { ValidateCookUseCase } from "./validateCook/validateCook.useCase";
 import { RejectCookController } from "./rejectCook/rejectCook.controller";
 import { RejectCookUseCase } from "./rejectCook/rejectCook.useCase";
+import { GetPendingCooksController } from "./getPendingCooks/getPendingCooks.controller";
+import { GetPendingCooksUseCase } from "./getPendingCooks/getPendingCooks.useCase";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Cook, CookRequestEntity, Client])],
@@ -23,6 +25,7 @@ import { RejectCookUseCase } from "./rejectCook/rejectCook.useCase";
     GetBackofficeCookRequestsController,
     ValidateCookController,
     RejectCookController,
+    GetPendingCooksController,
   ],
   providers: [
     GetBackofficeUsersUseCase,
@@ -30,6 +33,7 @@ import { RejectCookUseCase } from "./rejectCook/rejectCook.useCase";
     GetBackofficeCookRequestsUseCase,
     ValidateCookUseCase,
     RejectCookUseCase,
+    GetPendingCooksUseCase,
   ],
 })
 export class BackofficeModule {}

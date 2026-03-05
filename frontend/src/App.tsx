@@ -6,6 +6,7 @@ import { UsersTablePage } from '@src/modules/users/usersTable.page'
 import { UserDetailPage } from '@src/modules/users/userDetail.page'
 import { CreateAdminPage } from '@src/modules/users/createAdmin.page'
 import { CookRequestsTablePage } from '@src/modules/cookRequests/cookRequestsTable.page'
+import { PendingCooksPage } from '@src/modules/pendingCooks/pendingCooks.page'
 
 export const App = () => {
     return (
@@ -24,6 +25,7 @@ export const App = () => {
                     <Route path="/users/create" element={<CreateAdminPage />} />
                     <Route path="/users/:id" element={<UserDetailPage />} />
                     <Route path="/cook-requests" element={<CookRequestsTablePage />} />
+                    <Route path="/pending-cooks" element={<PendingCooksPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,10 +1,11 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Users, ChefHat, LogOut } from "lucide-react";
+import { Users, ChefHat, LogOut, ClipboardCheck } from "lucide-react";
 import { useAuth } from "@src/contexts/useAuth";
 
 const navItems = [
   { to: "/users", label: "Utilisateurs", icon: Users },
   { to: "/cook-requests", label: "Demandes", icon: ChefHat },
+  { to: "/pending-cooks", label: "Validations", icon: ClipboardCheck },
 ];
 
 export const BackofficeLayout = () => {
