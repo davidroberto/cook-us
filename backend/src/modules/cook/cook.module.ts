@@ -9,6 +9,9 @@ import { GetCookController } from "@src/modules/cook/getCook/getCook.controller"
 import { GetCookUseCase } from "@src/modules/cook/getCook/getCook.useCase";
 import { GetCooksController } from "@src/modules/cook/getCooks/getCooks.controller";
 import { GetCooksUseCase } from "@src/modules/cook/getCooks/getCooks.useCase";
+import { CookProfileController } from "@src/modules/cook/cookProfile.controller";
+import { GetCookProfileUseCase } from "@src/modules/cook/getCookProfile/getCookProfile.useCase";
+import { UpdateCookProfileUseCase } from "@src/modules/cook/updateCookProfile/updateCookProfile.useCase";
 import { User } from "@src/modules/user/user.entity";
 
 @Module({
@@ -22,7 +25,7 @@ import { User } from "@src/modules/user/user.entity";
       Review,
     ]),
   ],
-  controllers: [GetCooksController, GetCookController],
-  providers: [GetCooksUseCase, GetCookUseCase],
+  controllers: [GetCooksController, GetCookController, CookProfileController],
+  providers: [GetCooksUseCase, GetCookUseCase, GetCookProfileUseCase, UpdateCookProfileUseCase],
 })
 export class CookModule {}
