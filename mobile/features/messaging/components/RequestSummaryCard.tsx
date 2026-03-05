@@ -20,24 +20,27 @@ export function RequestSummaryCard({ startDate, guestsNumber, mealType, message,
   return (
     <View style={styles.card} testID="request-summary-card">
       <Text style={styles.title}>{isSentByMe ? "Demande envoyée" : "Demande reçue"}</Text>
-      <View style={styles.row}>
-        <Text style={styles.label}>Date</Text>
-        <Text style={styles.value} testID="request-date">{startDate}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Convives</Text>
-        <Text style={styles.value} testID="request-guests">{guestsNumber}</Text>
-      </View>
-      {mealType && (
+      <View style={styles.separator} />
+      <View style={styles.details}>
         <View style={styles.row}>
-          <Text style={styles.label}>Repas</Text>
-          <Text style={styles.value} testID="request-meal-type">{MEAL_TYPE_LABELS[mealType] ?? mealType}</Text>
+          <Text style={styles.label}>Date</Text>
+          <Text style={styles.value} testID="request-date">{startDate}</Text>
         </View>
-      )}
-      {message && (
         <View style={styles.row}>
+          <Text style={styles.label}>Convives</Text>
+          <Text style={styles.value} testID="request-guests">{guestsNumber}</Text>
+        </View>
+        {mealType && (
+          <View style={styles.row}>
+            <Text style={styles.label}>Repas</Text>
+            <Text style={styles.value} testID="request-meal-type">{MEAL_TYPE_LABELS[mealType] ?? mealType}</Text>
+          </View>
+        )}
+      </View>
+      {message && (
+        <View style={styles.messageBlock}>
           <Text style={styles.label}>Message</Text>
-          <Text style={[styles.value, styles.messageValue]} testID="request-message">{message}</Text>
+          <Text style={styles.messageText} testID="request-message">{message}</Text>
         </View>
       )}
     </View>
@@ -48,18 +51,26 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.tertiary,
     borderRadius: 12,
-    padding: 14,
-    maxWidth: "75%",
+    padding: 16,
+    width: "75%",
   },
   title: {
-    ...typography.styles.body2Bold,
+    ...typography.styles.body1Bold,
     color: colors.mainDark,
-    marginBottom: 8,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: colors.mainDark,
+    opacity: colors.opacity[16],
+    marginVertical: 10,
+  },
+  details: {
+    gap: 6,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 4,
+    alignItems: "center",
   },
   label: {
     ...typography.styles.body2Regular,
@@ -70,8 +81,15 @@ const styles = StyleSheet.create({
     ...typography.styles.body2Bold,
     color: colors.text,
   },
-  messageValue: {
-    flexShrink: 1,
-    textAlign: "right",
+  messageBlock: {
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(168, 39, 18, 0.16)",
+    paddingTop: 10,
+  },
+  messageText: {
+    ...typography.styles.body2Regular,
+    color: colors.text,
+    marginTop: 4,
   },
 });
