@@ -18,6 +18,8 @@ import { RefreshTokenController } from "@src/modules/auth/refreshToken/refreshTo
 import { RefreshTokenUseCase } from "@src/modules/auth/refreshToken/refreshToken.useCase";
 import { GetProfileController } from "@src/modules/auth/getProfile/getProfile.controller";
 import { GetProfileUseCase } from "@src/modules/auth/getProfile/getProfile.useCase";
+import { RegisterPushTokenController } from "@src/modules/auth/registerPushToken/registerPushToken.controller";
+import { RegisterPushTokenUseCase } from "@src/modules/auth/registerPushToken/registerPushToken.useCase";
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { GetProfileUseCase } from "@src/modules/auth/getProfile/getProfile.useCa
     UpdateProfileController,
     ChangePasswordController,
     RefreshTokenController,
+    RegisterPushTokenController,
   ],
   providers: [
     JwtStrategy,
@@ -45,6 +48,7 @@ import { GetProfileUseCase } from "@src/modules/auth/getProfile/getProfile.useCa
     UpdateProfileUseCase,
     ChangePasswordUseCase,
     RefreshTokenUseCase,
+    RegisterPushTokenUseCase,
   ],
   exports: [JwtModule],
 })

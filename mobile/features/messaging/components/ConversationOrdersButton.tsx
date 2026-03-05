@@ -13,6 +13,7 @@ import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import type { CookRequestSummary } from "@/features/messaging/useConversationRequests";
+import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "En attente",
@@ -43,9 +44,18 @@ function formatDate(iso: string): string {
   });
 }
 
-function RequestItem({ item }: { item: CookRequestSummary }) {
+const CANCELLABLE_STATUSES = ["pending", "accepted"];
+
+type RequestItemProps = {
+  item: CookRequestSummary;
+  cookName?: string;
+  onCancelSuccess?: () => void;
+};
+
+function RequestItem({ item, cookName, onCancelSuccess }: RequestItemProps) {
   const statusColor = STATUS_COLOR[item.status] ?? "#9E9E9E";
   const statusLabel = STATUS_LABEL[item.status] ?? item.status;
+  const canCancel = !!cookName && CANCELLABLE_STATUSES.includes(item.status);
   return (
     <View style={styles.requestItem}>
       <View style={styles.requestRow}>
@@ -60,15 +70,23 @@ function RequestItem({ item }: { item: CookRequestSummary }) {
           ? ` · ${MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}`
           : ""}
       </Text>
+      {canCancel && (
+        <CancelBookingButton
+          requestId={item.id}
+          cookName={cookName!}
+          onSuccess={onCancelSuccess ?? (() => {})}
+        />
+      )}
     </View>
   );
 }
 
 type Props = {
   conversationId: number;
+  cookName?: string;
 };
 
-export function ConversationOrdersButton({ conversationId }: Props) {
+export function ConversationOrdersButton({ conversationId, cookName }: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
 
@@ -129,7 +147,13 @@ export function ConversationOrdersButton({ conversationId }: Props) {
             <FlatList
               data={state.requests}
               keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => <RequestItem item={item} />}
+              renderItem={({ item }) => (
+                <RequestItem
+                  item={item}
+                  cookName={cookName}
+                  onCancelSuccess={load}
+                />
+              )}
               contentContainerStyle={styles.list}
             />
           )}

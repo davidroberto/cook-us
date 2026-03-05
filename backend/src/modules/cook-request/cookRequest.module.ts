@@ -32,6 +32,7 @@ import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCo
 import { CreateReviewController } from "@src/modules/cook-request/createReview/createReview.controller";
 import { CreateReviewUseCase } from "@src/modules/cook-request/createReview/createReview.useCase";
 import { Review } from "@src/modules/cook-request/review.entity";
+import { NotificationModule } from "@src/modules/notification/notification.module";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { Review } from "@src/modules/cook-request/review.entity";
       User,
       Review,
     ]),
+    NotificationModule,
   ],
   controllers: [
     CreateCookRequestController,

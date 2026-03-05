@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/Button";
 import {
   useOrderHistory,
   type CookRequestStatus,
-  type OrderHistoryItem,
 } from "@/features/client/account/viewProfile/useOrderHistory";
-import { CancelBookingModal } from "@/features/client/cancelBooking/components/CancelBookingModal";
-import { useCancelBooking } from "@/features/client/cancelBooking/useCancelBooking";
+import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
 import { ReviewSection } from "@/features/client/review/ReviewSection";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
@@ -54,30 +52,6 @@ export default function OrderHistoryScreen() {
   const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
   const [activeTab, setActiveTab] = useState<Tab>("upcoming");
-  const [cancelTarget, setCancelTarget] = useState<OrderHistoryItem | null>(
-    null,
-  );
-
-  const {
-    cancelBooking,
-    isLoading: cancelLoading,
-    error: cancelError,
-    clearError,
-  } = useCancelBooking(() => {
-    setCancelTarget(null);
-    refresh();
-  });
-
-  const handleCancelPress = (order: OrderHistoryItem) => {
-    clearError();
-    setCancelTarget(order);
-  };
-
-  const handleConfirmCancel = (reason: string) => {
-    if (cancelTarget) {
-      cancelBooking(cancelTarget.id, reason);
-    }
-  };
 
   const filteredOrders = orders.filter((o) =>
     activeTab === "upcoming"
@@ -202,21 +176,17 @@ export default function OrderHistoryScreen() {
               </Text>
 
               {item.cancellationReason && (
-                <Text style={styles.cancellationReason}>
+                <Text style={styles.cancellationReason} testID="cancellation-reason">
                   Motif : {item.cancellationReason}
                 </Text>
               )}
 
               {canCancel && (
-                <View style={styles.cancelButtonContainer}>
-                  <Button
-                    testID={`cancel-button-${item.id}`}
-                    title="Annuler la réservation"
-                    variant="outline"
-                    onPress={() => handleCancelPress(item)}
-                    style={styles.cancelButton}
-                  />
-                </View>
+                <CancelBookingButton
+                  requestId={item.id}
+                  cookName={`${item.cook.firstName} ${item.cook.lastName}`}
+                  onSuccess={refresh}
+                />
               )}
 
               {item.status === "completed" && (
@@ -232,18 +202,6 @@ export default function OrderHistoryScreen() {
         }}
       />
 
-      <CancelBookingModal
-        visible={cancelTarget !== null}
-        cookName={
-          cancelTarget
-            ? `${cancelTarget.cook.firstName} ${cancelTarget.cook.lastName}`
-            : ""
-        }
-        isLoading={cancelLoading}
-        error={cancelError}
-        onCancel={() => setCancelTarget(null)}
-        onConfirm={handleConfirmCancel}
-      />
     </SafeAreaView>
   );
 }
@@ -332,12 +290,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.mainDark,
     fontStyle: "italic",
-  },
-  cancelButtonContainer: {
-    marginTop: 12,
-  },
-  cancelButton: {
-    borderColor: colors.mainDark,
   },
   emptyTitle: {
     fontSize: 18,

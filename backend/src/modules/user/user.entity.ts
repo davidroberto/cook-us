@@ -46,6 +46,9 @@ export class User {
   })
   refreshTokenExpiresAt: Date | null;
 
+  @Column({ name: "expo_push_token", nullable: true })
+  expoPushToken: string | null;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 

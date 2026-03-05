@@ -3,6 +3,8 @@ import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "@/features/auth/AuthContext";
+import { useRegisterPushToken } from "@/features/notifications/useRegisterPushToken";
+import { useNotificationHandler } from "@/features/notifications/useNotificationHandler";
 import { useFonts } from "expo-font";
 import {
   Alexandria_400Regular,
@@ -16,6 +18,12 @@ import {
   Merriweather_400Regular,
   Merriweather_700Bold,
 } from "@expo-google-fonts/merriweather";
+
+function NotificationSetup() {
+  useRegisterPushToken();
+  useNotificationHandler();
+  return null;
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -41,6 +49,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <AuthProvider>
+        <NotificationSetup />
         <Slot />
       </AuthProvider>
     </SafeAreaProvider>

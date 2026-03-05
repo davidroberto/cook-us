@@ -39,6 +39,13 @@
       "expo-asset",
       "expo-router",
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "25eeae8c-46b1-4acd-91d8-0d800e76c9f8"
+      }
+    },
+    "owner": "mdorizon"
   }
 }

@@ -1,6 +1,7 @@
 export type LoginCommand = {
   email: string;
   password: string;
+  expoPushToken?: string;
 };
 
 export type AuthUser = {
