@@ -68,6 +68,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
             cookProfile: {
               speciality,
               siret,
+              city: city.trim(),
               description: description.trim() || undefined,
               hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
             },
@@ -282,6 +283,19 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
               placeholder="14 chiffres"
               keyboardType="numeric"
               maxLength={14}
+              autoCorrect={false}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Ville</Text>
+            <TextInput
+              testID="cook-city-input"
+              style={styles.input}
+              value={city}
+              onChangeText={setCity}
+              placeholder="Paris"
+              autoCapitalize="words"
               autoCorrect={false}
             />
           </View>

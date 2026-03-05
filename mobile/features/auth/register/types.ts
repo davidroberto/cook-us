@@ -22,6 +22,7 @@ export type RegisterCommand = {
   cookProfile?: {
     speciality: CookSpeciality;
     siret: string;
+    city: string;
     description?: string;
     hourlyRate?: number;
   };

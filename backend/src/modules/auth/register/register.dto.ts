@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -46,6 +47,11 @@ export class RegisterCookProfileDto {
   @IsOptional()
   @IsNumber()
   hourlyRate?: number;
+
+  @ApiProperty({ example: "Paris" })
+  @IsNotEmpty()
+  @IsString()
+  city: string;
 }
 
 export class RegisterDto {

@@ -19,6 +19,8 @@ function validateCommand(command: RegisterCommand): void {
   }
   if (command.role === "cook" && !command.cookProfile?.speciality)
     throw new Error("La spécialité est requise pour un compte cuisinier.");
+  if (command.role === "cook" && !command.cookProfile?.city?.trim())
+    throw new Error("La ville est requise pour un compte cuisinier.");
 }
 
 function getMimeType(uri: string): string {

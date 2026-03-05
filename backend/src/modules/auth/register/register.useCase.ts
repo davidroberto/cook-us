@@ -42,6 +42,12 @@ export class RegisterUseCase {
       );
     }
 
+    if (role === UserRole.COOK && !dto.cookProfile?.city?.trim()) {
+      throw new BadRequestException(
+        "La ville est obligatoire pour un profil cuisinier."
+      );
+    }
+
     if (role === UserRole.CLIENT) {
       if (!dto.street?.trim() || !dto.postalCode?.trim() || !dto.city?.trim()) {
         throw new BadRequestException(
@@ -68,6 +74,7 @@ export class RegisterUseCase {
         lastName: dto.lastName,
         speciality: dto.cookProfile?.speciality,
         siret: dto.cookProfile?.siret,
+        city: dto.cookProfile?.city,
         description: dto.cookProfile?.description ?? null,
         hourlyRate: dto.cookProfile?.hourlyRate ?? null,
         photoUrl: dto.thumbnail ?? null,
