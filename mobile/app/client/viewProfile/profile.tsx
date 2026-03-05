@@ -1,4 +1,5 @@
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
 import { ProfileScreen } from "@/features/client/account/viewProfile/components/ProfileScreen";
 

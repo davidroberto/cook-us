@@ -1,11 +1,11 @@
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
 import { Button } from "@/components/ui/Button";
 import { useCookRequests } from "@/features/cook/cookRequests/useCookRequests";
@@ -117,7 +117,7 @@ export default function CookHomeTab() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <FlatList
         data={requests}
         keyExtractor={(item) => String(item.id)}

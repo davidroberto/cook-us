@@ -5,9 +5,10 @@ import { StyleSheet, TextInput, TouchableOpacity, Text, View } from "react-nativ
 
 type Props = {
   onSend: (content: string) => void;
+  bottomInset?: number;
 };
 
-export function MessageInput({ onSend }: Props) {
+export function MessageInput({ onSend, bottomInset = 0 }: Props) {
   const [text, setText] = useState("");
 
   const handleSend = () => {
@@ -18,7 +19,7 @@ export function MessageInput({ onSend }: Props) {
   };
 
   return (
-    <View style={styles.container} testID="message-input-container">
+    <View style={[styles.container, { paddingBottom: 10 + bottomInset }]} testID="message-input-container">
       <TextInput
         testID="message-text-input"
         style={styles.input}

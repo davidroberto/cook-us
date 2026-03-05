@@ -1,10 +1,11 @@
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
 import { CookProfileScreen } from "@/features/cook/account/CookProfileScreen";
 
 export default function CookCompteTab() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <Text style={styles.title}>Mon compte</Text>
       <CookProfileScreen />
     </SafeAreaView>

@@ -15,10 +15,19 @@
     "ios": {
       "supportsTablet": true
     },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#FDF6E7",
+      "translucent": false
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#FDF6E7",
+      "barStyle": "dark-content"
+    },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/cookus-icon.png",
-        "backgroundColor": "#FDF6E7"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       }
     },
     "scheme": "cook-us",
