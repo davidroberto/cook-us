@@ -33,7 +33,15 @@ cp .env .env.local
 # Modifier les variables dans .env.local si nécessaire
 ```
 
-### 2. Lancer l'application (backend + backoffice + base de données)
+### 2. Configurer Git
+
+```bash
+git config pull.rebase true
+```
+
+> Configure `git pull` pour utiliser le rebase par défaut (au lieu de merge), afin de garder un historique linéaire et propre. Après cette configuration, un simple `git pull` suffira.
+
+### 3. Lancer l'application (backend + backoffice + base de données)
 
 ```bash
 docker compose --env-file .env.local -f docker-compose.dev.yml up --build
@@ -42,7 +50,7 @@ docker compose --env-file .env.local -f docker-compose.dev.yml up --build
 - Backoffice : `http://localhost`
 - API : `http://localhost/api`
 
-### 3. Lancer le mobile
+### 4. Lancer le mobile
 
 ```bash
 cd mobile
