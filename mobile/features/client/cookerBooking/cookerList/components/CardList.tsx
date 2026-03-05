@@ -89,6 +89,7 @@ export const CookerList = () => {
         <TouchableOpacity
           style={[styles.chip, !selectedSpeciality && styles.chipActive]}
           onPress={() => setSelectedSpeciality(null)}
+          testID="speciality-chip-all"
         >
           <Text
             style={[
@@ -107,6 +108,7 @@ export const CookerList = () => {
             onPress={() =>
               setSelectedSpeciality(selectedSpeciality === s ? null : s)
             }
+            testID={`speciality-chip-${s}`}
           >
             <Text
               style={[
