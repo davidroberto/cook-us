@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -18,45 +18,29 @@ import type { CookerCardData, CookSpeciality } from "../types";
 const ALL_SPECIALITIES = Object.keys(SPECIALITY_LABEL) as CookSpeciality[];
 
 export const CookerList = () => {
-  const { cooks, loading, error } = useCookerList();
   const router = useRouter();
 
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] =
     useState<CookSpeciality | null>(null);
+  const [minPriceInput, setMinPriceInput] = useState("");
+  const [maxPriceInput, setMaxPriceInput] = useState("");
 
-  const filtered = useMemo(() => {
-    let result = cooks;
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 400);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      result = result.filter(
-        (c) =>
-          c.first_name.toLowerCase().includes(q) ||
-          c.last_name.toLowerCase().includes(q) ||
-          `${c.first_name} ${c.last_name}`.toLowerCase().includes(q) ||
-          c.city.toLowerCase().includes(q),
-      );
-    }
+  const minHourlyRate = minPriceInput ? Number(minPriceInput) : undefined;
+  const maxHourlyRate = maxPriceInput ? Number(maxPriceInput) : undefined;
 
-    if (selectedSpeciality) {
-      result = result.filter((c) => c.speciality === selectedSpeciality);
-    }
-
-    return result;
-  }, [cooks, search, selectedSpeciality]);
-
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator
-          size="large"
-          color={colors.main}
-          testID="loading-indicator"
-        />
-      </View>
-    );
-  }
+  const { cooks, loading, error } = useCookerList({
+    search: debouncedSearch || undefined,
+    speciality: selectedSpeciality ?? undefined,
+    minHourlyRate,
+    maxHourlyRate,
+  });
 
   if (error) {
     return (
@@ -74,11 +58,32 @@ export const CookerList = () => {
         style={styles.searchInput}
         placeholder="Rechercher par nom ou ville..."
         placeholderTextColor={colors.text + "80"}
-        value={search}
-        onChangeText={setSearch}
+        value={searchInput}
+        onChangeText={setSearchInput}
         autoCorrect={false}
         testID="search-input"
       />
+
+      <View style={styles.priceRow}>
+        <TextInput
+          style={styles.priceInput}
+          placeholder="Prix min"
+          placeholderTextColor={colors.text + "80"}
+          value={minPriceInput}
+          onChangeText={setMinPriceInput}
+          keyboardType="numeric"
+        />
+        <Text style={styles.priceSeparator}>—</Text>
+        <TextInput
+          style={styles.priceInput}
+          placeholder="Prix max"
+          placeholderTextColor={colors.text + "80"}
+          value={maxPriceInput}
+          onChangeText={setMaxPriceInput}
+          keyboardType="numeric"
+        />
+        <Text style={styles.priceUnit}>€/h</Text>
+      </View>
 
       <ScrollView
         horizontal
@@ -120,7 +125,15 @@ export const CookerList = () => {
         ))}
       </ScrollView>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <View style={styles.centered}>
+          <ActivityIndicator
+            size="large"
+            color={colors.main}
+            testID="loading-indicator"
+          />
+        </View>
+      ) : cooks.length === 0 ? (
         <View style={styles.centered}>
           <Text style={styles.emptyText} testID="empty-message">
             Aucun cuisinier ne correspond à votre recherche.
@@ -128,7 +141,7 @@ export const CookerList = () => {
         </View>
       ) : (
         <FlatList<CookerCardData>
-          data={filtered}
+          data={cooks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <CookerCard
@@ -162,6 +175,33 @@ const styles = StyleSheet.create({
     color: colors.text,
     borderWidth: 1,
     borderColor: colors.tertiary,
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginBottom: 8,
+    gap: 8,
+  },
+  priceInput: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: colors.white,
+    borderRadius: 10,
+    fontSize: 14,
+    color: colors.text,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+  },
+  priceSeparator: {
+    color: colors.text,
+    opacity: 0.5,
+  },
+  priceUnit: {
+    fontSize: 13,
+    color: colors.text,
+    opacity: 0.6,
   },
   filtersContainer: {
     flexGrow: 0,
