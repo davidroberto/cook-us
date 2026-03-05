@@ -58,7 +58,14 @@ export default function MessagingPage() {
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
-        <ConversationOrdersButton conversationId={parseInt(requestId ?? "0", 10)} />
+        <ConversationOrdersButton
+        conversationId={parseInt(requestId ?? "0", 10)}
+        cookName={
+          state.status === "success"
+            ? `${state.conversation.otherFirstName} ${state.conversation.otherLastName}`
+            : undefined
+        }
+      />
       </View>
       <ConversationView
         conversation={state.conversation}
