@@ -64,7 +64,7 @@ export class GetCooksUseCase {
 
     if (search) {
       qb.andWhere(
-        "(LOWER(cook.firstName) LIKE LOWER(:search) OR LOWER(cook.lastName) LIKE LOWER(:search) OR LOWER(CONCAT(cook.firstName, ' ', cook.lastName)) LIKE LOWER(:search))",
+        "(LOWER(cook.firstName) LIKE LOWER(:search) OR LOWER(cook.lastName) LIKE LOWER(:search) OR LOWER(CONCAT(cook.firstName, ' ', cook.lastName)) LIKE LOWER(:search) OR LOWER(cook.city) LIKE LOWER(:search))",
         { search: `%${search}%` }
       );
     }
