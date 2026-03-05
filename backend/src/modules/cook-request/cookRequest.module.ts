@@ -29,6 +29,9 @@ import { GetCookRequestsByConversationController } from "@src/modules/cook-reque
 import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/getCookRequestsByConversation/getCookRequestsByConversation.useCase";
 import { CompleteCookRequestController } from "@src/modules/cook-request/completeCookRequest/completeCookRequest.controller";
 import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCookRequest/completeCookRequest.useCase";
+import { CreateReviewController } from "@src/modules/cook-request/createReview/createReview.controller";
+import { CreateReviewUseCase } from "@src/modules/cook-request/createReview/createReview.useCase";
+import { Review } from "@src/modules/cook-request/review.entity";
 
 @Module({
   imports: [
@@ -40,6 +43,7 @@ import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCo
       ConversationParticipant,
       Message,
       User,
+      Review,
     ]),
   ],
   controllers: [
@@ -54,6 +58,7 @@ import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCo
     GetCookRequestPriceController,
     GetCookRequestsByConversationController,
     CompleteCookRequestController,
+    CreateReviewController,
   ],
   providers: [
     CreateCookRequestUseCase,
@@ -67,6 +72,7 @@ import { CompleteCookRequestUseCase } from "@src/modules/cook-request/completeCo
     GetCookRequestPriceUseCase,
     GetCookRequestsByConversationUseCase,
     CompleteCookRequestUseCase,
+    CreateReviewUseCase,
   ],
 })
 export class CookRequestModule {}

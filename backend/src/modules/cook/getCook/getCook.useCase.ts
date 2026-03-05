@@ -13,7 +13,7 @@ export class GetCookUseCase {
   async execute(id: string) {
     const cook = await this.cookRepository.findOne({
       where: { id },
-      relations: { user: true, images: true },
+      relations: { user: true, images: true, reviews: true },
       select: {
         id: true,
         firstName: true,
@@ -37,6 +37,12 @@ export class GetCookUseCase {
           id: true,
           imgUrl: true,
           description: true,
+        },
+        reviews: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
         },
       },
     });

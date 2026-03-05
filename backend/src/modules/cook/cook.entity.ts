@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { User } from "@src/modules/user/user.entity";
+import { Review } from "@src/modules/cook-request/review.entity";
 
 export enum CookValidationStatus {
   PENDING = "pending",
@@ -45,4 +46,7 @@ export class Cook {
 
   @OneToMany(() => CookImage, (image) => image.cook)
   images: CookImage[];
+
+  @OneToMany(() => Review, (review) => review.cook)
+  reviews: Review[];
 }
