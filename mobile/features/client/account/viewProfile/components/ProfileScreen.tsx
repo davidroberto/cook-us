@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -25,6 +26,14 @@ export const ProfileScreen = () => {
   const router = useRouter();
 
   const handleLogout = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+        clearAuth();
+        router.replace("/login");
+      }
+      return;
+    }
+
     Alert.alert("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", [
       {
         text: "Annuler",
