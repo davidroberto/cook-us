@@ -69,6 +69,7 @@ export class LoginUseCase {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        thumbnail: user.thumbnail ?? null,
         ...(user.role === UserRole.COOK && { siret }),
       },
     };

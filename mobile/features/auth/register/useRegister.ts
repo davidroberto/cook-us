@@ -57,7 +57,10 @@ async function uploadThumbnail(uri: string): Promise<string> {
   }
 
   const data = (await response.json()) as { url: string };
-  return data.url;
+  const relativeUrl = data.url;
+  if (relativeUrl.startsWith("http")) return relativeUrl;
+  const baseUrl = API_URL.replace(/\/api$/, "");
+  return `${baseUrl}${relativeUrl}`;
 }
 
 export function useRegister() {

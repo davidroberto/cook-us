@@ -36,6 +36,7 @@ export class UpdateProfileUseCase {
 
     if (dto.firstName) user.firstName = dto.firstName;
     if (dto.lastName) user.lastName = dto.lastName;
+    if (dto.thumbnail) user.thumbnail = dto.thumbnail;
 
     await this.userRepository.save(user);
 
@@ -66,6 +67,7 @@ export class UpdateProfileUseCase {
       lastName: user.lastName,
       email: user.email,
       role: user.role,
+      thumbnail: user.thumbnail ?? null,
       address,
     };
   }

@@ -15,6 +15,7 @@ export type AuthUser = {
     postalCode: string | null;
     city: string | null;
   } | null;
+  thumbnail?: string | null;
 };
 
 export type AuthResponse = {

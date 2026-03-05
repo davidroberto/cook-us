@@ -31,4 +31,9 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   city?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  thumbnail?: string;
 }

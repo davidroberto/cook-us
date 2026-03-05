@@ -42,6 +42,7 @@ export class GetProfileUseCase {
       lastName: user.lastName,
       email: user.email,
       role: user.role,
+      thumbnail: user.thumbnail ?? null,
       address,
     };
   }
