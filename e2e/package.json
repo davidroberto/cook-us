@@ -10,5 +10,8 @@
     "@types/node": "^24.6.0",
     "dotenv": "^16.6.1",
     "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "cook-us": "file:.."
   }
 }

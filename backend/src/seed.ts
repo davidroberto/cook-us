@@ -7,6 +7,7 @@ import {
   CookRequestStatus,
   MealType,
 } from "@src/modules/cook-request/cookRequest.entity";
+import { Review } from "@src/modules/cook-request/review.entity";
 import { Cook, CookValidationStatus } from "@src/modules/cook/cook.entity";
 import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { User, UserRole } from "@src/modules/user/user.entity";
@@ -26,6 +27,7 @@ const dataSource = new DataSource({
     CookImage,
     Client,
     CookRequestEntity,
+    Review,
     Conversation,
     ConversationParticipant,
     Message,

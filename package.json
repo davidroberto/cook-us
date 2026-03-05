@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "install:all": "npm i --prefix backend && npm i --prefix frontend && npm i --prefix mobile",
+    "install:all": "npm i --prefix backend && npm i --prefix frontend && npm i --prefix mobile && npm i --prefix e2e",
     "docker:run": "docker compose --env-file .env.local -f docker-compose.dev.yml up"
   },
   "devDependencies": {
