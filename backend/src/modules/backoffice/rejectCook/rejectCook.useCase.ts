@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Cook } from "@src/modules/cook/cook.entity";
+import { Cook, CookValidationStatus } from "@src/modules/cook/cook.entity";
 import { User, UserRole } from "@src/modules/user/user.entity";
 
 @Injectable()
@@ -37,6 +37,7 @@ export class RejectCookUseCase {
     }
 
     cook.isValidated = false;
+    cook.validationStatus = CookValidationStatus.REFUSED;
     return this.cookRepository.save(cook);
   }
 }

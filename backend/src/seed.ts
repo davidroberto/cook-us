@@ -7,7 +7,7 @@ import {
   CookRequestStatus,
   MealType,
 } from "@src/modules/cook-request/cookRequest.entity";
-import { Cook } from "@src/modules/cook/cook.entity";
+import { Cook, CookValidationStatus } from "@src/modules/cook/cook.entity";
 import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { User, UserRole } from "@src/modules/user/user.entity";
 import * as bcrypt from "bcrypt";
@@ -154,7 +154,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 68,
     city: "Paris",
-    isValidated: false,
+    isValidated: true,
     description:
       "Formé au Japon pendant 2 ans, je prépare sushis, sashimis et yakitoris devant vos invités. Poissons sourcés directement chez les pêcheurs.",
   },
@@ -187,7 +187,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 52,
     city: "Rennes",
-    isValidated: false,
+    isValidated: true,
     description:
       "Originaire de Bretagne, je travaille avec les pêcheurs locaux pour vous proposer des fruits de mer ultra-frais. Plateaux, bisques et crepes salées.",
   },
@@ -302,6 +302,9 @@ async function seed() {
       city: data.city,
       isActive: true,
       isValidated: data.isValidated,
+      validationStatus: data.isValidated
+        ? CookValidationStatus.VALIDATED
+        : CookValidationStatus.PENDING,
       description: data.description,
       userId: user.id,
     });

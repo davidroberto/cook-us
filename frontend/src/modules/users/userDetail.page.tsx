@@ -143,27 +143,29 @@ export const UserDetailPage = () => {
                                 <dd className="font-mono">{user.cookProfile.siret ?? <span className="italic text-muted-foreground">Non renseigné</span>}</dd>
                             </div>
                         </dl>
-                        <div className="mt-6 flex gap-3">
-                            <button
-                                onClick={() => validateCook.mutate({ approve: true })}
-                                disabled={validateCook.isPending || user.cookProfile.validationStatus === 'validated'}
-                                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                Approuver
-                            </button>
-                            <button
-                                onClick={() => validateCook.mutate({ approve: false })}
-                                disabled={validateCook.isPending || user.cookProfile.validationStatus === 'refused'}
-                                className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                Refuser
-                            </button>
-                            {validateCook.isError && (
-                                <span className="self-center text-sm text-red-600">
-                                    {(validateCook.error as Error).message}
-                                </span>
-                            )}
-                        </div>
+                        {user.cookProfile.validationStatus === 'pending' && (
+                            <div className="mt-6 flex items-center gap-3">
+                                <button
+                                    onClick={() => validateCook.mutate({ approve: true })}
+                                    disabled={validateCook.isPending}
+                                    className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Approuver
+                                </button>
+                                <button
+                                    onClick={() => validateCook.mutate({ approve: false })}
+                                    disabled={validateCook.isPending}
+                                    className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Refuser
+                                </button>
+                                {validateCook.isError && (
+                                    <span className="text-sm text-red-600">
+                                        {(validateCook.error as Error).message}
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </section>
                 )}
 
