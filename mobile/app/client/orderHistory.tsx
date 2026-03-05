@@ -21,6 +21,7 @@ const STATUS_LABEL: Record<CookRequestStatus, string> = {
   accepted: "Acceptée",
   refused: "Refusée",
   cancelled: "Annulée",
+  paid: "Payée",
 };
 
 const STATUS_COLOR: Record<CookRequestStatus, string> = {
@@ -28,6 +29,7 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
   accepted: "#4CAF50",
   refused: colors.mainDark,
   cancelled: "#9E9E9E",
+  paid: "#2196F3",
 };
 
 const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];

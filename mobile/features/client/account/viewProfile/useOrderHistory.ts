@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { getApiUrl } from "@/features/api/getApiUrl";
 
-export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled";
+export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled" | "paid";
 
 export interface OrderHistoryItem {
   id: number;
