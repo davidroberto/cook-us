@@ -21,6 +21,10 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
 
   const handleSave = async () => {
     if (!token) return;
+    if (!firstName.trim() || !lastName.trim() || !email.trim()) {
+      setNotice({ text: "Veuillez remplir tous les champs.", isError: true });
+      return;
+    }
     setIsLoading(true);
     setNotice(null);
     try {
