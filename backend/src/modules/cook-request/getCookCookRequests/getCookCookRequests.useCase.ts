@@ -34,10 +34,7 @@ export class GetCookCookRequestsUseCase {
       guestsNumber: r.guestsNumber,
       startDate: r.startDate,
       endDate: r.endDate ?? null,
-      status:
-        r.status === CookRequestStatus.ACCEPTED
-          ? CookRequestStatus.PENDING
-          : r.status,
+      status: r.status,
       cancellationReason: r.cancellationReason,
       client: {
         id: r.client.userId,

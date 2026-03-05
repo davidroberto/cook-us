@@ -38,6 +38,8 @@ export const useCookRequests = () => {
     try {
       await acceptRequest(token, id);
       await fetchRequests();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur lors de l'acceptation");
     } finally {
       setActionLoading(null);
     }
@@ -49,6 +51,8 @@ export const useCookRequests = () => {
     try {
       await refuseRequest(token, id);
       await fetchRequests();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur lors du refus");
     } finally {
       setActionLoading(null);
     }
