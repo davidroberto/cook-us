@@ -32,6 +32,9 @@ export class Message {
   @Column({ type: "varchar" })
   message: string;
 
+  @Column({ name: "read_at", type: "timestamp", nullable: true, default: null })
+  readAt: Date | null;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 

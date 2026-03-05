@@ -51,6 +51,7 @@ function ConversationItem({
   const other = getOtherParticipant(conversation, currentUserId);
   const lastMessage = getLastMessage(conversation);
   const name = other ? `${other.author.firstName} ${other.author.lastName}` : "Inconnu";
+  const unreadCount = conversation.unreadCount ?? 0;
 
   return (
     <TouchableOpacity style={styles.item} onPress={onPress} testID="conversation-item">
@@ -65,6 +66,11 @@ function ConversationItem({
           </Text>
         )}
       </View>
+      {unreadCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{unreadCount}</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -204,5 +210,20 @@ const styles = StyleSheet.create({
   retryText: {
     ...typography.styles.body1Regular,
     color: colors.text,
+  },
+  badge: {
+    backgroundColor: colors.main,
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingHorizontal: 6,
+    marginLeft: 8,
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: 12,
+    fontWeight: "700" as const,
   },
 });

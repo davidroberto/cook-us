@@ -13,6 +13,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
 import { SendMessageUseCase } from "@src/modules/conversation/sendMessage/sendMessage.useCase";
+import { MarkMessagesAsReadUseCase } from "@src/modules/conversation/markMessagesAsRead/markMessagesAsRead.useCase";
 import { Inject, Logger, forwardRef } from "@nestjs/common";
 
 interface AuthenticatedSocket extends Socket {
@@ -34,7 +35,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @InjectRepository(ConversationParticipant)
     private readonly participantRepository: Repository<ConversationParticipant>,
     @Inject(forwardRef(() => SendMessageUseCase))
-    private readonly sendMessageUseCase: SendMessageUseCase
+    private readonly sendMessageUseCase: SendMessageUseCase,
+    @Inject(forwardRef(() => MarkMessagesAsReadUseCase))
+    private readonly markMessagesAsReadUseCase: MarkMessagesAsReadUseCase
   ) {}
 
   async handleConnection(client: AuthenticatedSocket) {
@@ -113,6 +116,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(`conversation:${data.conversationId}`);
     return { joined: data.conversationId };
+  }
+
+  @SubscribeMessage("markAsRead")
+  async handleMarkAsRead(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { conversationId: number }
+  ) {
+    const { conversationId } = data;
+
+    const participant = await this.participantRepository.findOne({
+      where: { conversationId, authorId: client.userId },
+    });
+
+    if (!participant) {
+      return { error: "Vous n'êtes pas participant de cette conversation" };
+    }
+
+    return this.markMessagesAsReadUseCase.execute(
+      conversationId,
+      client.userId
+    );
   }
 
   emitToConversation(conversationId: number, event: string, data: unknown) {

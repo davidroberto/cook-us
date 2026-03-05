@@ -1,8 +1,11 @@
 import { Tabs } from "expo-router";
 import { colors } from "@/styles/colors";
 import { TabBarIcon } from "@/components/ui/TabBarIcon";
+import { useUnreadTotal } from "@/features/messaging/useUnreadTotal";
 
 export default function CookTabsLayout() {
+  const unreadTotal = useUnreadTotal();
+
   return (
     <Tabs
       screenOptions={{
@@ -32,6 +35,14 @@ export default function CookTabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <TabBarIcon name="chatbubble-ellipses" color={color} size={size} />
           ),
+          tabBarBadge: unreadTotal > 0 ? "" : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: colors.main,
+            minWidth: 10,
+            maxHeight: 10,
+            borderRadius: 5,
+            fontSize: 0,
+          },
         }}
       />
       <Tabs.Screen

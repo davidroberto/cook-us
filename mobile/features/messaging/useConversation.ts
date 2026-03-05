@@ -111,6 +111,7 @@ export function useConversation(conversationId: number) {
 
     socket.on("connect", () => {
       socket.emit("joinConversation", { conversationId });
+      socket.emit("markAsRead", { conversationId });
     });
 
     socket.on("newMessage", (msg: { id: number; authorId: number; conversationId: number; message: string; createdAt: string }) => {
@@ -133,6 +134,9 @@ export function useConversation(conversationId: number) {
           },
         };
       });
+
+      // Mark as read immediately since the user is viewing this conversation
+      socket.emit("markAsRead", { conversationId });
     });
 
     return () => {
