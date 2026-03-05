@@ -15,7 +15,6 @@ export const MOCK_COOKS: Cook[] = [
     hourlyRate: 35,
     photoUrl: null,
     isActive: true,
-    isValidated: true,
     user: {
       id: 1,
       firstName: "Arjun",
@@ -45,7 +44,6 @@ export const MOCK_COOKS: Cook[] = [
     hourlyRate: 55,
     photoUrl: null,
     isActive: true,
-    isValidated: true,
     user: {
       id: 2,
       firstName: "Étienne",
@@ -67,7 +65,6 @@ export const MOCK_COOKS: Cook[] = [
     hourlyRate: 42,
     photoUrl: null,
     isActive: true,
-    isValidated: true,
     user: {
       id: 3,
       firstName: "Sofia",
@@ -97,7 +94,6 @@ export const MOCK_COOKS: Cook[] = [
     hourlyRate: 30,
     photoUrl: null,
     isActive: true,
-    isValidated: true,
     user: {
       id: 4,
       firstName: "Priya",
@@ -119,7 +115,6 @@ export const MOCK_COOKS: Cook[] = [
     hourlyRate: 48,
     photoUrl: null,
     isActive: true,
-    isValidated: true,
     user: {
       id: 5,
       firstName: "Marie",

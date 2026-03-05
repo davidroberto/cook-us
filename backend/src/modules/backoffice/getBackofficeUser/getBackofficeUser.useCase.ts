@@ -44,7 +44,6 @@ export class GetBackofficeUserUseCase {
             hourlyRate: cook.hourlyRate ?? null,
             city: cook.city ?? "",
             siret: cook.siret ?? null,
-            isValidated: cook.isValidated,
             validationStatus: cook.validationStatus,
           }
         : null,

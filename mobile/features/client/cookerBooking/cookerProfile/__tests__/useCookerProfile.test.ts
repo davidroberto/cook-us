@@ -16,7 +16,6 @@ const MOCK_COOK: Cook = {
   hourlyRate: 35,
   photoUrl: null,
   isActive: true,
-  isValidated: true,
   user: {
     id: 1,
     firstName: "Marie",

@@ -18,7 +18,6 @@ export type BackofficeUser = {
         hourlyRate: number | null
         city: string
         siret: string | null
-        isValidated: boolean
         validationStatus: 'pending' | 'validated' | 'refused'
     } | null
 }

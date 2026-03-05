@@ -23,7 +23,7 @@ beforeEach(() => {
 describe('useValidateCook', () => {
     it('appelle PATCH /api/backoffice/users/:id/validate quand approve est true', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: true }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'validated' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
@@ -39,7 +39,7 @@ describe('useValidateCook', () => {
 
     it('appelle PATCH /api/backoffice/users/:id/reject quand approve est false', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: false }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'refused' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })
@@ -55,7 +55,7 @@ describe('useValidateCook', () => {
 
     it('envoie le token d\'authentification dans le header', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: true }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'validated' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useValidateCook(2), { wrapper: createWrapper() })

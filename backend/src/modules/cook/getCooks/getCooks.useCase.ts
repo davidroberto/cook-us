@@ -27,7 +27,6 @@ export class GetCooksUseCase {
         "cook.speciality",
         "cook.hourlyRate",
         "cook.isActive",
-        "cook.isValidated",
         "cook.city",
         "user.id",
         "user.firstName",
@@ -48,7 +47,9 @@ export class GetCooksUseCase {
       "cook_reviewCount"
     );
 
-    qb.andWhere("cook.isValidated = true").andWhere("cook.isActive = true");
+    qb.andWhere("cook.validationStatus = 'validated'").andWhere(
+      "cook.isActive = true"
+    );
 
     if (speciality) {
       qb.andWhere("LOWER(cook.speciality) LIKE LOWER(:speciality)", {
