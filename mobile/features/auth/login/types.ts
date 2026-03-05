@@ -10,6 +10,11 @@ export type AuthUser = {
   email: string;
   role: "client" | "cook";
   siret?: string | null;
+  address?: {
+    street: string | null;
+    postalCode: string | null;
+    city: string | null;
+  } | null;
 };
 
 export type AuthResponse = {

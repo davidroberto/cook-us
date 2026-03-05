@@ -16,6 +16,9 @@ export type RegisterCommand = {
   password: string;
   role: "client" | "cook";
   thumbnail?: string;
+  street?: string;
+  postalCode?: string;
+  city?: string;
   cookProfile?: {
     speciality: CookSpeciality;
     siret: string;

@@ -42,6 +42,14 @@ export class RegisterUseCase {
       );
     }
 
+    if (role === UserRole.CLIENT) {
+      if (!dto.street?.trim() || !dto.postalCode?.trim() || !dto.city?.trim()) {
+        throw new BadRequestException(
+          "L'adresse (rue, code postal, ville) est obligatoire pour un client."
+        );
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = this.userRepository.create({
@@ -67,7 +75,12 @@ export class RegisterUseCase {
       });
       await this.cookRepository.save(cook);
     } else {
-      const client = this.clientRepository.create({ userId: user.id });
+      const client = this.clientRepository.create({
+        userId: user.id,
+        street: dto.street ?? null,
+        postalCode: dto.postalCode ?? null,
+        city: dto.city ?? null,
+      });
       await this.clientRepository.save(client);
     }
 
