@@ -78,10 +78,6 @@ export function ReviewSection({
     onReviewSubmitted
   );
 
-  if (existingReview) {
-    return <ReadOnlyReview review={existingReview} />;
-  }
-
   if (submitted) {
     return (
       <View style={styles.confirmation} testID="review-confirmation">
@@ -90,6 +86,10 @@ export function ReviewSection({
         </Text>
       </View>
     );
+  }
+
+  if (existingReview) {
+    return <ReadOnlyReview review={existingReview} />;
   }
 
   return (
@@ -121,6 +121,7 @@ export function ReviewSection({
           style={[styles.submitBtn, rating === 0 && styles.submitBtnDisabled]}
           onPress={() => rating > 0 && submit(rating, comment)}
           disabled={rating === 0}
+          accessibilityRole="button"
           testID="review-submit"
         >
           <Text style={styles.submitBtnText}>Envoyer l'avis</Text>
