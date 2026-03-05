@@ -83,6 +83,12 @@ export const ProfileScreen = () => {
           variant="primary"
           onPress={() => router.push("/client/orderHistory")}
         />
+        <View style={{ height: 12 }} />
+        <Button
+          title="Voir mon historique de transactions"
+          variant="outline"
+          onPress={() => router.push("/client/transactionHistory")}
+        />
       </View>
 
       <View style={styles.logoutSection}>

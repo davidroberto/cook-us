@@ -51,6 +51,10 @@ export default function ClientLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="transactionHistory"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="messaging/[requestId]"
         options={{ headerShown: false }}
       />

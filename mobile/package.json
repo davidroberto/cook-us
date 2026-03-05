@@ -43,7 +43,8 @@
     "react-native": "0.81.5",
     "react-native-web": "^0.21.0",
     "socket.io-client": "^4.8.3",
-    "ts-jest": "^29.4.6"
+    "ts-jest": "^29.4.6",
+    "websocket": "^1.0.35"
   },
   "devDependencies": {
     "@testing-library/react-native": "^12.9.0",
