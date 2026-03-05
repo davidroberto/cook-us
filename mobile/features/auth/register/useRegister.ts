@@ -16,12 +16,27 @@ function validateCommand(command: RegisterCommand): void {
     throw new Error("La spécialité est requise pour un compte cuisinier.");
 }
 
+function getMimeType(uri: string): string {
+  const ext = uri.split(".").pop()?.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    heic: "image/heic",
+    heif: "image/heif",
+    webp: "image/webp",
+  };
+  return mimeTypes[ext ?? ""] ?? "image/jpeg";
+}
+
 async function uploadThumbnail(uri: string): Promise<string> {
+  const mimeType = getMimeType(uri);
+  const filename = uri.split("/").pop() ?? "profile.jpg";
   const formData = new FormData();
   formData.append("file", {
     uri,
-    type: "image/jpeg",
-    name: "profile.jpg",
+    type: mimeType,
+    name: filename,
   } as unknown as Blob);
 
   const response = await fetch(`${API_URL}/upload`, {
@@ -30,7 +45,10 @@ async function uploadThumbnail(uri: string): Promise<string> {
   });
 
   if (!response.ok) {
-    throw new Error("Impossible de télécharger la photo de profil.");
+    const body = await response.text().catch(() => "");
+    throw new Error(
+      `Upload échoué (${response.status})${body ? ": " + body : ""}`
+    );
   }
 
   const data = (await response.json()) as { url: string };
@@ -52,7 +70,11 @@ export function useRegister() {
 
       let thumbnailUrl: string | undefined = undefined;
       if (command.thumbnail) {
-        thumbnailUrl = await uploadThumbnail(command.thumbnail);
+        try {
+          thumbnailUrl = await uploadThumbnail(command.thumbnail);
+        } catch (uploadErr) {
+          console.warn("Upload photo échoué, inscription sans photo:", uploadErr);
+        }
       }
 
       const response = await fetch(`${API_URL}/auth/register`, {
