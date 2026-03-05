@@ -6,9 +6,26 @@ import { RequestSummaryCard } from "./RequestSummaryCard";
 
 type Props = {
   message: Message;
+  showReadReceipt?: boolean;
 };
 
-export function MessageBubble({ message }: Props) {
+function formatReadAt(iso: string): string {
+  const now = Date.now();
+  const readTime = new Date(iso).getTime();
+  const diffMs = now - readTime;
+  const diffMin = Math.floor(diffMs / 60_000);
+  const diffH = Math.floor(diffMs / 3_600_000);
+  const diffDays = Math.floor(diffMs / 86_400_000);
+
+  if (diffMin < 1) return "Vu à l'instant";
+  if (diffMin < 60) return `Vu il y a ${diffMin}m`;
+  if (diffH < 24) return `Vu il y a ${diffH}h`;
+  if (diffDays < 2) return "Vu hier";
+  if (diffDays < 7) return `Vu il y a ${diffDays}j`;
+  return "Vu la semaine dernière";
+}
+
+export function MessageBubble({ message, showReadReceipt }: Props) {
   const isClient = message.sender === "client";
   const isSystem = message.sender === "system";
 
@@ -39,6 +56,9 @@ export function MessageBubble({ message }: Props) {
             {message.content}
           </Text>
         </View>
+      )}
+      {showReadReceipt && message.readAt && (
+        <Text style={styles.readReceipt}>{formatReadAt(message.readAt)}</Text>
       )}
     </View>
   );
@@ -82,4 +102,11 @@ const styles = StyleSheet.create({
   },
   clientText: { color: colors.white },
   cookText: { color: colors.text },
+  readReceipt: {
+    fontSize: 11,
+    color: colors.text,
+    opacity: 0.45,
+    marginTop: 2,
+    textAlign: "right" as const,
+  },
 });

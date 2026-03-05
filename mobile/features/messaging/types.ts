@@ -46,6 +46,7 @@ export type Message = {
   content: string;
   sender: MessageSender;
   sentAt: string;
+  readAt?: string | null;
   requestData?: {
     startDate: string;
     guestsNumber: number;
