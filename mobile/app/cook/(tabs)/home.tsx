@@ -83,6 +83,12 @@ export default function CookHomeTab() {
           </Text>
         </View>
 
+        {(item.street || item.city) && (
+          <Text style={styles.address}>
+            {[item.street, item.postalCode, item.city].filter(Boolean).join(", ")}
+          </Text>
+        )}
+
         {isPending && (
           <View style={styles.actions}>
             <View style={styles.actionBtn}>
@@ -190,6 +196,12 @@ const styles = StyleSheet.create({
   cardBody: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  address: {
+    fontSize: 13,
+    color: colors.text,
+    opacity: 0.6,
+    marginTop: 6,
   },
   detail: {
     fontSize: 14,
