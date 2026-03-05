@@ -15,6 +15,7 @@ export enum CookRequestStatus {
   REFUSED = "refused",
   CANCELLED = "cancelled",
   PAID = "paid",
+  COMPLETED = "completed",
 }
 
 export enum MealType {
