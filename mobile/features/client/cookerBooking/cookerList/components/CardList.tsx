@@ -180,12 +180,14 @@ const styles = StyleSheet.create({
   },
   priceRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 8,
     gap: 8,
   },
   priceInput: {
+    minWidth: 80,
     flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 8,
