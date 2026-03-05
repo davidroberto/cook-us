@@ -43,6 +43,7 @@ function toConversation(
         content: m.message,
         sender: m.authorId === currentUserId ? "client" : "cook",
         sentAt: m.createdAt,
+        readAt: m.readAt,
         ...(requestData ? { requestData } : {}),
       };
     }),
@@ -137,6 +138,28 @@ export function useConversation(conversationId: number) {
 
       // Mark as read immediately since the user is viewing this conversation
       socket.emit("markAsRead", { conversationId });
+    });
+
+    socket.on("messagesRead", (data: { conversationId: number; readByUserId: number; readAt: string }) => {
+      if (data.conversationId !== conversationId) return;
+      // The other participant read our messages
+      if (data.readByUserId === currentUserId) return;
+
+      setState((prev) => {
+        if (prev.status !== "success") return prev;
+
+        return {
+          status: "success",
+          conversation: {
+            ...prev.conversation,
+            messages: prev.conversation.messages.map((m) =>
+              m.sender === "client" && !m.readAt
+                ? { ...m, readAt: data.readAt }
+                : m
+            ),
+          },
+        };
+      });
     });
 
     return () => {

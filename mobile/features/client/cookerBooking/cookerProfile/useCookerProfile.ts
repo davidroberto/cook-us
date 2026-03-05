@@ -12,7 +12,7 @@ const toAbsoluteUrl = (path: string): string => {
 };
 
 const mapToCookerProfile = (cook: Cook): CookerProfile => {
-  const rawPhoto = cook.user.thumbnail ?? cook.images[0]?.imgUrl ?? null;
+  const rawPhoto = cook.user.thumbnail ?? cook.photoUrl ?? null;
   return {
     id: cook.id,
     userId: cook.user.id,

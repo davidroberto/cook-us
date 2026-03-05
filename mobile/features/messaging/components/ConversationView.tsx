@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
@@ -19,6 +19,14 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
     }
   }, [conversation.messages.length]);
 
+  const lastReadMessageId = useMemo(() => {
+    for (let i = conversation.messages.length - 1; i >= 0; i--) {
+      const m = conversation.messages[i];
+      if (m.sender === "client" && m.readAt) return m.id;
+    }
+    return null;
+  }, [conversation.messages]);
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -30,7 +38,12 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
         testID="message-list"
         data={conversation.messages}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <MessageBubble message={item} />}
+        renderItem={({ item }) => (
+          <MessageBubble
+            message={item}
+            showReadReceipt={item.id === lastReadMessageId}
+          />
+        )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
