@@ -7,6 +7,9 @@ export type SendPropositionCommand = {
   startDate: string;
   mealType: MealType;
   message?: string;
+  street: string;
+  postalCode: string;
+  city: string;
 };
 
 export type CreatedCookRequest = {

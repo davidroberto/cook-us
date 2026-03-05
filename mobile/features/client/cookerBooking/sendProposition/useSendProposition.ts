@@ -49,6 +49,15 @@ function validateCommand(command: SendPropositionCommand): void {
   if (!command.mealType) {
     throw new Error("Le type de repas est requis.");
   }
+  if (!command.street.trim()) {
+    throw new Error("La rue est requise.");
+  }
+  if (!command.postalCode.trim()) {
+    throw new Error("Le code postal est requis.");
+  }
+  if (!command.city.trim()) {
+    throw new Error("La ville est requise.");
+  }
 }
 
 export function useSendProposition() {
@@ -80,6 +89,9 @@ export function useSendProposition() {
           cookId: command.cookId,
           mealType: command.mealType,
           message: command.message || undefined,
+          street: command.street.trim(),
+          postalCode: command.postalCode.trim(),
+          city: command.city.trim(),
         }),
       });
 

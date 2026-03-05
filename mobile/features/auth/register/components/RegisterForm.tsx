@@ -30,10 +30,6 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   const [description, setDescription] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
   const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
-  const [street, setStreet] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [city, setCity] = useState("");
-
   const { error, isLoading, register } = useRegister();
 
   const pickImage = async () => {
@@ -56,13 +52,6 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       password,
       role,
       thumbnail: thumbnailUri ?? undefined,
-      ...(role === "client"
-        ? {
-            street: street.trim() || undefined,
-            postalCode: postalCode.trim() || undefined,
-            city: city.trim() || undefined,
-          }
-        : {}),
       ...(role === "cook" && speciality
         ? {
             cookProfile: {
@@ -198,51 +187,6 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           </TouchableOpacity>
         </View>
       </View>
-
-      {role === "client" && (
-        <>
-          <Text style={styles.addressTitle}>Adresse de prestation</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Rue</Text>
-            <TextInput
-              testID="street-input"
-              style={styles.input}
-              value={street}
-              onChangeText={setStreet}
-              placeholder="12 rue de la Paix"
-              autoCapitalize="sentences"
-              autoCorrect={false}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Code postal</Text>
-            <TextInput
-              testID="postalcode-input"
-              style={styles.input}
-              value={postalCode}
-              onChangeText={setPostalCode}
-              placeholder="75001"
-              keyboardType="numeric"
-              autoCorrect={false}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Ville</Text>
-            <TextInput
-              testID="city-input"
-              style={styles.input}
-              value={city}
-              onChangeText={setCity}
-              placeholder="Paris"
-              autoCapitalize="words"
-              autoCorrect={false}
-            />
-          </View>
-        </>
-      )}
 
       {role === "cook" && (
         <>
@@ -494,12 +438,6 @@ const styles = StyleSheet.create({
   },
   specialityChipTextSelected: {
     color: colors.white,
-  },
-  addressTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginBottom: 16,
   },
   button: {
     backgroundColor: colors.main,
