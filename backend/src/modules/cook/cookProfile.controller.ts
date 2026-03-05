@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Patch, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Request } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@src/modules/auth/roles.decorator";
-import { RolesGuard } from "@src/modules/auth/roles.guard";
 import { UserRole } from "@src/modules/user/user.entity";
 import { GetCookProfileUseCase } from "@src/modules/cook/getCookProfile/getCookProfile.useCase";
 import { UpdateCookProfileUseCase } from "@src/modules/cook/updateCookProfile/updateCookProfile.useCase";
@@ -9,7 +8,6 @@ import { UpdateCookProfileDto } from "@src/modules/cook/updateCookProfile/update
 
 @ApiTags("Cook")
 @Controller("cook")
-@UseGuards(RolesGuard)
 @Roles(UserRole.COOK)
 export class CookProfileController {
   constructor(
