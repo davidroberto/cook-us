@@ -49,6 +49,7 @@ export class LoginUseCase {
     await this.userRepository.update(user.id, {
       refreshToken: hashedRefreshToken,
       refreshTokenExpiresAt,
+      ...(dto.expoPushToken && { expoPushToken: dto.expoPushToken }),
     });
 
     let siret: string | null = null;

@@ -1,9 +1,35 @@
 import { useState } from "react";
+import { Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import Constants from "expo-constants";
 import type { AuthResponse, LoginCommand } from "./types";
 
 import { getApiUrl } from "@/features/api/getApiUrl";
 
 const API_URL = getApiUrl();
+
+async function getExpoPushToken(): Promise<string | undefined> {
+  if (!Device.isDevice) return undefined;
+
+  const { status } = await Notifications.getPermissionsAsync();
+  if (status !== "granted") return undefined;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+    });
+  }
+
+  try {
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+    return tokenData.data;
+  } catch {
+    return undefined;
+  }
+}
 
 export function useLogin() {
   const [error, setError] = useState<string | null>(null);
@@ -14,10 +40,12 @@ export function useLogin() {
     setError(null);
 
     try {
+      const expoPushToken = await getExpoPushToken();
+
       const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(command),
+        body: JSON.stringify({ ...command, expoPushToken }),
       });
 
       if (!response.ok) {

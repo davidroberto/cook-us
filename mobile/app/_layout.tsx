@@ -1,6 +1,8 @@
 import { Slot } from "expo-router";
 import { View, ActivityIndicator, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import { AuthProvider } from "@/features/auth/AuthContext";
+import { useRegisterPushToken } from "@/features/notifications/useRegisterPushToken";
+import { useNotificationHandler } from "@/features/notifications/useNotificationHandler";
 import { useFonts } from "expo-font";
 import {
   Alexandria_400Regular,
@@ -14,6 +16,12 @@ import {
   Merriweather_400Regular,
   Merriweather_700Bold,
 } from "@expo-google-fonts/merriweather";
+
+function NotificationSetup() {
+  useRegisterPushToken();
+  useNotificationHandler();
+  return null;
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -35,6 +43,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+      <NotificationSetup />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

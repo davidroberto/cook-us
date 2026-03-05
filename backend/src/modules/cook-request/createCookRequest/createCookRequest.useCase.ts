@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -13,10 +14,14 @@ import {
 import { CreateCookRequestDto } from "@src/modules/cook-request/createCookRequest/createCookRequest.dto";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
+import { User } from "@src/modules/user/user.entity";
+import { NotificationService } from "@src/modules/notification/notification.service";
 import { In, Repository } from "typeorm";
 
 @Injectable()
 export class CreateCookRequestUseCase {
+  private readonly logger = new Logger(CreateCookRequestUseCase.name);
+
   constructor(
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
@@ -27,7 +32,10 @@ export class CreateCookRequestUseCase {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(ConversationParticipant)
-    private readonly participantRepository: Repository<ConversationParticipant>
+    private readonly participantRepository: Repository<ConversationParticipant>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly notificationService: NotificationService
   ) {}
 
   async execute(dto: CreateCookRequestDto, userId: number) {
@@ -106,6 +114,10 @@ export class CreateCookRequestUseCase {
     });
     const saved = await this.cookRequestRepository.save(cookRequest);
 
+    this.sendNewRequestNotification(cook.userId, userId, conversation.id).catch(
+      (err) => this.logger.error(`Push notification error: ${err}`)
+    );
+
     return {
       id: saved.id,
       guestsNumber: saved.guestsNumber,
@@ -118,5 +130,29 @@ export class CreateCookRequestUseCase {
       clientId: saved.clientId,
       conversationId: conversation.id,
     };
+  }
+
+  private async sendNewRequestNotification(
+    cookUserId: number,
+    clientUserId: number,
+    conversationId: number
+  ): Promise<void> {
+    const [cookUser, clientUser] = await Promise.all([
+      this.userRepository.findOne({ where: { id: cookUserId } }),
+      this.userRepository.findOne({ where: { id: clientUserId } }),
+    ]);
+
+    if (!cookUser?.expoPushToken) return;
+
+    const clientName = clientUser
+      ? `${clientUser.firstName} ${clientUser.lastName}`
+      : "Un client";
+
+    await this.notificationService.sendPushNotifications(
+      [cookUser.expoPushToken],
+      "Nouvelle demande de réservation",
+      `${clientName} vous a envoyé une demande de réservation`,
+      { conversationId }
+    );
   }
 }

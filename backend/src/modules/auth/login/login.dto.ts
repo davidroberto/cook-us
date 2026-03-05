@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 
 export class LoginDto {
   @ApiProperty({ example: "jean@test.fr" })
@@ -9,4 +9,9 @@ export class LoginDto {
   @ApiProperty({ example: "password123" })
   @IsString()
   password: string;
+
+  @ApiPropertyOptional({ example: "ExponentPushToken[xxxxxx]" })
+  @IsOptional()
+  @IsString()
+  expoPushToken?: string;
 }

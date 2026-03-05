@@ -26,11 +26,19 @@ import { GetUnreadCountsUseCase } from "@src/modules/conversation/getUnreadCount
 import { ConversationParticipantGuard } from "@src/modules/conversation/conversationParticipant.guard";
 import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 import { AuthModule } from "@src/modules/auth/auth.module";
+import { User } from "@src/modules/user/user.entity";
+import { NotificationModule } from "@src/modules/notification/notification.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Conversation, ConversationParticipant, Message]),
+    TypeOrmModule.forFeature([
+      Conversation,
+      ConversationParticipant,
+      Message,
+      User,
+    ]),
     AuthModule,
+    NotificationModule,
   ],
   controllers: [
     CreateConversationController,
