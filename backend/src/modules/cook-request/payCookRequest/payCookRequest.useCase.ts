@@ -30,7 +30,7 @@ export class PayCookRequestUseCase {
   async execute(id: number, userId: number) {
     const cookRequest = await this.cookRequestRepository.findOne({
       where: { id },
-      relations: ["client"],
+      relations: ["client", "cook"],
     });
 
     if (!cookRequest) {
@@ -51,6 +51,16 @@ export class PayCookRequestUseCase {
     }
 
     cookRequest.status = CookRequestStatus.PAID;
+
+    if (cookRequest.endDate && cookRequest.cook?.hourlyRate != null) {
+      const hourlyRate = Number(cookRequest.cook.hourlyRate);
+      const durationMs = cookRequest.endDate.getTime() - cookRequest.startDate.getTime();
+      const hours = durationMs / (1000 * 60 * 60);
+      const subtotal = hourlyRate * hours;
+      const total = subtotal * 1.15;
+      cookRequest.totalPaid = Math.round(total * 100) / 100;
+    }
+
     const saved = await this.cookRequestRepository.save(cookRequest);
 
     if (cookRequest.conversationId) {
