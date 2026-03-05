@@ -47,7 +47,6 @@ const COOKS_DATA = [
     hourlyRate: 45,
     city: "Paris",
     isValidated: true,
-    siret: "81234567800015",
     description:
       "Chef formé à l'École Ferrandi, spécialisé dans la bistronomy moderne. Je cuisine des plats du terroir revisités avec des produits de saison.",
   },
@@ -59,7 +58,6 @@ const COOKS_DATA = [
     hourlyRate: 55,
     city: "Lyon",
     isValidated: true,
-    siret: "32987654300028",
     description:
       "Passionnée par la cuisine italienne authentique, j'ai vécu 5 ans à Rome et Florence. Pâtes fraîches, risottos et tiramisu maison sont mes spécialités.",
   },
@@ -71,7 +69,6 @@ const COOKS_DATA = [
     hourlyRate: 40,
     city: "Marseille",
     isValidated: true,
-    siret: "55112233400041",
     description:
       "Autodidacte passionné par l'Asie du Sud-Est. Je propose des menus thaïlandais, vietnamiens et japonais avec des produits frais et authentiques.",
   },
@@ -83,7 +80,6 @@ const COOKS_DATA = [
     hourlyRate: 1000000,
     city: "Bordeaux",
     isValidated: true,
-    siret: "77665544300059",
     description:
       "Diététicien et chef cuisinier, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
   },
@@ -107,7 +103,6 @@ const COOKS_DATA = [
     hourlyRate: 62,
     city: "Paris",
     isValidated: true,
-    siret: "90123456700074",
     description:
       "Ancienne pâtissière dans un palace parisien, je propose des buffets de desserts et des pièces montées pour vos événements. Créations sur mesure.",
   },
@@ -119,7 +114,6 @@ const COOKS_DATA = [
     hourlyRate: 48,
     city: "Nice",
     isValidated: true,
-    siret: "12398765400082",
     description:
       "Né à Nice, je cuisine la Méditerranée : bouillabaisse, socca, ratatouille et mezze. Des saveurs solaires pour vos repas en famille ou entre amis.",
   },
@@ -131,7 +125,6 @@ const COOKS_DATA = [
     hourlyRate: 70,
     city: "Paris",
     isValidated: true,
-    siret: "65412378900096",
     description:
       "Formée à Paris et Tokyo, je propose une cuisine fusion qui marie techniques françaises et saveurs japonaises. Une expérience gastronomique unique.",
   },
@@ -143,7 +136,6 @@ const COOKS_DATA = [
     hourlyRate: 95,
     city: "Paris",
     isValidated: true,
-    siret: "23456789100103",
     description:
       "Étoilé Michelin pendant 3 ans, je propose une expérience gastronomique à domicile. Menus dégustation 7 ou 9 services avec accords mets et vins.",
   },
@@ -155,7 +147,6 @@ const COOKS_DATA = [
     hourlyRate: 42,
     city: "Aix-en-Provence",
     isValidated: true,
-    siret: "87654321200118",
     description:
       "Fille de restaurateurs provençaux, je transmets la chaleur de la cuisine du Sud. Produits du marché, herbes fraîches et huile d'olive de qualité.",
   },
@@ -179,7 +170,6 @@ const COOKS_DATA = [
     hourlyRate: 36,
     city: "Nantes",
     isValidated: true,
-    siret: "56789012300133",
     description:
       "Revenue du Mexique après 18 mois d'immersion, je propose des tacos, enchiladas et guacamole authentiques. Épices et piments sélectionnés avec soin.",
   },
@@ -191,7 +181,6 @@ const COOKS_DATA = [
     hourlyRate: 32,
     city: "Lille",
     isValidated: true,
-    siret: "78901234500148",
     description:
       "Globe-trotter culinaire, j'ai voyagé dans 30 pays et rapporté leurs recettes authentiques. Curry indien, pad thaï, shawarma et empanadas au programme.",
   },
@@ -203,7 +192,8 @@ const COOKS_DATA = [
     hourlyRate: 52,
     city: "Rennes",
     isValidated: false,
-    siret: "91234567800156",
+    thumbnail:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
     description:
       "Originaire de Bretagne, je travaille avec les pêcheurs locaux pour vous proposer des fruits de mer ultra-frais. Plateaux, bisques et crepes salées.",
   },
@@ -226,13 +216,47 @@ const CLIENTS_DATA = [
     firstName: "Lucas",
     lastName: "Bernard",
     email: "lucas.bernard@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200",
   },
-  { firstName: "Emma", lastName: "Petit", email: "emma.petit@cookus.app" },
-  { firstName: "Hugo", lastName: "Simon", email: "hugo.simon@cookus.app" },
-  { firstName: "Chloé", lastName: "Dubois", email: "chloe.dubois@cookus.app" },
-  { firstName: "Nathan", lastName: "Leroy", email: "nathan.leroy@cookus.app" },
-  { firstName: "Zoé", lastName: "Girard", email: "zoe.girard@cookus.app" },
-  { firstName: "Théo", lastName: "Bonnet", email: "theo.bonnet@cookus.app" },
+  {
+    firstName: "Emma",
+    lastName: "Petit",
+    email: "emma.petit@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
+  },
+  {
+    firstName: "Hugo",
+    lastName: "Simon",
+    email: "hugo.simon@cookus.app",
+  },
+  {
+    firstName: "Chloé",
+    lastName: "Dubois",
+    email: "chloe.dubois@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200",
+  },
+  {
+    firstName: "Nathan",
+    lastName: "Leroy",
+    email: "nathan.leroy@cookus.app",
+  },
+  {
+    firstName: "Zoé",
+    lastName: "Girard",
+    email: "zoe.girard@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200",
+  },
+  {
+    firstName: "Théo",
+    lastName: "Bonnet",
+    email: "theo.bonnet@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200",
+  },
   {
     firstName: "Manon",
     lastName: "Lefebvre",
@@ -242,13 +266,21 @@ const CLIENTS_DATA = [
     firstName: "Raphaël",
     lastName: "Marchand",
     email: "raphael.marchand@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=200",
   },
   {
     firstName: "Inès",
     lastName: "Bertrand",
     email: "ines.bertrand@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=200",
   },
-  { firstName: "Louis", lastName: "Dumont", email: "louis.dumont@cookus.app" },
+  {
+    firstName: "Louis",
+    lastName: "Dumont",
+    email: "louis.dumont@cookus.app",
+  },
   {
     firstName: "Alice",
     lastName: "Renard",
@@ -263,6 +295,8 @@ const CLIENTS_DATA = [
     firstName: "Pauline",
     lastName: "Simon",
     email: "pauline.simon@cookus.app",
+    thumbnail:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200",
   },
   {
     firstName: "Clément",
@@ -310,6 +344,7 @@ async function seed() {
       email: data.email,
       role: UserRole.COOK,
       password: hashedCookPassword,
+      ...(data.thumbnail ? { thumbnail: data.thumbnail } : {}),
     });
     const cook = await cookRepo.save({
       firstName: data.firstName,
@@ -563,30 +598,50 @@ async function seed() {
       email: data.email,
       role: UserRole.CLIENT,
       password: hashedClientPassword,
+      ...("thumbnail" in data && data.thumbnail
+        ? { thumbnail: data.thumbnail }
+        : {}),
     });
     const client = await clientRepo.save({ userId: user.id });
     clients.push(client);
   }
   console.log(`${clients.length} clients créés`);
 
-  // --- Conversation pour Pierre Martin (cooks[0]) et Lucas Bernard (clients[0]) ---
-  // Créée avant les cook requests pour que le PENDING request puisse y référencer
-  const pierreConversation = await conversationRepo.save(
-    conversationRepo.create()
-  );
-  await participantRepo.save([
-    participantRepo.create({
-      authorId: clients[0].userId,
-      conversationId: pierreConversation.id,
-    }),
-    participantRepo.create({
-      authorId: cooks[0].userId,
-      conversationId: pierreConversation.id,
-    }),
-  ]);
-  console.log("Conversation Pierre Martin / Lucas Bernard créée");
+  // --- Cook requests avec conversations ---
+  // Reproduit le comportement du backend : chaque cook request a une conversation.
+  // Si un même couple client/cook a plusieurs demandes, elles partagent la même conversation.
 
-  // --- Cook requests ---
+  function formatDateDDMMYYYY(date: Date): string {
+    const d = date.getUTCDate().toString().padStart(2, "0");
+    const m = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+    const y = date.getUTCFullYear();
+    return `${d}-${m}-${y}`;
+  }
+
+  const conversationMap = new Map<string, number>();
+
+  async function getOrCreateConversation(
+    clientUserId: number,
+    cookUserId: number
+  ): Promise<number> {
+    const key = `${clientUserId}-${cookUserId}`;
+    if (conversationMap.has(key)) return conversationMap.get(key)!;
+
+    const conversation = await conversationRepo.save(conversationRepo.create());
+    await participantRepo.save([
+      participantRepo.create({
+        authorId: clientUserId,
+        conversationId: conversation.id,
+      }),
+      participantRepo.create({
+        authorId: cookUserId,
+        conversationId: conversation.id,
+      }),
+    ]);
+    conversationMap.set(key, conversation.id);
+    return conversation.id;
+  }
+
   const requests: Partial<CookRequestEntity>[] = [
     // Passées - accepted
     {
@@ -753,7 +808,6 @@ async function seed() {
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
       message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
-      conversationId: pierreConversation.id,
     },
     {
       guestsNumber: 8,
@@ -886,34 +940,39 @@ async function seed() {
     },
   ];
 
-  const savedRequests = (await cookRequestRepo.save(
-    requests
-  )) as CookRequestEntity[];
-  console.log(`${savedRequests.length} demandes de cook créées`);
+  for (const reqData of requests) {
+    const cook = cooks.find((c) => c.id === reqData.cookId)!;
+    const client = clients.find((c) => c.id === reqData.clientId)!;
+    const clientUserId = client.userId;
+    const cookUserId = cook.userId;
 
-  // --- Message __COOK_REQUEST__ pour la conversation Pierre Martin / Lucas Bernard ---
-  const pierreRequest = savedRequests.find(
-    (r) =>
-      r.cookId === cooks[0].id &&
-      r.clientId === clients[0].id &&
-      r.status === CookRequestStatus.PENDING
-  );
-  if (pierreRequest) {
+    const conversationId = await getOrCreateConversation(
+      clientUserId,
+      cookUserId
+    );
+
+    const saved = await cookRequestRepo.save({
+      ...reqData,
+      conversationId,
+    });
+
     await messageRepo.save(
       messageRepo.create({
-        authorId: clients[0].userId,
-        conversationId: pierreConversation.id,
+        authorId: clientUserId,
+        conversationId,
         message: `__COOK_REQUEST__${JSON.stringify({
-          startDate: "15-03-2026",
-          guestsNumber: 4,
-          mealType: "dinner",
-          message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
-          cookRequestId: pierreRequest.id,
+          startDate: formatDateDDMMYYYY(saved.startDate),
+          guestsNumber: saved.guestsNumber,
+          mealType: saved.mealType,
+          message: saved.message || "",
+          cookRequestId: saved.id,
         })}`,
       })
     );
-    console.log("Message __COOK_REQUEST__ créé pour Pierre Martin");
   }
+  console.log(
+    `${requests.length} demandes de cook créées avec conversations et messages`
+  );
 
   await dataSource.destroy();
   console.log("\nSeed terminé avec succès !");
