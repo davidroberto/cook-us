@@ -1,4 +1,4 @@
-export type CookRequestStatus = 'pending' | 'accepted' | 'refused' | 'cancelled'
+export type CookRequestStatus = 'pending' | 'accepted' | 'refused' | 'cancelled' | 'completed'
 
 export type CookRequest = {
     id: number
