@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
+  View,
 } from "react-native";
 import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
@@ -36,11 +35,7 @@ export function ConversationView({
   }, [conversation.messages]);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      testID="conversation-view"
-    >
+    <View style={styles.container} testID="conversation-view">
       <FlatList<Message>
         testID="message-list"
         inverted
@@ -54,6 +49,8 @@ export function ConversationView({
         )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         onEndReached={hasMore ? onLoadMore : undefined}
         onEndReachedThreshold={0.3}
         ListFooterComponent={
@@ -67,7 +64,7 @@ export function ConversationView({
         }
       />
       <MessageInput onSend={onSendMessage} />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
