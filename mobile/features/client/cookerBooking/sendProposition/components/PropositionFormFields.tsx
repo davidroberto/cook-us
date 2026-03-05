@@ -115,6 +115,7 @@ export function PropositionFormFields({
       <Input
         testID="number-of-guests-input"
         label="Nombre de convives"
+        required
         value={numberOfGuests}
         onChangeText={(text) => {
           if (/^\d*$/.test(text)) onNumberOfGuestsChange(text);
@@ -125,7 +126,7 @@ export function PropositionFormFields({
       />
 
       <View style={styles.dateContainer}>
-        <Text style={styles.dateLabel}>Date de début</Text>
+        <Text style={styles.dateLabel}>Date de début <Text style={styles.required}>*</Text></Text>
         {Platform.OS === "web" ? (
           <Input
             testID="start-date-input"
@@ -183,7 +184,7 @@ export function PropositionFormFields({
       </View>
 
       <View style={styles.mealTypeContainer}>
-        <Text style={styles.mealTypeLabel}>Type de repas</Text>
+        <Text style={styles.mealTypeLabel}>Type de repas <Text style={styles.required}>*</Text></Text>
         <View style={styles.mealTypeOptions}>
           {MEAL_TYPE_OPTIONS.map((option) => (
             <TouchableOpacity
@@ -225,6 +226,7 @@ export function PropositionFormFields({
       <Input
         testID="street-input"
         label="Rue"
+        required
         value={street}
         onChangeText={onStreetChange}
         placeholder="12 rue de la Paix"
@@ -235,6 +237,7 @@ export function PropositionFormFields({
       <Input
         testID="postalcode-input"
         label="Code postal"
+        required
         value={postalCode}
         onChangeText={onPostalCodeChange}
         placeholder="75001"
@@ -245,6 +248,7 @@ export function PropositionFormFields({
       <Input
         testID="city-input"
         label="Ville"
+        required
         value={city}
         onChangeText={onCityChange}
         placeholder="Paris"
@@ -374,6 +378,9 @@ const styles = StyleSheet.create({
     color: colors.main,
     marginBottom: 8,
     marginTop: 4,
+  },
+  required: {
+    color: colors.main,
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",

@@ -31,6 +31,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   const [siret, setSiret] = useState("");
   const [description, setDescription] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [city, setCity] = useState("");
   const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
   const { error, isLoading, register } = useRegister();
 
@@ -101,7 +102,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Prénom</Text>
+        <Text style={styles.label}>Prénom <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="firstname-input"
           style={styles.input}
@@ -114,7 +115,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Nom</Text>
+        <Text style={styles.label}>Nom <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="lastname-input"
           style={styles.input}
@@ -127,7 +128,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Email <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="email-input"
           style={styles.input}
@@ -141,7 +142,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Mot de passe</Text>
+        <Text style={styles.label}>Mot de passe <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="password-input"
           style={styles.input}
@@ -154,7 +155,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Je suis un…</Text>
+        <Text style={styles.label}>Je suis un… <Text style={styles.required}>*</Text></Text>
         <View style={styles.radioGroup}>
           <TouchableOpacity
             testID="role-client"
@@ -197,7 +198,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       {role === "cook" && (
         <>
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Spécialité</Text>
+            <Text style={styles.label}>Spécialité <Text style={styles.required}>*</Text></Text>
             <View style={styles.specialityGrid}>
               {COOK_SPECIALITIES.map((item) => (
                 <TouchableOpacity
@@ -224,7 +225,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>SIRET</Text>
+            <Text style={styles.label}>SIRET <Text style={styles.required}>*</Text></Text>
             <TextInput
               testID="siret-input"
               style={styles.input}
@@ -238,7 +239,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Ville</Text>
+            <Text style={styles.label}>Ville <Text style={styles.required}>*</Text></Text>
             <TextInput
               testID="cook-city-input"
               style={styles.input}
@@ -481,5 +482,8 @@ const styles = StyleSheet.create({
     color: colors.main,
     fontSize: 14,
     fontWeight: "600",
+  },
+  required: {
+    color: colors.main,
   },
 });

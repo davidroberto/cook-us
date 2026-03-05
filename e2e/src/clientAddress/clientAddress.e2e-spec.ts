@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test, type APIRequestContext } from "@playwright/test";
 
 const API = "http://localhost:8080/api";
 
@@ -9,9 +9,9 @@ const COOK_EMAIL = "pierre.martin@cookus.app";
 const COOK_PASSWORD = "cook1234";
 
 async function loginAs(
-  request: Parameters<Parameters<typeof test>[1]>[0]["request"],
+  request: APIRequestContext,
   email: string,
-  password: string
+  password: string,
 ): Promise<string> {
   const res = await request.post(`${API}/auth/login`, {
     data: { email, password },
@@ -171,14 +171,17 @@ test("PATCH /cook-request/:id/address met à jour l'adresse de la demande", asyn
   const requestId = created.id;
 
   // Met à jour l'adresse
-  const patchRes = await request.patch(`${API}/cook-request/${requestId}/address`, {
-    headers: { Authorization: `Bearer ${clientToken}` },
-    data: {
-      street: "99 rue Modifiée",
-      postalCode: "75020",
-      city: "Paris",
+  const patchRes = await request.patch(
+    `${API}/cook-request/${requestId}/address`,
+    {
+      headers: { Authorization: `Bearer ${clientToken}` },
+      data: {
+        street: "99 rue Modifiée",
+        postalCode: "75020",
+        city: "Paris",
+      },
     },
-  });
+  );
   expect(patchRes.status()).toBe(200);
 
   // Vérifie via le détail de la demande côté cook
@@ -222,15 +225,15 @@ test("GET /cook-request/:id retourne l'adresse de la prestation dans le détail 
     headers: { Authorization: `Bearer ${clientToken}` },
   });
   const cooksBody = await cooksRes.json();
-  const cookProfile = cookProfileRes.status() === 200 ? await cookProfileRes.json() : null;
+  const cookProfile =
+    cookProfileRes.status() === 200 ? await cookProfileRes.json() : null;
 
   // Cherche le cook Pierre Martin dans la liste
   const allCooks: Array<{ id: string; firstName: string; lastName: string }> =
     cooksBody.data ?? cooksBody;
   const pierreId =
-    allCooks.find(
-      (c) => c.firstName === "Pierre" && c.lastName === "Martin"
-    )?.id ?? allCooks[0]?.id;
+    allCooks.find((c) => c.firstName === "Pierre" && c.lastName === "Martin")
+      ?.id ?? allCooks[0]?.id;
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 45);
