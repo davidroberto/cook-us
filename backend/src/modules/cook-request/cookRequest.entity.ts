@@ -90,4 +90,14 @@ export class CookRequestEntity {
     nullable: true,
   })
   cancellationReason: string | null;
+
+  @ApiPropertyOptional({ example: 155.25, description: "Montant total payé (€)" })
+  @Column({
+    name: "total_paid",
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  totalPaid: number | null;
 }
