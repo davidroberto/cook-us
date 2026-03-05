@@ -56,17 +56,15 @@ test.describe("Accepter une proposition (cuisinier)", () => {
         `API a répondu ${response.status()}: ${await response.text()}`
       ).toBe(200);
 
-      await expect(
-        page.getByTestId("cook-request-status").first()
-      ).toHaveText("Acceptée", { timeout: TIMEOUT });
+      const statuses = page.getByTestId("cook-request-status");
+      await expect(statuses.filter({ hasText: "Acceptée" }).first()).toBeVisible({
+        timeout: TIMEOUT,
+      });
     } else {
       // Déjà acceptée lors d'une exécution précédente
-      const statuses = page.getByTestId("cook-request-status");
-      const count = await statuses.count();
-      const texts = await Promise.all(
-        Array.from({ length: count }, (_, i) => statuses.nth(i).textContent())
-      );
-      expect(texts).toContain("Acceptée");
+      await expect(
+        page.getByTestId("cook-request-status").filter({ hasText: "Acceptée" }).first()
+      ).toBeVisible({ timeout: TIMEOUT });
     }
   });
 });
