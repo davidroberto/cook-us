@@ -9,6 +9,11 @@ export type AuthUser = {
   lastName: string;
   email: string;
   role: "client" | "cook";
+  address?: {
+    street: string | null;
+    postalCode: string | null;
+    city: string | null;
+  } | null;
 };
 
 export type AuthResponse = {

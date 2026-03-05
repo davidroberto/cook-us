@@ -21,9 +21,19 @@ const apiFetch = async <T>(
   return res.json() as Promise<T>;
 };
 
+export const getProfile = (token: string): Promise<AuthUser> =>
+  apiFetch<AuthUser>("/auth/me", token, { method: "GET" });
+
 export const updateProfile = (
   token: string,
-  data: { firstName?: string; lastName?: string; email?: string }
+  data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    street?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+  }
 ): Promise<AuthUser> =>
   apiFetch<AuthUser>("/auth/me", token, {
     method: "PATCH",
