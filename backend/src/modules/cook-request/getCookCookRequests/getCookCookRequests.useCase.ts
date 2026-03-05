@@ -1,11 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import {
-  CookRequestEntity,
-  CookRequestStatus,
-} from "@src/modules/cook-request/cookRequest.entity";
+import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
 import { Cook } from "@src/modules/cook/cook.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class GetCookCookRequestsUseCase {
@@ -13,7 +10,7 @@ export class GetCookCookRequestsUseCase {
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
     @InjectRepository(Cook)
-    private readonly cookRepository: Repository<Cook>
+    private readonly cookRepository: Repository<Cook>,
   ) {}
 
   async execute(userId: number) {

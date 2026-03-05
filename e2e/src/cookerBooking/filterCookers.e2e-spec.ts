@@ -56,9 +56,13 @@ test.describe("Filtrer les cuisiniers", () => {
     await expect(page.getByTestId("cooker-card").first()).toBeVisible({ timeout: TIMEOUT });
   });
 
-  test("sélectionner une spécialité sans résultat affiche le message vide", async ({ page }) => {
+  test("sélectionner une spécialité affiche des résultats ou le message vide", async ({ page }) => {
     await page.getByTestId("speciality-chip-japanese_cooking").click();
-    await expect(page.getByTestId("loading-indicator")).toBeHidden({ timeout: TIMEOUT });
+    const cardOrEmpty = page
+      .getByTestId("cooker-card")
+      .first()
+      .or(page.getByTestId("empty-message"));
+    await expect(cardOrEmpty).toBeVisible({ timeout: TIMEOUT });
     const hasResults = await page.getByTestId("cooker-card").first().isVisible();
     if (!hasResults) {
       await expect(page.getByTestId("empty-message")).toBeVisible({ timeout: TIMEOUT });
