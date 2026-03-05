@@ -18,12 +18,12 @@ const toAbsoluteUrl = (path: string): string => {
 /**
  * Résout la miniature à afficher :
  * - users.thumbnail en priorité
- * - sinon première image de cook_image
- * - sinon null
+ * - sinon cook.photoUrl
+ * - sinon null (initiales)
  */
 const resolveThumbnail = (cook: Cook): string | null => {
   if (cook.user.thumbnail) return toAbsoluteUrl(cook.user.thumbnail);
-  if (cook.images.length > 0) return toAbsoluteUrl(cook.images[0].imgUrl);
+  if (cook.photoUrl) return toAbsoluteUrl(cook.photoUrl);
   return null;
 };
 
