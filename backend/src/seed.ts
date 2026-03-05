@@ -355,7 +355,7 @@ async function seed() {
   console.log("Connecté à la base de données");
 
   await dataSource.query(
-    "TRUNCATE TABLE conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
+    "TRUNCATE TABLE review, conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
   );
   console.log("Tables vidées");
 
@@ -364,6 +364,7 @@ async function seed() {
   const cookImageRepo = dataSource.getRepository(CookImage);
   const clientRepo = dataSource.getRepository(Client);
   const cookRequestRepo = dataSource.getRepository(CookRequestEntity);
+  const reviewRepo = dataSource.getRepository(Review);
   const conversationRepo = dataSource.getRepository(Conversation);
   const participantRepo = dataSource.getRepository(ConversationParticipant);
   const messageRepo = dataSource.getRepository(Message);
@@ -848,6 +849,35 @@ async function seed() {
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
     },
+    // Terminées - completed (pour tester la notation)
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-10-05T19:00:00Z"),
+      endDate: new Date("2025-10-05T22:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[0].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      message: "Super soirée, cuisine française excellente.",
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-09-14T12:00:00Z"),
+      endDate: new Date("2025-09-14T15:00:00Z"),
+      cookId: cooks[1].id,
+      clientId: clients[0].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2025-08-20T19:00:00Z"),
+      endDate: new Date("2025-08-20T23:00:00Z"),
+      cookId: cooks[5].id,
+      clientId: clients[1].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+    },
     // À venir - pending
     {
       guestsNumber: 4,
@@ -990,6 +1020,8 @@ async function seed() {
     },
   ];
 
+  const savedRequests: CookRequestEntity[] = [];
+
   for (const reqData of requests) {
     const cook = cooks.find((c) => c.id === reqData.cookId);
     const client = clients.find((c) => c.id === reqData.clientId);
@@ -1005,6 +1037,7 @@ async function seed() {
       ...reqData,
       conversationId,
     });
+    savedRequests.push(saved);
 
     await messageRepo.save(
       messageRepo.create({
@@ -1023,6 +1056,25 @@ async function seed() {
   console.log(
     `${requests.length} demandes de cook créées avec conversations et messages`
   );
+
+  // --- Reviews (une seule prestation COMPLETED déjà notée pour lucas.bernard) ---
+  const completedWithReview = savedRequests.find(
+    (r) =>
+      r.cookId === cooks[1].id &&
+      r.clientId === clients[0].id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (completedWithReview) {
+    await reviewRepo.save({
+      rating: 5,
+      comment:
+        "Marie est une cuisinière exceptionnelle, les pâtes fraîches étaient divines !",
+      clientId: clients[0].id,
+      cookId: cooks[1].id,
+      cookRequestId: completedWithReview.id,
+    });
+  }
+  console.log("Reviews créées");
 
   await dataSource.destroy();
   console.log("\nSeed terminé avec succès !");

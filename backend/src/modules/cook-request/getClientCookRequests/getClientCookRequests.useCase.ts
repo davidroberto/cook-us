@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
+import { Review } from "@src/modules/cook-request/review.entity";
 import { Client } from "@src/modules/client/client.entity";
 import { Cook } from "@src/modules/cook/cook.entity";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
@@ -23,7 +24,9 @@ export class GetClientCookRequestsUseCase {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(ConversationParticipant)
-    private readonly participantRepository: Repository<ConversationParticipant>
+    private readonly participantRepository: Repository<ConversationParticipant>,
+    @InjectRepository(Review)
+    private readonly reviewRepository: Repository<Review>
   ) {}
 
   async execute(userId: number): Promise<CookRequestEntity[]> {
@@ -35,11 +38,24 @@ export class GetClientCookRequestsUseCase {
       throw new NotFoundException("Client introuvable");
     }
 
-    return this.cookRequestRepository.find({
+    const requests = await this.cookRequestRepository.find({
       where: { clientId: client.id },
       relations: { cook: true },
       order: { startDate: "DESC" },
     });
+
+    const reviews = await this.reviewRepository.find({
+      where: { clientId: client.id },
+    });
+
+    const reviewByCookRequestId = new Map(
+      reviews.map((r) => [r.cookRequestId, r])
+    );
+
+    return requests.map((r) => ({
+      ...r,
+      review: reviewByCookRequestId.get(r.id) ?? null,
+    }));
   }
 
   async executeByConversation(conversationId: number, currentUserId: number) {
