@@ -17,21 +17,6 @@ export class UpdateProfileDto {
   @IsEmail()
   email?: string;
 
-  @ApiPropertyOptional({ example: "12 rue de la Paix" })
-  @IsOptional()
-  @IsString()
-  street?: string;
-
-  @ApiPropertyOptional({ example: "75001" })
-  @IsOptional()
-  @IsString()
-  postalCode?: string;
-
-  @ApiPropertyOptional({ example: "Paris" })
-  @IsOptional()
-  @IsString()
-  city?: string;
-
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()

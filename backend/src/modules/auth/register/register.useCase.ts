@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
-import { Repository } from "typeorm";
-import * as bcrypt from "bcrypt";
-import { User, UserRole } from "@src/modules/user/user.entity";
-import { Cook } from "@src/modules/cook/cook.entity";
-import { Client } from "@src/modules/client/client.entity";
+import { InjectRepository } from "@nestjs/typeorm";
 import { RegisterDto } from "@src/modules/auth/register/register.dto";
+import { Client } from "@src/modules/client/client.entity";
+import { Cook } from "@src/modules/cook/cook.entity";
+import { User, UserRole } from "@src/modules/user/user.entity";
+import * as bcrypt from "bcrypt";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class RegisterUseCase {
@@ -48,14 +48,6 @@ export class RegisterUseCase {
       );
     }
 
-    if (role === UserRole.CLIENT) {
-      if (!dto.street?.trim() || !dto.postalCode?.trim() || !dto.city?.trim()) {
-        throw new BadRequestException(
-          "L'adresse (rue, code postal, ville) est obligatoire pour un client."
-        );
-      }
-    }
-
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = this.userRepository.create({
@@ -84,9 +76,6 @@ export class RegisterUseCase {
     } else {
       const client = this.clientRepository.create({
         userId: user.id,
-        street: dto.street ?? null,
-        postalCode: dto.postalCode ?? null,
-        city: dto.city ?? null,
       });
       await this.clientRepository.save(client);
     }
