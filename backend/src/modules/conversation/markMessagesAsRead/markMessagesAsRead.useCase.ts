@@ -8,11 +8,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Message } from "@src/modules/conversation/message.entity";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
-import { SendMessageDto } from "@src/modules/conversation/sendMessage/sendMessage.dto";
 import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 
 @Injectable()
-export class SendMessageUseCase {
+export class MarkMessagesAsReadUseCase {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
@@ -24,9 +23,8 @@ export class SendMessageUseCase {
 
   async execute(
     conversationId: number,
-    authorId: number,
-    dto: SendMessageDto
-  ): Promise<Message> {
+    userId: number
+  ): Promise<{ markedCount: number }> {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
     });
@@ -35,20 +33,26 @@ export class SendMessageUseCase {
       throw new NotFoundException(`Conversation ${conversationId} not found`);
     }
 
-    const message = this.messageRepository.create({
-      authorId,
-      conversationId,
-      message: dto.message,
-    });
+    const result = await this.messageRepository
+      .createQueryBuilder()
+      .update(Message)
+      .set({ readAt: () => "NOW()" })
+      .where("conversation_id = :conversationId", { conversationId })
+      .andWhere("author_id != :userId", { userId })
+      .andWhere("read_at IS NULL")
+      .execute();
 
-    const savedMessage = await this.messageRepository.save(message);
+    const markedCount = result.affected ?? 0;
 
-    this.chatGateway.emitToConversation(
-      conversationId,
-      "newMessage",
-      savedMessage
-    );
+    if (markedCount > 0) {
+      this.chatGateway.emitToConversation(conversationId, "messagesRead", {
+        conversationId,
+        readByUserId: userId,
+        readAt: new Date().toISOString(),
+        markedCount,
+      });
+    }
 
-    return savedMessage;
+    return { markedCount };
   }
 }

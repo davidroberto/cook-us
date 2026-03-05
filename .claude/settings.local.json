@@ -7,7 +7,9 @@
       "Bash(npm install @nestjs/websockets @nestjs/platform-socket.io socket.io)",
       "Bash(npx tsc --noEmit)",
       "Bash(echo \"EXIT: $?\")",
-      "Bash(npm install socket.io-client)"
+      "Bash(npm install socket.io-client)",
+      "Bash(ls -la \"/Users/maxouu/Documents/Cours-2526/cook-us/mobile/app/cook/\\(tabs\\)/\")",
+      "Bash(ls -la \"/Users/maxouu/Documents/Cours-2526/cook-us/mobile/app/client/\\(tabs\\)/\")"
     ]
   }
 }

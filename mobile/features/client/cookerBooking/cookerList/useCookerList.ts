@@ -1,12 +1,7 @@
-/**
- * Hook gérant la récupération de la liste des cuisiniers via l'API.
- * Délègue le fetch à repository.ts et la transformation à mapper.ts.
- */
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { mapCooksToCardData } from "./mapper";
-import { getCooks } from "./repository";
+import { getCooks, type CookFilters } from "./repository";
 import type { CookerCardData } from "./types";
 
 interface UseCookerListResult {
@@ -15,7 +10,7 @@ interface UseCookerListResult {
   error: string | null;
 }
 
-export const useCookerList = (): UseCookerListResult => {
+export const useCookerList = (filters: CookFilters = {}): UseCookerListResult => {
   const { token } = useAuth();
   const [cooks, setCooks] = useState<CookerCardData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +26,7 @@ export const useCookerList = (): UseCookerListResult => {
         setLoading(true);
         setError(null);
 
-        const data = await getCooks(token);
+        const data = await getCooks(token, filters);
 
         if (!cancelled) {
           setCooks(mapCooksToCardData(data));
@@ -52,7 +47,13 @@ export const useCookerList = (): UseCookerListResult => {
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, [
+    token,
+    filters.search,
+    filters.speciality,
+    filters.minHourlyRate,
+    filters.maxHourlyRate,
+  ]);
 
   return { cooks, loading, error };
 };

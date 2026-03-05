@@ -52,7 +52,7 @@ export class RegisterUseCase {
       const cook = this.cookRepository.create({
         firstName: dto.firstName,
         lastName: dto.lastName,
-        speciality: dto.cookProfile!.speciality,
+        speciality: dto.cookProfile?.speciality,
         description: dto.cookProfile?.description ?? null,
         hourlyRate: dto.cookProfile?.hourlyRate ?? null,
         photoUrl: dto.thumbnail ?? null,

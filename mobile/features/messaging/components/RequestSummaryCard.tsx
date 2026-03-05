@@ -22,22 +22,22 @@ export function RequestSummaryCard({ startDate, guestsNumber, mealType, message,
       <Text style={styles.title}>{isSentByMe ? "Demande envoyée" : "Demande reçue"}</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Date</Text>
-        <Text style={styles.value}>{startDate}</Text>
+        <Text style={styles.value} testID="request-date">{startDate}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Convives</Text>
-        <Text style={styles.value}>{guestsNumber}</Text>
+        <Text style={styles.value} testID="request-guests">{guestsNumber}</Text>
       </View>
       {mealType && (
         <View style={styles.row}>
           <Text style={styles.label}>Repas</Text>
-          <Text style={styles.value}>{MEAL_TYPE_LABELS[mealType] ?? mealType}</Text>
+          <Text style={styles.value} testID="request-meal-type">{MEAL_TYPE_LABELS[mealType] ?? mealType}</Text>
         </View>
       )}
       {message && (
         <View style={styles.row}>
           <Text style={styles.label}>Message</Text>
-          <Text style={[styles.value, styles.messageValue]}>{message}</Text>
+          <Text style={[styles.value, styles.messageValue]} testID="request-message">{message}</Text>
         </View>
       )}
     </View>

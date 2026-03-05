@@ -1,10 +1,15 @@
-import { useState } from "react";
-import { useOrderHistory, type CookRequestStatus, type OrderHistoryItem } from "@/features/client/account/viewProfile/useOrderHistory";
-import { useCancelBooking } from "@/features/client/cancelBooking/useCancelBooking";
+import { Button } from "@/components/ui/Button";
+import {
+  useOrderHistory,
+  type CookRequestStatus,
+  type OrderHistoryItem,
+} from "@/features/client/account/viewProfile/useOrderHistory";
 import { CancelBookingModal } from "@/features/client/cancelBooking/components/CancelBookingModal";
+import { useCancelBooking } from "@/features/client/cancelBooking/useCancelBooking";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -14,7 +19,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@/components/ui/Button";
+
+const MEAL_TYPE_LABELS: Record<string, string> = {
+  breakfast: "Petit-déjeuner",
+  lunch: "Déjeuner",
+  dinner: "Dîner",
+};
 
 const STATUS_LABEL: Record<CookRequestStatus, string> = {
   pending: "En attente",
@@ -37,9 +47,16 @@ const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
 export default function OrderHistoryScreen() {
   const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
-  const [cancelTarget, setCancelTarget] = useState<OrderHistoryItem | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<OrderHistoryItem | null>(
+    null,
+  );
 
-  const { cancelBooking, isLoading: cancelLoading, error: cancelError, clearError } = useCancelBooking(() => {
+  const {
+    cancelBooking,
+    isLoading: cancelLoading,
+    error: cancelError,
+    clearError,
+  } = useCancelBooking(() => {
     setCancelTarget(null);
     refresh();
   });
@@ -97,7 +114,8 @@ export default function OrderHistoryScreen() {
         <View style={styles.centered}>
           <Text style={styles.emptyTitle}>Aucune réservation</Text>
           <Text style={styles.emptyText}>
-            Vos réservations apparaîtront ici une fois que vous en aurez effectué.
+            Vos réservations apparaîtront ici une fois que vous en aurez
+            effectué.
           </Text>
         </View>
       </SafeAreaView>
@@ -122,9 +140,9 @@ export default function OrderHistoryScreen() {
           const canCancel = CANCELLABLE_STATUSES.includes(item.status);
 
           return (
-            <View style={styles.card}>
+            <View style={styles.card} testID="order-item">
               <View style={styles.cardHeader}>
-                <Text style={styles.cookName}>
+                <Text style={styles.cookName} testID="order-cook-name">
                   {item.cook.firstName} {item.cook.lastName}
                 </Text>
                 <View
@@ -133,18 +151,23 @@ export default function OrderHistoryScreen() {
                     { backgroundColor: STATUS_COLOR[item.status] },
                   ]}
                 >
-                  <Text style={styles.statusText}>
+                  <Text style={styles.statusText} testID="order-status">
                     {STATUS_LABEL[item.status]}
                   </Text>
                 </View>
               </View>
 
               <View style={styles.cardBody}>
-                <Text style={styles.detail}>{formattedDate}</Text>
-                <Text style={styles.detail}>
+                <Text style={styles.detail} testID="order-date">
+                  {formattedDate}
+                </Text>
+                <Text style={styles.detail} testID="order-guests">
                   {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
                 </Text>
               </View>
+              <Text style={styles.detail} testID="order-meal-type">
+                {MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}
+              </Text>
 
               {item.cancellationReason && (
                 <Text style={styles.cancellationReason}>

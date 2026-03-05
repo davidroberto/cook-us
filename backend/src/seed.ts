@@ -1,14 +1,17 @@
-import { DataSource } from "typeorm";
-import * as bcrypt from "bcrypt";
-import { User, UserRole } from "@src/modules/user/user.entity";
-import { Cook } from "@src/modules/cook/cook.entity";
-import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { Client } from "@src/modules/client/client.entity";
+import { Conversation } from "@src/modules/conversation/conversation.entity";
+import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
+import { Message } from "@src/modules/conversation/message.entity";
 import {
   CookRequestEntity,
   CookRequestStatus,
   MealType,
 } from "@src/modules/cook-request/cookRequest.entity";
+import { Cook } from "@src/modules/cook/cook.entity";
+import { CookImage } from "@src/modules/cook/cookImage.entity";
+import { User, UserRole } from "@src/modules/user/user.entity";
+import * as bcrypt from "bcrypt";
+import { DataSource } from "typeorm";
 
 const dataSource = new DataSource({
   type: "postgres",
@@ -17,7 +20,16 @@ const dataSource = new DataSource({
   username: process.env.POSTGRES_USER || "postgres",
   password: process.env.POSTGRES_PASSWORD || "postgres_password",
   database: process.env.POSTGRES_DB || "cook_us",
-  entities: [User, Cook, CookImage, Client, CookRequestEntity],
+  entities: [
+    User,
+    Cook,
+    CookImage,
+    Client,
+    CookRequestEntity,
+    Conversation,
+    ConversationParticipant,
+    Message,
+  ],
   synchronize: true,
 });
 
@@ -247,7 +259,7 @@ async function seed() {
   console.log("Connecté à la base de données");
 
   await dataSource.query(
-    "TRUNCATE TABLE cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
+    "TRUNCATE TABLE conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
   );
   console.log("Tables vidées");
 
@@ -256,6 +268,9 @@ async function seed() {
   const cookImageRepo = dataSource.getRepository(CookImage);
   const clientRepo = dataSource.getRepository(Client);
   const cookRequestRepo = dataSource.getRepository(CookRequestEntity);
+  const conversationRepo = dataSource.getRepository(Conversation);
+  const participantRepo = dataSource.getRepository(ConversationParticipant);
+  const messageRepo = dataSource.getRepository(Message);
 
   // --- Admin ---
   await userRepo.save({
@@ -533,6 +548,23 @@ async function seed() {
   }
   console.log(`${clients.length} clients créés`);
 
+  // --- Conversation pour Pierre Martin (cooks[0]) et Lucas Bernard (clients[0]) ---
+  // Créée avant les cook requests pour que le PENDING request puisse y référencer
+  const pierreConversation = await conversationRepo.save(
+    conversationRepo.create()
+  );
+  await participantRepo.save([
+    participantRepo.create({
+      authorId: clients[0].userId,
+      conversationId: pierreConversation.id,
+    }),
+    participantRepo.create({
+      authorId: cooks[0].userId,
+      conversationId: pierreConversation.id,
+    }),
+  ]);
+  console.log("Conversation Pierre Martin / Lucas Bernard créée");
+
   // --- Cook requests ---
   const requests: Partial<CookRequestEntity>[] = [
     // Passées - accepted
@@ -700,6 +732,7 @@ async function seed() {
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
       message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
+      conversationId: pierreConversation.id,
     },
     {
       guestsNumber: 8,
@@ -832,8 +865,34 @@ async function seed() {
     },
   ];
 
-  await cookRequestRepo.save(requests);
-  console.log(`${requests.length} demandes de cook créées`);
+  const savedRequests = (await cookRequestRepo.save(
+    requests
+  )) as CookRequestEntity[];
+  console.log(`${savedRequests.length} demandes de cook créées`);
+
+  // --- Message __COOK_REQUEST__ pour la conversation Pierre Martin / Lucas Bernard ---
+  const pierreRequest = savedRequests.find(
+    (r) =>
+      r.cookId === cooks[0].id &&
+      r.clientId === clients[0].id &&
+      r.status === CookRequestStatus.PENDING
+  );
+  if (pierreRequest) {
+    await messageRepo.save(
+      messageRepo.create({
+        authorId: clients[0].userId,
+        conversationId: pierreConversation.id,
+        message: `__COOK_REQUEST__${JSON.stringify({
+          startDate: "15-03-2026",
+          guestsNumber: 4,
+          mealType: "dinner",
+          message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
+          cookRequestId: pierreRequest.id,
+        })}`,
+      })
+    );
+    console.log("Message __COOK_REQUEST__ créé pour Pierre Martin");
+  }
 
   await dataSource.destroy();
   console.log("\nSeed terminé avec succès !");

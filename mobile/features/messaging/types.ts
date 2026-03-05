@@ -13,6 +13,7 @@ export type ApiMessage = {
   author: ApiUser;
   conversationId: number;
   message: string;
+  readAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -30,6 +31,7 @@ export type ApiConversation = {
   id: number;
   participants: ApiConversationParticipant[];
   messages: ApiMessage[];
+  unreadCount?: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

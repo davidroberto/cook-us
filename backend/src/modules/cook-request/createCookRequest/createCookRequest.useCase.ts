@@ -100,6 +100,9 @@ export class CreateCookRequestUseCase {
       mealType: dto.mealType,
       message: dto.message ?? null,
       conversationId: conversation.id,
+      street: client.street ?? null,
+      postalCode: client.postalCode ?? null,
+      city: client.city ?? null,
     });
     const saved = await this.cookRequestRepository.save(cookRequest);
 

@@ -27,6 +27,8 @@ import { GetCookRequestPriceController } from "@src/modules/cook-request/getCook
 import { GetCookRequestPriceUseCase } from "@src/modules/cook-request/getCookRequestPrice/getCookRequestPrice.useCase";
 import { GetClientTransactionsController } from "@src/modules/cook-request/getClientTransactions/getClientTransactions.controller";
 import { GetClientTransactionsUseCase } from "@src/modules/cook-request/getClientTransactions/getClientTransactions.useCase";
+import { GetCookRequestsByConversationController } from "@src/modules/cook-request/getCookRequestsByConversation/getCookRequestsByConversation.controller";
+import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/getCookRequestsByConversation/getCookRequestsByConversation.useCase";
 
 @Module({
   imports: [
@@ -51,6 +53,7 @@ import { GetClientTransactionsUseCase } from "@src/modules/cook-request/getClien
     CancelCookRequestController,
     PayCookRequestController,
     GetCookRequestPriceController,
+    GetCookRequestsByConversationController,
   ],
   providers: [
     CreateCookRequestUseCase,
@@ -63,6 +66,7 @@ import { GetClientTransactionsUseCase } from "@src/modules/cook-request/getClien
     PayCookRequestUseCase,
     GetCookRequestPriceUseCase,
     GetClientTransactionsUseCase,
+    GetCookRequestsByConversationUseCase,
   ],
 })
 export class CookRequestModule {}
