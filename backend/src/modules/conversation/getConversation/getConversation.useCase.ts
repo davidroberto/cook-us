@@ -15,7 +15,6 @@ export class GetConversationUseCase {
       where: { id },
       relations: {
         participants: { author: true },
-        messages: { author: true },
       },
     });
 

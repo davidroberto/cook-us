@@ -13,7 +13,7 @@ export class GetConversationMessagesUseCase {
     private readonly conversationRepository: Repository<Conversation>
   ) {}
 
-  async execute(conversationId: number): Promise<Message[]> {
+  async execute(conversationId: number, page = 1, limit = 20) {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
     });
@@ -22,10 +22,20 @@ export class GetConversationMessagesUseCase {
       throw new NotFoundException(`Conversation ${conversationId} not found`);
     }
 
-    return this.messageRepository.find({
+    const [messages, total] = await this.messageRepository.findAndCount({
       where: { conversationId },
       relations: { author: true },
-      order: { createdAt: "ASC" },
+      order: { createdAt: "DESC" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      messages,
+      total,
+      page,
+      limit,
+      hasMore: page * limit < total,
+    };
   }
 }

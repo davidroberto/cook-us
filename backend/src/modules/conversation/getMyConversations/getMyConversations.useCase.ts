@@ -18,8 +18,6 @@ export class GetMyConversationsUseCase {
       .createQueryBuilder("conversation")
       .leftJoinAndSelect("conversation.participants", "participant")
       .leftJoinAndSelect("participant.author", "author")
-      .leftJoinAndSelect("conversation.messages", "message")
-      .leftJoinAndSelect("message.author", "messageAuthor")
       .where((qb) => {
         const subQuery = qb
           .subQuery()
@@ -56,9 +54,34 @@ export class GetMyConversationsUseCase {
       unreadMap.set(Number(row.conversationId), Number(row.unreadCount));
     }
 
+    // Last message per conversation (single query)
+    const lastMessages = await this.messageRepository
+      .createQueryBuilder("message")
+      .leftJoinAndSelect("message.author", "author")
+      .where(
+        "message.id IN " +
+          this.messageRepository
+            .createQueryBuilder("m2")
+            .subQuery()
+            .select("MAX(m2.id)")
+            .from(Message, "m2")
+            .where("m2.conversationId IN (:...conversationIds)")
+            .groupBy("m2.conversationId")
+            .getQuery()
+      )
+      .setParameters({ conversationIds })
+      .getMany();
+
+    const lastMessageMap = new Map<number, Message>();
+    for (const msg of lastMessages) {
+      lastMessageMap.set(msg.conversationId, msg);
+    }
+
     return conversations.map((conversation) => ({
       ...conversation,
+      messages: undefined,
       unreadCount: unreadMap.get(conversation.id) ?? 0,
+      lastMessage: lastMessageMap.get(conversation.id) ?? null,
     }));
   }
 }
