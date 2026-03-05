@@ -605,11 +605,30 @@ async function seed() {
   const clients: Client[] = [];
 
   // Adresses de profil pour certains clients (pré-remplissage du formulaire de demande)
-  const CLIENT_PROFILE_ADDRESSES: Record<string, { street: string; postalCode: string; city: string }> = {
-    "lucas.bernard@cookus.app": { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" },
-    "emma.petit@cookus.app": { street: "8 avenue Jean Jaurès", postalCode: "69007", city: "Lyon" },
-    "hugo.simon@cookus.app": { street: "22 boulevard de la Canebière", postalCode: "13001", city: "Marseille" },
-    "raphael.marchand@cookus.app": { street: "25 avenue de la Liberté", postalCode: "06000", city: "Nice" },
+  const CLIENT_PROFILE_ADDRESSES: Record<
+    string,
+    { street: string; postalCode: string; city: string }
+  > = {
+    "lucas.bernard@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "emma.petit@cookus.app": {
+      street: "8 avenue Jean Jaurès",
+      postalCode: "69007",
+      city: "Lyon",
+    },
+    "hugo.simon@cookus.app": {
+      street: "22 boulevard de la Canebière",
+      postalCode: "13001",
+      city: "Marseille",
+    },
+    "raphael.marchand@cookus.app": {
+      street: "25 avenue de la Liberté",
+      postalCode: "06000",
+      city: "Nice",
+    },
   };
 
   for (const data of CLIENTS_DATA) {
@@ -623,8 +642,10 @@ async function seed() {
         ? { thumbnail: data.thumbnail }
         : {}),
     });
+    const profileAddress = CLIENT_PROFILE_ADDRESSES[data.email] ?? {};
     const client = await clientRepo.save({
       userId: user.id,
+      ...profileAddress,
     });
     clients.push(client);
   }
@@ -1087,6 +1108,9 @@ async function seed() {
           guestsNumber: saved.guestsNumber,
           mealType: saved.mealType,
           message: saved.message || "",
+          street: saved.street ?? "",
+          postalCode: saved.postalCode ?? "",
+          city: saved.city ?? "",
           cookRequestId: saved.id,
         })}`,
       })
