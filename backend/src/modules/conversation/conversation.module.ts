@@ -19,6 +19,10 @@ import { GetMyConversationsController } from "@src/modules/conversation/getMyCon
 import { GetMyConversationsUseCase } from "@src/modules/conversation/getMyConversations/getMyConversations.useCase";
 import { GetConversationMessagesController } from "@src/modules/conversation/getConversationMessages/getConversationMessages.controller";
 import { GetConversationMessagesUseCase } from "@src/modules/conversation/getConversationMessages/getConversationMessages.useCase";
+import { MarkMessagesAsReadController } from "@src/modules/conversation/markMessagesAsRead/markMessagesAsRead.controller";
+import { MarkMessagesAsReadUseCase } from "@src/modules/conversation/markMessagesAsRead/markMessagesAsRead.useCase";
+import { GetUnreadCountsController } from "@src/modules/conversation/getUnreadCounts/getUnreadCounts.controller";
+import { GetUnreadCountsUseCase } from "@src/modules/conversation/getUnreadCounts/getUnreadCounts.useCase";
 import { ConversationParticipantGuard } from "@src/modules/conversation/conversationParticipant.guard";
 import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 import { AuthModule } from "@src/modules/auth/auth.module";
@@ -32,9 +36,11 @@ import { AuthModule } from "@src/modules/auth/auth.module";
     CreateConversationController,
     GetConversationsController,
     GetMyConversationsController,
+    GetUnreadCountsController,
     GetConversationController,
     GetConversationMessagesController,
     SendMessageController,
+    MarkMessagesAsReadController,
     AddParticipantController,
     RemoveParticipantController,
   ],
@@ -45,6 +51,8 @@ import { AuthModule } from "@src/modules/auth/auth.module";
     GetConversationUseCase,
     GetConversationMessagesUseCase,
     SendMessageUseCase,
+    MarkMessagesAsReadUseCase,
+    GetUnreadCountsUseCase,
     AddParticipantUseCase,
     RemoveParticipantUseCase,
     ConversationParticipantGuard,
