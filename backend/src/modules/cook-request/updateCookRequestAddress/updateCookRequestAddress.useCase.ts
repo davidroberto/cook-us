@@ -10,7 +10,8 @@ import {
   CookRequestEntity,
   CookRequestStatus,
 } from "@src/modules/cook-request/cookRequest.entity";
-import { Repository } from "typeorm";
+import { Message } from "@src/modules/conversation/message.entity";
+import { Like, Repository } from "typeorm";
 import { UpdateCookRequestAddressDto } from "./updateCookRequestAddress.dto";
 
 const NON_EDITABLE_STATUSES = [
@@ -18,13 +19,17 @@ const NON_EDITABLE_STATUSES = [
   CookRequestStatus.COMPLETED,
 ];
 
+const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
+
 @Injectable()
 export class UpdateCookRequestAddressUseCase {
   constructor(
     @InjectRepository(CookRequestEntity)
     private readonly cookRequestRepository: Repository<CookRequestEntity>,
     @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>
+    private readonly clientRepository: Repository<Client>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>
   ) {}
 
   async execute(id: number, dto: UpdateCookRequestAddressDto, userId: number) {
@@ -53,6 +58,33 @@ export class UpdateCookRequestAddressUseCase {
     cookRequest.city = dto.city;
 
     await this.cookRequestRepository.save(cookRequest);
+
+    if (cookRequest.conversationId) {
+      const messages = await this.messageRepository.find({
+        where: {
+          conversationId: cookRequest.conversationId,
+          message: Like(`${COOK_REQUEST_MESSAGE_PREFIX}%`),
+        },
+      });
+
+      for (const msg of messages) {
+        try {
+          const payload = JSON.parse(
+            msg.message.slice(COOK_REQUEST_MESSAGE_PREFIX.length)
+          );
+          if (payload.cookRequestId === cookRequest.id) {
+            payload.street = dto.street;
+            payload.postalCode = dto.postalCode;
+            payload.city = dto.city;
+            msg.message = COOK_REQUEST_MESSAGE_PREFIX + JSON.stringify(payload);
+            await this.messageRepository.save(msg);
+            break;
+          }
+        } catch {
+          // skip malformed messages
+        }
+      }
+    }
 
     return {
       id: cookRequest.id,
