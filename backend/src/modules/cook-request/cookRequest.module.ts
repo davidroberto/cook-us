@@ -7,6 +7,7 @@ import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
 import { Message } from "@src/modules/conversation/message.entity";
 import { User } from "@src/modules/user/user.entity";
+import { ConversationModule } from "@src/modules/conversation/conversation.module";
 import { PayCookRequestController } from "@src/modules/cook-request/payCookRequest/payCookRequest.controller";
 import { PayCookRequestUseCase } from "@src/modules/cook-request/payCookRequest/payCookRequest.useCase";
 import { CreateCookRequestController } from "@src/modules/cook-request/createCookRequest/createCookRequest.controller";
@@ -27,6 +28,8 @@ import { GetCookRequestPriceController } from "@src/modules/cook-request/getCook
 import { GetCookRequestPriceUseCase } from "@src/modules/cook-request/getCookRequestPrice/getCookRequestPrice.useCase";
 import { GetCookRequestsByConversationController } from "@src/modules/cook-request/getCookRequestsByConversation/getCookRequestsByConversation.controller";
 import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/getCookRequestsByConversation/getCookRequestsByConversation.useCase";
+import { UpdateCookRequestPriceController } from "@src/modules/cook-request/updateCookRequestPrice/updateCookRequestPrice.controller";
+import { UpdateCookRequestPriceUseCase } from "@src/modules/cook-request/updateCookRequestPrice/updateCookRequestPrice.useCase";
 
 @Module({
   imports: [
@@ -39,6 +42,7 @@ import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/
       Message,
       User,
     ]),
+    ConversationModule,
   ],
   controllers: [
     CreateCookRequestController,
@@ -51,6 +55,7 @@ import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/
     PayCookRequestController,
     GetCookRequestPriceController,
     GetCookRequestsByConversationController,
+    UpdateCookRequestPriceController,
   ],
   providers: [
     CreateCookRequestUseCase,
@@ -63,6 +68,7 @@ import { GetCookRequestsByConversationUseCase } from "@src/modules/cook-request/
     PayCookRequestUseCase,
     GetCookRequestPriceUseCase,
     GetCookRequestsByConversationUseCase,
+    UpdateCookRequestPriceUseCase,
   ],
 })
 export class CookRequestModule {}

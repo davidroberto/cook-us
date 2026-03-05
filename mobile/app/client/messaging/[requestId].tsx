@@ -1,9 +1,12 @@
+import { useCallback } from "react";
 import { useConversation } from "@/features/messaging/useConversation";
+import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import { ConversationView } from "@/features/messaging/components/ConversationView";
 import { ConversationOrdersButton } from "@/features/messaging/components/ConversationOrdersButton";
+import { ClientPayBanner } from "@/features/client/cookRequests/ClientPayBanner";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -21,7 +24,19 @@ export default function MessagingPage() {
     otherLastName?: string;
   }>();
 
-  const { state, retry, sendMessage } = useConversation(parseInt(requestId ?? "0", 10));
+  const conversationId = parseInt(requestId ?? "0", 10);
+  const { state: reqState, load: loadRequests } = useConversationRequests(conversationId);
+  const { state, retry, sendMessage } = useConversation(conversationId, {
+    onCookRequestAccepted: () => loadRequests(true),
+    onCookRequestPaid: () => loadRequests(true),
+    onExternalMessage: () => loadRequests(true),
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      loadRequests();
+    }, [loadRequests])
+  );
 
   const headerTitle =
     state.status === "success"
@@ -44,7 +59,7 @@ export default function MessagingPage() {
         <Text style={styles.errorText}>
           Impossible de charger la conversation.
         </Text>
-        <TouchableOpacity onPress={retry} style={styles.retryButton}>
+        <TouchableOpacity onPress={() => retry()} style={styles.retryButton}>
           <Text style={styles.retryText}>Réessayer</Text>
         </TouchableOpacity>
       </View>
@@ -58,11 +73,27 @@ export default function MessagingPage() {
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
-        <ConversationOrdersButton conversationId={parseInt(requestId ?? "0", 10)} />
+        <ConversationOrdersButton conversationId={conversationId} />
       </View>
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        actionBanner={
+          reqState.status === "success"
+            ? (() => {
+                const accepted = reqState.requests.find(
+                  r => r.status === "accepted" && r.totalPrice != null
+                ) ?? null;
+                return accepted
+                  ? <ClientPayBanner
+                      request={accepted}
+                      cookFirstName={state.conversation.otherFirstName}
+                      cookLastName={state.conversation.otherLastName}
+                    />
+                  : undefined;
+              })()
+            : undefined
+        }
       />
     </SafeAreaView>
   );

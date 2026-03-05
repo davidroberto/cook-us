@@ -13,6 +13,7 @@ import type {
   CookRequestItem,
   CookRequestStatus,
 } from "@/features/cook/cookRequests/repository";
+import { useRouter } from "expo-router";
 
 const STATUS_LABEL: Record<CookRequestStatus, string> = {
   pending: "En attente",
@@ -29,8 +30,8 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
 };
 
 export default function CookHomeTab() {
-  const { requests, loading, error, refresh, accept, refuse, actionLoading } =
-    useCookRequests();
+  const router = useRouter();
+  const { requests, loading, error, refresh } = useCookRequests();
 
   if (loading) {
     return (
@@ -57,8 +58,6 @@ export default function CookHomeTab() {
       month: "long",
       year: "numeric",
     });
-    const isPending = item.status === "pending";
-    const isActioning = actionLoading === item.id;
 
     return (
       <View style={styles.card}>
@@ -83,23 +82,13 @@ export default function CookHomeTab() {
           </Text>
         </View>
 
-        {isPending && (
+        {item.conversationId != null && (
           <View style={styles.actions}>
             <View style={styles.actionBtn}>
               <Button
-                title="Accepter"
-                variant="primary"
-                loading={isActioning}
-                disabled={actionLoading !== null}
-                onPress={() => accept(item.id)}
-              />
-            </View>
-            <View style={styles.actionBtn}>
-              <Button
-                title="Refuser"
+                title="Voir la discussion"
                 variant="outline"
-                disabled={actionLoading !== null}
-                onPress={() => refuse(item.id)}
+                onPress={() => router.push(`/cook/messaging/${item.conversationId}`)}
               />
             </View>
           </View>

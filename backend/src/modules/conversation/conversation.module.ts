@@ -50,5 +50,6 @@ import { AuthModule } from "@src/modules/auth/auth.module";
     ConversationParticipantGuard,
     ChatGateway,
   ],
+  exports: [ChatGateway],
 })
 export class ConversationModule {}

@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useConversation } from "@/features/messaging/useConversation";
+import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import { ConversationView } from "@/features/messaging/components/ConversationView";
 import { ConversationOrdersButton } from "@/features/messaging/components/ConversationOrdersButton";
+import { CookRequestActionBanner } from "@/features/cook/cookRequests/CookRequestActionBanner";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -17,7 +20,15 @@ export default function CookMessagingPage() {
   const router = useRouter();
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
-  const { state, retry, sendMessage } = useConversation(parseInt(conversationId ?? "0", 10));
+  const convId = parseInt(conversationId ?? "0", 10);
+  const { state: reqState, load: loadRequests } = useConversationRequests(convId);
+  const { state, retry, sendMessage } = useConversation(convId, {
+    onCookRequestPaid: () => loadRequests(true),
+  });
+
+  useEffect(() => {
+    loadRequests();
+  }, [loadRequests]);
 
   const headerTitle =
     state.status === "success"
@@ -38,7 +49,7 @@ export default function CookMessagingPage() {
         <Text style={styles.errorText}>
           Impossible de charger la conversation.
         </Text>
-        <TouchableOpacity onPress={retry} style={styles.retryButton}>
+        <TouchableOpacity onPress={() => retry()} style={styles.retryButton}>
           <Text style={styles.retryText}>Réessayer</Text>
         </TouchableOpacity>
       </View>
@@ -52,11 +63,23 @@ export default function CookMessagingPage() {
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
-        <ConversationOrdersButton conversationId={parseInt(conversationId ?? "0", 10)} />
+        <ConversationOrdersButton conversationId={convId} />
       </View>
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        actionBanner={
+          reqState.status === "success"
+            ? (() => {
+                const active = reqState.requests.find(
+                  r => r.status === "pending" || r.status === "accepted"
+                ) ?? null;
+                return active
+                  ? <CookRequestActionBanner request={active} onSuccess={loadRequests} />
+                  : undefined;
+              })()
+            : undefined
+        }
       />
     </SafeAreaView>
   );

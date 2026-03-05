@@ -4,13 +4,15 @@ import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
+import React from "react";
 
 type Props = {
   conversation: Conversation;
   onSendMessage: (content: string) => void;
+  actionBanner?: React.ReactNode;
 };
 
-export function ConversationView({ conversation, onSendMessage }: Props) {
+export function ConversationView({ conversation, onSendMessage, actionBanner }: Props) {
   const listRef = useRef<FlatList<Message>>(null);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
+      {actionBanner}
       <MessageInput onSend={onSendMessage} />
     </KeyboardAvoidingView>
   );

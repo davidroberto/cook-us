@@ -13,6 +13,7 @@ import {
 import { Client } from "@src/modules/client/client.entity";
 import { Message } from "@src/modules/conversation/message.entity";
 import { User } from "@src/modules/user/user.entity";
+import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 
 @Injectable()
 export class PayCookRequestUseCase {
@@ -24,7 +25,8 @@ export class PayCookRequestUseCase {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly chatGateway: ChatGateway
   ) {}
 
   async execute(id: number, userId: number) {
@@ -56,12 +58,24 @@ export class PayCookRequestUseCase {
     if (cookRequest.conversationId) {
       const user = await this.userRepository.findOne({ where: { id: userId } });
       if (user) {
-        await this.messageRepository.save(
+        const message = await this.messageRepository.save(
           this.messageRepository.create({
             authorId: userId,
             conversationId: cookRequest.conversationId,
             message: `La prestation a été réglée par ${user.firstName} ${user.lastName}.`,
           })
+        );
+
+        this.chatGateway.emitToConversation(
+          cookRequest.conversationId,
+          "newMessage",
+          message
+        );
+
+        this.chatGateway.emitToConversation(
+          cookRequest.conversationId,
+          "cookRequestPaid",
+          { cookRequestId: saved.id, conversationId: cookRequest.conversationId }
         );
       }
     }

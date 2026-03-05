@@ -8,6 +8,7 @@ export type CookRequestStatus =
 
 export interface CookRequestItem {
   id: number;
+  conversationId: number | null;
   guestsNumber: number;
   startDate: string;
   endDate: string | null;
@@ -36,10 +37,13 @@ export const getCookRequests = async (
 
 export const acceptRequest = async (
   token: string,
-  id: number
+  id: number,
+  price: number
 ): Promise<void> => {
   const res = await authFetch(`/cook-request/${id}/accept`, token, {
     method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ price }),
   });
   if (!res.ok) throw new Error("Impossible d'accepter la proposition.");
 };

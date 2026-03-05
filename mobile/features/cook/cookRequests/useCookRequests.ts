@@ -32,11 +32,11 @@ export const useCookRequests = () => {
     fetchRequests();
   }, [fetchRequests]);
 
-  const accept = async (id: number) => {
+  const accept = async (id: number, price: number) => {
     if (!token) return;
     setActionLoading(id);
     try {
-      await acceptRequest(token, id);
+      await acceptRequest(token, id, price);
       await fetchRequests();
     } finally {
       setActionLoading(null);

@@ -60,6 +60,19 @@ export class GetCookRequestsByConversationUseCase {
     const requests = await this.cookRequestRepository.find({
       where: { cookId: cook.id, clientId: client.id },
       order: { startDate: "DESC" },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        guestsNumber: true,
+        mealType: true,
+        status: true,
+        price: true,
+        totalPrice: true,
+        street: true,
+        postalCode: true,
+        city: true,
+      },
     });
 
     return requests.map((r) => ({
@@ -69,6 +82,11 @@ export class GetCookRequestsByConversationUseCase {
       guestsNumber: r.guestsNumber,
       mealType: r.mealType,
       status: r.status,
+      price: r.price ?? null,
+      totalPrice: r.totalPrice ?? null,
+      street: r.street ?? null,
+      postalCode: r.postalCode ?? null,
+      city: r.city ?? null,
     }));
   }
 }

@@ -31,6 +31,7 @@ export class GetCookCookRequestsUseCase {
 
     return requests.map((r) => ({
       id: r.id,
+      conversationId: r.conversationId,
       guestsNumber: r.guestsNumber,
       startDate: r.startDate,
       endDate: r.endDate ?? null,

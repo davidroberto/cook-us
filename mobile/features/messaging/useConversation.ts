@@ -63,10 +63,16 @@ function toMessage(
   };
 }
 
-export function useConversation(conversationId: number) {
+export function useConversation(conversationId: number, options?: { onCookRequestAccepted?: () => void; onCookRequestPaid?: () => void; onExternalMessage?: () => void }) {
   const { token, user, isReady } = useAuth();
   const [state, setState] = useState<ConversationState>({ status: "loading" });
   const socketRef = useRef<Socket | null>(null);
+  const onCookRequestAcceptedRef = useRef(options?.onCookRequestAccepted);
+  const onCookRequestPaidRef = useRef(options?.onCookRequestPaid);
+  const onExternalMessageRef = useRef(options?.onExternalMessage);
+  onCookRequestAcceptedRef.current = options?.onCookRequestAccepted;
+  onCookRequestPaidRef.current = options?.onCookRequestPaid;
+  onExternalMessageRef.current = options?.onExternalMessage;
 
   const currentUserId = user?.id;
 
@@ -113,11 +119,26 @@ export function useConversation(conversationId: number) {
       socket.emit("joinConversation", { conversationId });
     });
 
+    socket.on("cookRequestAccepted", (data: { conversationId: number }) => {
+      if (data.conversationId === conversationId) {
+        onCookRequestAcceptedRef.current?.();
+      }
+    });
+
+    socket.on("cookRequestPaid", (data: { conversationId: number }) => {
+      if (data.conversationId === conversationId) {
+        onCookRequestPaidRef.current?.();
+      }
+    });
+
     socket.on("newMessage", (msg: { id: number; authorId: number; conversationId: number; message: string; createdAt: string }) => {
       if (msg.conversationId !== conversationId) return;
 
       // Skip our own messages (already handled by optimistic update)
       if (msg.authorId === currentUserId) return;
+
+      console.log("[useConversation] external message received, onExternalMessage defined:", !!onExternalMessageRef.current);
+      onExternalMessageRef.current?.();
 
       setState((prev) => {
         if (prev.status !== "success") return prev;
