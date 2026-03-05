@@ -69,6 +69,15 @@ test.describe("Inscription cuisinier", () => {
     });
   });
 
+  test("affiche le champ SIRET après sélection du rôle cuisinier", async ({
+    page,
+  }) => {
+    await page.getByTestId("role-cook").click();
+    await expect(page.getByTestId("siret-input")).toBeVisible({
+      timeout: REGISTER_TIMEOUT,
+    });
+  });
+
   // ─── Validation ──────────────────────────────────────────────────────────────
 
   test("affiche une erreur si le formulaire est soumis vide", async ({
@@ -91,6 +100,7 @@ test.describe("Inscription cuisinier", () => {
     await page.getByTestId("password-input").pressSequentially("password123");
     await page.getByTestId("role-cook").click();
     await page.getByTestId("speciality-french_cooking").click();
+    await page.getByTestId("siret-input").pressSequentially("81234567800015");
     await page
       .getByTestId("description-input")
       .pressSequentially("Cuisinière passionnée par la gastronomie française.");
