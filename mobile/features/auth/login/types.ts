@@ -12,6 +12,7 @@ export type AuthUser = {
   role: "client" | "cook";
   siret?: string | null;
   thumbnail?: string | null;
+  address?: { street: string; postalCode: string; city: string } | null;
 };
 
 export type AuthResponse = {

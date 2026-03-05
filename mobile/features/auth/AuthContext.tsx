@@ -252,6 +252,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       [STORAGE_KEY_REFRESH_TOKEN, rt],
       [STORAGE_KEY_USER, JSON.stringify(u)],
     ]);
+    fetchFreshUser(t);
   }
 
   return (

@@ -95,7 +95,7 @@ export function ConversationOrdersButton({ conversationId, cookName, onClose }: 
 
   return (
     <>
-      <TouchableOpacity onPress={open} style={styles.button}>
+      <TouchableOpacity onPress={open} style={styles.button} testID="orders-button">
         <Text style={styles.buttonText}>Commandes</Text>
       </TouchableOpacity>
 

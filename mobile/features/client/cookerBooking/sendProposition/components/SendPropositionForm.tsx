@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/Card";
 import { SPECIALITY_LABEL } from "@/features/client/cookerBooking/cookerList/components/Card";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from "react-native";
 import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
@@ -23,15 +24,24 @@ export function SendPropositionForm({
   cookLastName,
   cookSpeciality,
 }: Props) {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [startDate, setStartDate] = useState("");
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [message, setMessage] = useState("");
-  const [street, setStreet] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [city, setCity] = useState("");
+  const [street, setStreet] = useState(user?.address?.street ?? "");
+  const [postalCode, setPostalCode] = useState(user?.address?.postalCode ?? "");
+  const [city, setCity] = useState(user?.address?.city ?? "");
 
-  const router = useRouter();
+  useEffect(() => {
+    if (user?.address) {
+      setStreet((prev) => prev || user.address!.street);
+      setPostalCode((prev) => prev || user.address!.postalCode);
+      setCity((prev) => prev || user.address!.city);
+    }
+  }, [user?.address]);
   const { error, isLoading, sendProposition } = useSendProposition();
 
   const handleSubmit = async () => {

@@ -4,6 +4,7 @@
  */
 
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 import * as ImagePicker from "expo-image-picker";
@@ -39,6 +40,36 @@ export const ProfileScreen = () => {
   const router = useRouter();
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [thumbnailError, setThumbnailError] = useState(false);
+
+  const [addressOpen, setAddressOpen] = useState(false);
+  const [street, setStreet] = useState(user?.address?.street ?? "");
+  const [postalCode, setPostalCode] = useState(user?.address?.postalCode ?? "");
+  const [city, setCity] = useState(user?.address?.city ?? "");
+  const [addressSaving, setAddressSaving] = useState(false);
+  const [addressNotice, setAddressNotice] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const handleSaveAddress = async () => {
+    if (!token) return;
+    if (!street.trim() || !postalCode.trim() || !city.trim()) {
+      setAddressNotice({ text: "Tous les champs sont requis.", isError: true });
+      return;
+    }
+    setAddressSaving(true);
+    setAddressNotice(null);
+    try {
+      const updated = await updateProfile(token, {
+        street: street.trim(),
+        postalCode: postalCode.trim(),
+        city: city.trim(),
+      });
+      updateUser(updated);
+      setAddressNotice({ text: "Adresse enregistrée.", isError: false });
+    } catch (e) {
+      setAddressNotice({ text: e instanceof Error ? e.message : "Erreur réseau", isError: true });
+    } finally {
+      setAddressSaving(false);
+    }
+  };
 
   const handlePickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -149,6 +180,69 @@ export const ProfileScreen = () => {
         <ProfileForm user={profileUser} />
       </View>
 
+      {user?.role === "client" && (
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.accordionHeader}
+            testID="accordion-address-header"
+            onPress={() => {
+              setAddressOpen((v) => !v);
+              setAddressNotice(null);
+            }}
+          >
+            <Text style={styles.accordionTitle}>Mon adresse</Text>
+            <Ionicons
+              name={addressOpen ? "chevron-up" : "chevron-down"}
+              size={18}
+              color={colors.main}
+            />
+          </TouchableOpacity>
+
+          {addressOpen && (
+            <View style={styles.accordionBody}>
+              <Input
+                label="Rue"
+                value={street}
+                onChangeText={(v) => { setStreet(v); setAddressNotice(null); }}
+                placeholder="12 rue de la Paix"
+                autoCapitalize="sentences"
+                autoCorrect={false}
+                testID="accordion-address-street"
+              />
+              <Input
+                label="Code postal"
+                value={postalCode}
+                onChangeText={(v) => { setPostalCode(v); setAddressNotice(null); }}
+                placeholder="75001"
+                keyboardType="numeric"
+                autoCorrect={false}
+                testID="accordion-address-postalcode"
+              />
+              <Input
+                label="Ville"
+                value={city}
+                onChangeText={(v) => { setCity(v); setAddressNotice(null); }}
+                placeholder="Paris"
+                autoCapitalize="words"
+                autoCorrect={false}
+                testID="accordion-address-city"
+              />
+              {addressNotice && (
+                <Text testID="accordion-address-notice" style={[styles.addressNotice, addressNotice.isError && styles.addressNoticeError]}>
+                  {addressNotice.text}
+                </Text>
+              )}
+              <Button
+                title={addressSaving ? "Enregistrement..." : "Enregistrer l'adresse"}
+                onPress={handleSaveAddress}
+                disabled={addressSaving}
+                testID="accordion-address-save"
+              />
+            </View>
+          )}
+        </View>
+      )}
+
       <View style={styles.section}>
         <PasswordForm />
       </View>
@@ -243,6 +337,29 @@ const styles = StyleSheet.create({
     shadowOpacity: colors.opacity[8],
     shadowRadius: 4,
     elevation: 2,
+  },
+  accordionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  accordionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  accordionBody: {
+    marginTop: 16,
+    gap: 4,
+  },
+  addressNotice: {
+    fontSize: 13,
+    color: colors.main,
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  addressNoticeError: {
+    color: colors.mainDark,
   },
   historySection: {
     marginBottom: 16,

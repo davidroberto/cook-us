@@ -67,6 +67,9 @@ export const updateProfile = (
     lastName?: string;
     email?: string;
     thumbnail?: string | null;
+    street?: string;
+    postalCode?: string;
+    city?: string;
   }
 ): Promise<AuthUser> =>
   apiFetch<AuthUser>("/auth/me", token, {

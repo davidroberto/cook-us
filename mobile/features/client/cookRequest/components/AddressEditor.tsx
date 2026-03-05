@@ -90,7 +90,7 @@ export function AddressEditor({
 
   if (!editing) {
     return (
-      <TouchableOpacity onPress={handleOpen} style={styles.editBtn}>
+      <TouchableOpacity onPress={handleOpen} style={styles.editBtn} testID="address-editor-edit-btn">
         <Text style={styles.editBtnText}>Modifier l'adresse</Text>
       </TouchableOpacity>
     );
@@ -105,6 +105,7 @@ export function AddressEditor({
         placeholder="Rue"
         autoCapitalize="sentences"
         autoCorrect={false}
+        testID="address-editor-street"
       />
       <TextInput
         style={styles.input}
@@ -113,6 +114,7 @@ export function AddressEditor({
         placeholder="Code postal"
         keyboardType="numeric"
         autoCorrect={false}
+        testID="address-editor-postalcode"
       />
       <TextInput
         style={styles.input}
@@ -121,8 +123,9 @@ export function AddressEditor({
         placeholder="Ville"
         autoCapitalize="words"
         autoCorrect={false}
+        testID="address-editor-city"
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={styles.error} testID="address-editor-error">{error}</Text>}
       <View style={styles.actions}>
         <TouchableOpacity
           onPress={() => {
@@ -131,6 +134,7 @@ export function AddressEditor({
           }}
           style={styles.cancelBtn}
           disabled={saving}
+          testID="address-editor-cancel"
         >
           <Text style={styles.cancelText}>Annuler</Text>
         </TouchableOpacity>
@@ -138,6 +142,7 @@ export function AddressEditor({
           onPress={handleSave}
           style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
           disabled={saving}
+          testID="address-editor-save"
         >
           {saving ? (
             <ActivityIndicator size="small" color={colors.white} />
