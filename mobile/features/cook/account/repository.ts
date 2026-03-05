@@ -48,6 +48,15 @@ export const updateCookProfile = (
     body: JSON.stringify(data),
   });
 
+export const changePassword = (
+  token: string,
+  data: { currentPassword: string; newPassword: string }
+): Promise<{ message: string }> =>
+  apiFetch<{ message: string }>("/auth/change-password", token, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
 export const uploadPhoto = async (
   token: string,
   uri: string

@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/Input";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useUpdateCookProfile } from "./useUpdateCookProfile";
+import { changePassword } from "./repository";
 import type { CookProfile } from "./repository";
 
 const SPECIALITY_LABELS: Record<string, string> = {
@@ -33,13 +34,20 @@ const SPECIALITY_LABELS: Record<string, string> = {
 const SPECIALITY_OPTIONS = Object.keys(SPECIALITY_LABELS);
 
 export function CookProfileScreen() {
-  const { user, clearAuth } = useAuth();
+  const { user, token, clearAuth } = useAuth();
   const router = useRouter();
   const { isLoading, error, loadProfile, save, upload } =
     useUpdateCookProfile();
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<CookProfile | null>(null);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdNotice, setPwdNotice] = useState<string | null>(null);
 
   const [description, setDescription] = useState("");
   const [speciality, setSpeciality] = useState("");
@@ -110,6 +118,38 @@ export function CookProfileScreen() {
     if (updated) {
       setProfile(updated);
       setIsEditing(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!token) return;
+    setPwdError(null);
+    setPwdNotice(null);
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPwdError("Veuillez remplir tous les champs.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPwdError("Le nouveau mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPwdError("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+
+    setPwdLoading(true);
+    try {
+      await changePassword(token, { currentPassword, newPassword });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPwdNotice("Mot de passe modifié.");
+    } catch (e) {
+      setPwdError(e instanceof Error ? e.message : "Erreur réseau");
+    } finally {
+      setPwdLoading(false);
     }
   };
 
@@ -285,6 +325,37 @@ export function CookProfileScreen() {
         )}
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Changer de mot de passe</Text>
+        <Input
+          label="Mot de passe actuel"
+          value={currentPassword}
+          onChangeText={(v) => { setCurrentPassword(v); setPwdError(null); setPwdNotice(null); }}
+          secureTextEntry
+        />
+        <Input
+          label="Nouveau mot de passe"
+          value={newPassword}
+          onChangeText={(v) => { setNewPassword(v); setPwdError(null); setPwdNotice(null); }}
+          secureTextEntry
+          hint="6 caractères minimum"
+        />
+        <Input
+          label="Confirmer le mot de passe"
+          value={confirmPassword}
+          onChangeText={(v) => { setConfirmPassword(v); setPwdError(null); setPwdNotice(null); }}
+          secureTextEntry
+          error={pwdError ?? undefined}
+        />
+        {pwdNotice && <Text style={styles.notice}>{pwdNotice}</Text>}
+        <Button
+          title="Modifier le mot de passe"
+          variant="outline"
+          onPress={handleChangePassword}
+          loading={pwdLoading}
+        />
+      </View>
+
       <View style={styles.logoutSection}>
         <Button
           title="Se déconnecter"
@@ -419,6 +490,12 @@ const styles = StyleSheet.create({
     ...typography.styles.body2Regular,
     color: colors.mainDark,
     marginTop: 8,
+  },
+  notice: {
+    ...typography.styles.body2Regular,
+    color: colors.mainDark,
+    marginBottom: 12,
+    textAlign: "center",
   },
   logoutSection: {
     marginTop: 8,
