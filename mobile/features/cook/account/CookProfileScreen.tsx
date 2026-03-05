@@ -35,7 +35,8 @@ const SPECIALITY_OPTIONS = Object.keys(SPECIALITY_LABELS);
 export function CookProfileScreen() {
   const { user, clearAuth } = useAuth();
   const router = useRouter();
-  const { isLoading, error, loadProfile, save, upload } = useUpdateCookProfile();
+  const { isLoading, error, loadProfile, save, upload } =
+    useUpdateCookProfile();
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<CookProfile | null>(null);
@@ -116,7 +117,9 @@ export function CookProfileScreen() {
     if (profile) {
       setDescription(profile.description ?? "");
       setSpeciality(profile.speciality ?? "");
-      setHourlyRate(profile.hourlyRate != null ? String(profile.hourlyRate) : "");
+      setHourlyRate(
+        profile.hourlyRate != null ? String(profile.hourlyRate) : "",
+      );
       setCity(profile.city ?? "");
       setPhotoUrl(profile.photoUrl ?? null);
       setPhotoUri(null);
@@ -135,9 +138,15 @@ export function CookProfileScreen() {
     >
       <View style={styles.avatarContainer}>
         {isEditing ? (
-          <TouchableOpacity onPress={handlePickPhoto} style={styles.avatarButton}>
+          <TouchableOpacity
+            onPress={handlePickPhoto}
+            style={styles.avatarButton}
+          >
             {displayPhotoUri ? (
-              <Image source={{ uri: displayPhotoUri }} style={styles.avatarImage} />
+              <Image
+                source={{ uri: displayPhotoUri }}
+                style={styles.avatarImage}
+              />
             ) : (
               <View style={styles.avatar}>
                 <Text style={styles.avatarInitials}>
@@ -151,7 +160,10 @@ export function CookProfileScreen() {
         ) : (
           <>
             {displayPhotoUri ? (
-              <Image source={{ uri: displayPhotoUri }} style={styles.avatarImage} />
+              <Image
+                source={{ uri: displayPhotoUri }}
+                style={styles.avatarImage}
+              />
             ) : (
               <View style={styles.avatar}>
                 <Text style={styles.avatarInitials}>
@@ -252,7 +264,9 @@ export function CookProfileScreen() {
             <Text style={styles.value}>{profile?.description || "—"}</Text>
             <Text style={styles.label}>Spécialité</Text>
             <Text style={styles.value}>
-              {profile?.speciality ? (SPECIALITY_LABELS[profile.speciality] ?? profile.speciality) : "—"}
+              {profile?.speciality
+                ? (SPECIALITY_LABELS[profile.speciality] ?? profile.speciality)
+                : "—"}
             </Text>
             <Text style={styles.label}>Tarif horaire</Text>
             <Text style={styles.value}>
@@ -263,7 +277,7 @@ export function CookProfileScreen() {
             <View style={styles.editButtonContainer}>
               <Button
                 title="Modifier"
-                variant="secondary"
+                variant="primary"
                 onPress={() => setIsEditing(true)}
               />
             </View>
@@ -272,7 +286,11 @@ export function CookProfileScreen() {
       </View>
 
       <View style={styles.logoutSection}>
-        <Button title="Se déconnecter" variant="outline" onPress={handleLogout} />
+        <Button
+          title="Se déconnecter"
+          variant="outline"
+          onPress={handleLogout}
+        />
       </View>
     </ScrollView>
   );
