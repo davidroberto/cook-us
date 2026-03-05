@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
-import type { ApiConversation, Conversation, Message } from "./types";
+import type {
+  ApiConversation,
+  ApiPaginatedMessages,
+  Conversation,
+  Message,
+} from "./types";
 import { io, Socket } from "socket.io-client";
 
 import { getApiUrl } from "@/features/api/getApiUrl";
@@ -12,13 +17,23 @@ const SOCKET_URL = getSocketUrl();
 type ConversationState =
   | { status: "loading" }
   | { status: "error" }
-  | { status: "success"; conversation: Conversation };
+  | {
+      status: "success";
+      conversation: Conversation;
+      hasMore: boolean;
+      loadingMore: boolean;
+    };
 
 export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
 
 function parseRequestData(
   raw: string,
-): { startDate: string; guestsNumber: number; mealType?: string; message?: string } | null {
+): {
+  startDate: string;
+  guestsNumber: number;
+  mealType?: string;
+  message?: string;
+} | null {
   if (!raw.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) return null;
   try {
     return JSON.parse(raw.slice(COOK_REQUEST_MESSAGE_PREFIX.length));
@@ -27,31 +42,14 @@ function parseRequestData(
   }
 }
 
-function toConversation(
-  api: ApiConversation,
-  currentUserId: number,
-): Conversation {
-  const other = api.participants.find((p) => p.authorId !== currentUserId);
-  return {
-    id: api.id,
-    otherFirstName: other?.author.firstName ?? "",
-    otherLastName: other?.author.lastName ?? "",
-    messages: api.messages.map((m) => {
-      const requestData = parseRequestData(m.message);
-      return {
-        id: m.id,
-        content: m.message,
-        sender: m.authorId === currentUserId ? "client" : "cook",
-        sentAt: m.createdAt,
-        readAt: m.readAt,
-        ...(requestData ? { requestData } : {}),
-      };
-    }),
-  };
-}
-
 function toMessage(
-  msg: { id: number; authorId: number; message: string; createdAt: string },
+  msg: {
+    id: number;
+    authorId: number;
+    message: string;
+    createdAt: string;
+    readAt?: string | null;
+  },
   currentUserId: number,
 ): Message {
   const requestData = parseRequestData(msg.message);
@@ -60,6 +58,7 @@ function toMessage(
     content: msg.message,
     sender: msg.authorId === currentUserId ? "client" : "cook",
     sentAt: msg.createdAt,
+    readAt: msg.readAt ?? null,
     ...(requestData ? { requestData } : {}),
   };
 }
@@ -68,32 +67,107 @@ export function useConversation(conversationId: number) {
   const { token, user, isReady } = useAuth();
   const [state, setState] = useState<ConversationState>({ status: "loading" });
   const socketRef = useRef<Socket | null>(null);
+  const pageRef = useRef(1);
+  const loadingMoreRef = useRef(false);
+  const hasMoreRef = useRef(true);
 
   const currentUserId = user?.id;
 
-  const load = useCallback(
-    async (silent = false) => {
-      if (!isReady || !conversationId || !currentUserId) return;
-      if (!silent) setState({ status: "loading" });
-      try {
-        const response = await fetch(
-          `${API_URL}/conversations/${conversationId}`,
+  const load = useCallback(async () => {
+    if (!isReady || !conversationId || !currentUserId) return;
+    setState({ status: "loading" });
+    try {
+      const [convRes, msgsRes] = await Promise.all([
+        fetch(`${API_URL}/conversations/${conversationId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(
+          `${API_URL}/conversations/${conversationId}/messages?page=1&limit=20`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
-        );
-        if (!response.ok) throw new Error();
-        const api: ApiConversation = await response.json();
-        setState({
-          status: "success",
-          conversation: toConversation(api, currentUserId),
-        });
-      } catch {
-        if (!silent) setState({ status: "error" });
-      }
-    },
-    [isReady, conversationId, token, currentUserId],
-  );
+        ),
+      ]);
+      if (!convRes.ok || !msgsRes.ok) throw new Error();
+
+      const api: ApiConversation = await convRes.json();
+      const paginated: ApiPaginatedMessages = await msgsRes.json();
+
+      const other = api.participants.find(
+        (p) => p.authorId !== currentUserId,
+      );
+
+      // Messages come DESC from backend — keep DESC for inverted FlatList
+      const messages = paginated.messages.map((m) =>
+        toMessage(m, currentUserId),
+      );
+
+      pageRef.current = 1;
+      hasMoreRef.current = paginated.hasMore;
+
+      setState({
+        status: "success",
+        conversation: {
+          id: api.id,
+          otherFirstName: other?.author.firstName ?? "",
+          otherLastName: other?.author.lastName ?? "",
+          messages,
+        },
+        hasMore: paginated.hasMore,
+        loadingMore: false,
+      });
+    } catch {
+      setState({ status: "error" });
+    }
+  }, [isReady, conversationId, token, currentUserId]);
+
+  const loadMore = useCallback(async () => {
+    if (!token || !conversationId || !currentUserId) return;
+    if (loadingMoreRef.current || !hasMoreRef.current) return;
+
+    loadingMoreRef.current = true;
+    setState((prev) => {
+      if (prev.status !== "success") return prev;
+      return { ...prev, loadingMore: true };
+    });
+
+    const nextPage = pageRef.current + 1;
+    try {
+      const res = await fetch(
+        `${API_URL}/conversations/${conversationId}/messages?page=${nextPage}&limit=20`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (!res.ok) throw new Error();
+      const paginated: ApiPaginatedMessages = await res.json();
+
+      pageRef.current = nextPage;
+      hasMoreRef.current = paginated.hasMore;
+      const olderMessages = paginated.messages.map((m) =>
+        toMessage(m, currentUserId),
+      );
+
+      setState((prev) => {
+        if (prev.status !== "success") return prev;
+        return {
+          ...prev,
+          conversation: {
+            ...prev.conversation,
+            // Append older messages at the end (appear "above" in inverted FlatList)
+            messages: [...prev.conversation.messages, ...olderMessages],
+          },
+          hasMore: paginated.hasMore,
+          loadingMore: false,
+        };
+      });
+    } catch {
+      setState((prev) => {
+        if (prev.status !== "success") return prev;
+        return { ...prev, loadingMore: false };
+      });
+    } finally {
+      loadingMoreRef.current = false;
+    }
+  }, [token, conversationId, currentUserId]);
 
   useEffect(() => {
     load();
@@ -115,52 +189,66 @@ export function useConversation(conversationId: number) {
       socket.emit("markAsRead", { conversationId });
     });
 
-    socket.on("newMessage", (msg: { id: number; authorId: number; conversationId: number; message: string; createdAt: string }) => {
-      if (msg.conversationId !== conversationId) return;
+    socket.on(
+      "newMessage",
+      (msg: {
+        id: number;
+        authorId: number;
+        conversationId: number;
+        message: string;
+        createdAt: string;
+      }) => {
+        if (msg.conversationId !== conversationId) return;
+        if (msg.authorId === currentUserId) return;
 
-      // Skip our own messages (already handled by optimistic update)
-      if (msg.authorId === currentUserId) return;
+        setState((prev) => {
+          if (prev.status !== "success") return prev;
+          if (prev.conversation.messages.some((m) => m.id === msg.id))
+            return prev;
 
-      setState((prev) => {
-        if (prev.status !== "success") return prev;
+          return {
+            ...prev,
+            conversation: {
+              ...prev.conversation,
+              // Prepend: most recent first for inverted FlatList
+              messages: [
+                toMessage(msg, currentUserId),
+                ...prev.conversation.messages,
+              ],
+            },
+          };
+        });
 
-        // Avoid duplicates
-        if (prev.conversation.messages.some((m) => m.id === msg.id)) return prev;
+        socket.emit("markAsRead", { conversationId });
+      },
+    );
 
-        return {
-          status: "success",
-          conversation: {
-            ...prev.conversation,
-            messages: [...prev.conversation.messages, toMessage(msg, currentUserId)],
-          },
-        };
-      });
+    socket.on(
+      "messagesRead",
+      (data: {
+        conversationId: number;
+        readByUserId: number;
+        readAt: string;
+      }) => {
+        if (data.conversationId !== conversationId) return;
+        if (data.readByUserId === currentUserId) return;
 
-      // Mark as read immediately since the user is viewing this conversation
-      socket.emit("markAsRead", { conversationId });
-    });
-
-    socket.on("messagesRead", (data: { conversationId: number; readByUserId: number; readAt: string }) => {
-      if (data.conversationId !== conversationId) return;
-      // The other participant read our messages
-      if (data.readByUserId === currentUserId) return;
-
-      setState((prev) => {
-        if (prev.status !== "success") return prev;
-
-        return {
-          status: "success",
-          conversation: {
-            ...prev.conversation,
-            messages: prev.conversation.messages.map((m) =>
-              m.sender === "client" && !m.readAt
-                ? { ...m, readAt: data.readAt }
-                : m
-            ),
-          },
-        };
-      });
-    });
+        setState((prev) => {
+          if (prev.status !== "success") return prev;
+          return {
+            ...prev,
+            conversation: {
+              ...prev.conversation,
+              messages: prev.conversation.messages.map((m) =>
+                m.sender === "client" && !m.readAt
+                  ? { ...m, readAt: data.readAt }
+                  : m,
+              ),
+            },
+          };
+        });
+      },
+    );
 
     return () => {
       socket.disconnect();
@@ -170,7 +258,7 @@ export function useConversation(conversationId: number) {
 
   const sendMessage = useCallback(
     async (content: string) => {
-      // Optimistic update
+      // Optimistic update — prepend (most recent first)
       setState((prev) => {
         if (prev.status !== "success") return prev;
         const newMessage: Message = {
@@ -180,10 +268,10 @@ export function useConversation(conversationId: number) {
           sentAt: new Date().toISOString(),
         };
         return {
-          status: "success",
+          ...prev,
           conversation: {
             ...prev.conversation,
-            messages: [...prev.conversation.messages, newMessage],
+            messages: [newMessage, ...prev.conversation.messages],
           },
         };
       });
@@ -202,12 +290,11 @@ export function useConversation(conversationId: number) {
         );
         if (!response.ok) throw new Error();
       } catch {
-        // Rollback: reload conversation from server to remove the optimistic message
-        load(true);
+        load();
       }
     },
     [conversationId, token, load],
   );
 
-  return { state, retry: load, sendMessage };
+  return { state, retry: load, sendMessage, loadMore };
 }

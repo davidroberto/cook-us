@@ -30,11 +30,19 @@ export type ApiConversationParticipant = {
 export type ApiConversation = {
   id: number;
   participants: ApiConversationParticipant[];
-  messages: ApiMessage[];
+  lastMessage?: ApiMessage | null;
   unreadCount?: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+};
+
+export type ApiPaginatedMessages = {
+  messages: ApiMessage[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
 };
 
 // ─── Display types — used in UI components ───────────────────────────────────

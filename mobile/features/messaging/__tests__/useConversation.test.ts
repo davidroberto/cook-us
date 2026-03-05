@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react-native";
 import { useConversation } from "../useConversation";
 
 jest.mock("@/features/auth/AuthContext", () => ({
-  useAuth: () => ({ token: "fake-token", user: { id: 1 } }),
+  useAuth: () => ({ token: "fake-token", user: { id: 1 }, isReady: true }),
 }));
 
 const MOCK_API_CONVERSATION = {
@@ -11,20 +11,27 @@ const MOCK_API_CONVERSATION = {
     { id: 1, authorId: 1, author: { id: 1, firstName: "Jean", lastName: "Client" }, conversationId: 42, createdAt: "2026-01-01T00:00:00.000Z", deletedAt: null },
     { id: 2, authorId: 2, author: { id: 2, firstName: "Marie", lastName: "Dupont" }, conversationId: 42, createdAt: "2026-01-01T00:00:00.000Z", deletedAt: null },
   ],
-  messages: [],
   createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-01-01T00:00:00.000Z",
   deletedAt: null,
 };
 
-describe("useConversation", () => {
-  beforeEach(() => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(MOCK_API_CONVERSATION),
-    });
-  });
+const MOCK_PAGINATED_MESSAGES = {
+  messages: [],
+  total: 0,
+  page: 1,
+  limit: 20,
+  hasMore: false,
+};
 
+function mockFetchSuccess() {
+  global.fetch = jest.fn()
+    .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(MOCK_API_CONVERSATION) })
+    .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(MOCK_PAGINATED_MESSAGES) });
+}
+
+describe("useConversation", () => {
+  beforeEach(() => mockFetchSuccess());
   afterEach(() => jest.resetAllMocks());
 
   it("démarre en état loading", () => {
@@ -46,19 +53,20 @@ describe("useConversation", () => {
     expect(result.current.state.conversation.otherLastName).toBe("Dupont");
   });
 
-  it("sendMessage ajoute un message client à la conversation", async () => {
+  it("sendMessage ajoute un message client en tête (DESC)", async () => {
     const { result } = renderHook(() => useConversation(42));
     await act(async () => {});
     await act(async () => { result.current.sendMessage("Bonjour !"); });
     if (result.current.state.status !== "success") throw new Error("not success");
-    const last = result.current.state.conversation.messages.at(-1);
-    expect(last?.sender).toBe("client");
-    expect(last?.content).toBe("Bonjour !");
+    const first = result.current.state.conversation.messages[0];
+    expect(first?.sender).toBe("client");
+    expect(first?.content).toBe("Bonjour !");
   });
 
   it("retry recharge la conversation", async () => {
     const { result } = renderHook(() => useConversation(42));
     await act(async () => {});
+    mockFetchSuccess();
     act(() => { result.current.retry(); });
     expect(result.current.state.status).toBe("loading");
     await act(async () => {});

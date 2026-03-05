@@ -21,7 +21,7 @@ export default function MessagingPage() {
     otherLastName?: string;
   }>();
 
-  const { state, retry, sendMessage } = useConversation(parseInt(requestId ?? "0", 10));
+  const { state, retry, sendMessage, loadMore } = useConversation(parseInt(requestId ?? "0", 10));
 
   const headerTitle =
     state.status === "success"
@@ -63,6 +63,9 @@ export default function MessagingPage() {
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        onLoadMore={loadMore}
+        hasMore={state.hasMore}
+        loadingMore={state.loadingMore}
       />
     </SafeAreaView>
   );

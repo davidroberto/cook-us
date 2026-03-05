@@ -19,13 +19,6 @@ function getOtherParticipant(conversation: ApiConversation, currentUserId: numbe
   return conversation.participants.find((p) => p.authorId !== currentUserId);
 }
 
-function getLastMessage(conversation: ApiConversation) {
-  if (!conversation.messages.length) return null;
-  return [...conversation.messages].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  ).at(-1)!;
-}
-
 function formatMessagePreview(raw: string): string {
   if (!raw.startsWith(COOK_REQUEST_MESSAGE_PREFIX)) return raw;
   try {
@@ -49,7 +42,7 @@ function ConversationItem({
   onPress: () => void;
 }) {
   const other = getOtherParticipant(conversation, currentUserId);
-  const lastMessage = getLastMessage(conversation);
+  const lastMessage = conversation.lastMessage;
   const name = other ? `${other.author.firstName} ${other.author.lastName}` : "Inconnu";
   const unreadCount = conversation.unreadCount ?? 0;
 

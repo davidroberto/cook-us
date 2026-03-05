@@ -17,7 +17,7 @@ export default function CookMessagingPage() {
   const router = useRouter();
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
-  const { state, retry, sendMessage } = useConversation(parseInt(conversationId ?? "0", 10));
+  const { state, retry, sendMessage, loadMore } = useConversation(parseInt(conversationId ?? "0", 10));
 
   const headerTitle =
     state.status === "success"
@@ -57,6 +57,9 @@ export default function CookMessagingPage() {
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        onLoadMore={loadMore}
+        hasMore={state.hasMore}
+        loadingMore={state.loadingMore}
       />
     </SafeAreaView>
   );

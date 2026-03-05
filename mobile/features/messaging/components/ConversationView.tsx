@@ -1,5 +1,11 @@
-import { useEffect, useMemo, useRef } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { useMemo } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+} from "react-native";
 import { colors } from "@/styles/colors";
 import type { Conversation, Message } from "../types";
 import { MessageBubble } from "./MessageBubble";
@@ -8,19 +14,21 @@ import { MessageInput } from "./MessageInput";
 type Props = {
   conversation: Conversation;
   onSendMessage: (content: string) => void;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  loadingMore?: boolean;
 };
 
-export function ConversationView({ conversation, onSendMessage }: Props) {
-  const listRef = useRef<FlatList<Message>>(null);
-
-  useEffect(() => {
-    if (conversation.messages.length > 0) {
-      listRef.current?.scrollToEnd({ animated: true });
-    }
-  }, [conversation.messages.length]);
-
+export function ConversationView({
+  conversation,
+  onSendMessage,
+  onLoadMore,
+  hasMore,
+  loadingMore,
+}: Props) {
+  // Messages are in DESC order (newest first) — find the most recent read message from current user
   const lastReadMessageId = useMemo(() => {
-    for (let i = conversation.messages.length - 1; i >= 0; i--) {
+    for (let i = 0; i < conversation.messages.length; i++) {
       const m = conversation.messages[i];
       if (m.sender === "client" && m.readAt) return m.id;
     }
@@ -34,8 +42,8 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
       testID="conversation-view"
     >
       <FlatList<Message>
-        ref={listRef}
         testID="message-list"
+        inverted
         data={conversation.messages}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
@@ -46,6 +54,17 @@ export function ConversationView({ conversation, onSendMessage }: Props) {
         )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        onEndReached={hasMore ? onLoadMore : undefined}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator
+              size="small"
+              color={colors.main}
+              style={styles.loader}
+            />
+          ) : null
+        }
       />
       <MessageInput onSend={onSendMessage} />
     </KeyboardAvoidingView>
@@ -59,6 +78,8 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingVertical: 12,
-    flexGrow: 1,
+  },
+  loader: {
+    paddingVertical: 16,
   },
 });
