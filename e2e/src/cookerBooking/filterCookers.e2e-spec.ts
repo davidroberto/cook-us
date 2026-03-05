@@ -63,10 +63,6 @@ test.describe("Filtrer les cuisiniers", () => {
       .first()
       .or(page.getByTestId("empty-message"));
     await expect(cardOrEmpty).toBeVisible({ timeout: TIMEOUT });
-    const hasResults = await page.getByTestId("cooker-card").first().isVisible();
-    if (!hasResults) {
-      await expect(page.getByTestId("empty-message")).toBeVisible({ timeout: TIMEOUT });
-    }
   });
 
   test("recliquer sur une spécialité active désactive le filtre", async ({ page }) => {
