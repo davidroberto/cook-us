@@ -99,6 +99,7 @@ export class RegisterUseCase {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        ...(role === UserRole.COOK && { siret: dto.cookProfile!.siret }),
       },
     };
   }

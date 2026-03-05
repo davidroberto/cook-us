@@ -3,7 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { User } from "@src/modules/user/user.entity";
+import { User, UserRole } from "@src/modules/user/user.entity";
+import { Cook } from "@src/modules/cook/cook.entity";
 import { LoginDto } from "@src/modules/auth/login/login.dto";
 
 @Injectable()
@@ -11,6 +12,8 @@ export class LoginUseCase {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Cook)
+    private readonly cookRepository: Repository<Cook>,
     private readonly jwtService: JwtService
   ) {}
 
@@ -48,6 +51,15 @@ export class LoginUseCase {
       refreshTokenExpiresAt,
     });
 
+    let siret: string | null = null;
+    if (user.role === UserRole.COOK) {
+      const cook = await this.cookRepository.findOne({
+        where: { userId: user.id },
+        select: { siret: true },
+      });
+      siret = cook?.siret ?? null;
+    }
+
     return {
       token,
       refreshToken,
@@ -57,6 +69,7 @@ export class LoginUseCase {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        ...(user.role === UserRole.COOK && { siret }),
       },
     };
   }

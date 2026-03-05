@@ -18,6 +18,7 @@ export type RegisterCommand = {
   thumbnail?: string;
   cookProfile?: {
     speciality: CookSpeciality;
+    siret: string;
     description?: string;
     hourlyRate?: number;
   };
@@ -29,6 +30,7 @@ export type AuthUser = {
   lastName: string;
   email: string;
   role: "client" | "cook";
+  siret?: string | null;
 };
 
 export type AuthResponse = {

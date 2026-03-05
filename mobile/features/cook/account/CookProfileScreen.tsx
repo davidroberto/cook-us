@@ -55,9 +55,8 @@ export function CookProfileScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Informations cuisinier</Text>
-        <Text style={styles.notice}>
-          La modification du profil n'est pas encore disponible.
-        </Text>
+        <Text style={styles.label}>SIRET</Text>
+        <Text style={styles.value}>{user.siret ?? "—"}</Text>
       </View>
 
       <View style={styles.logoutSection}>

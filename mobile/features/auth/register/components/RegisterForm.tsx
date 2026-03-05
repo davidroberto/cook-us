@@ -26,6 +26,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"client" | "cook">("client");
   const [speciality, setSpeciality] = useState<CookSpeciality | null>(null);
+  const [siret, setSiret] = useState("");
   const [description, setDescription] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
   const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
         ? {
             cookProfile: {
               speciality,
+              siret,
               description: description.trim() || undefined,
               hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
             },
@@ -213,6 +215,20 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
                 </TouchableOpacity>
               ))}
             </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>SIRET</Text>
+            <TextInput
+              testID="siret-input"
+              style={styles.input}
+              value={siret}
+              onChangeText={setSiret}
+              placeholder="14 chiffres"
+              keyboardType="numeric"
+              maxLength={14}
+              autoCorrect={false}
+            />
           </View>
 
           <View style={styles.inputGroup}>

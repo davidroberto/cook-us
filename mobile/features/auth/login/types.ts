@@ -9,6 +9,7 @@ export type AuthUser = {
   lastName: string;
   email: string;
   role: "client" | "cook";
+  siret?: string | null;
 };
 
 export type AuthResponse = {
