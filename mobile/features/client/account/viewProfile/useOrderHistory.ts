@@ -2,7 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { getApiUrl } from "@/features/api/getApiUrl";
 
-export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled";
+export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled" | "completed";
+
+export interface OrderReview {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+}
 
 export interface OrderHistoryItem {
   id: number;
@@ -18,6 +25,7 @@ export interface OrderHistoryItem {
     lastName: string;
     speciality: string;
   };
+  review: OrderReview | null;
 }
 
 export interface UseOrderHistoryResult {

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -36,12 +37,18 @@ export const CookerList = () => {
   const minHourlyRate = minPriceInput ? Number(minPriceInput) : undefined;
   const maxHourlyRate = maxPriceInput ? Number(maxPriceInput) : undefined;
 
-  const { cooks, loading, error } = useCookerList({
+  const { cooks, loading, error, refresh } = useCookerList({
     search: debouncedSearch || undefined,
     speciality: selectedSpeciality ?? undefined,
     minHourlyRate,
     maxHourlyRate,
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   if (error) {
     return (

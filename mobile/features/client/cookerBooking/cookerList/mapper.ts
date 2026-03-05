@@ -35,6 +35,8 @@ export const mapCookToCardData = (cook: Cook): CookerCardData => ({
   thumbnail: resolveThumbnail(cook),
   hourly_rate: cook.hourlyRate ?? 0,
   city: cook.city ?? "",
+  averageRating: cook.averageRating ?? null,
+  reviewCount: cook.reviewCount ?? 0,
 });
 
 export const mapCooksToCardData = (cooks: Cook[]): CookerCardData[] =>

@@ -6,6 +6,7 @@ import {
 } from "@/features/client/account/viewProfile/useOrderHistory";
 import { CancelBookingModal } from "@/features/client/cancelBooking/components/CancelBookingModal";
 import { useCancelBooking } from "@/features/client/cancelBooking/useCancelBooking";
+import { ReviewSection } from "@/features/client/review/ReviewSection";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useRouter } from "expo-router";
@@ -20,6 +21,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type Tab = "upcoming" | "completed";
+
+const UPCOMING_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
+const COMPLETED_STATUSES: CookRequestStatus[] = ["completed", "refused", "cancelled"];
+
 const MEAL_TYPE_LABELS: Record<string, string> = {
   breakfast: "Petit-déjeuner",
   lunch: "Déjeuner",
@@ -31,6 +37,7 @@ const STATUS_LABEL: Record<CookRequestStatus, string> = {
   accepted: "Acceptée",
   refused: "Refusée",
   cancelled: "Annulée",
+  completed: "Terminée",
 };
 
 const STATUS_COLOR: Record<CookRequestStatus, string> = {
@@ -38,6 +45,7 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
   accepted: "#4CAF50",
   refused: colors.mainDark,
   cancelled: "#9E9E9E",
+  completed: "#607D8B",
 };
 
 const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
@@ -45,6 +53,7 @@ const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
 export default function OrderHistoryScreen() {
   const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
+  const [activeTab, setActiveTab] = useState<Tab>("upcoming");
   const [cancelTarget, setCancelTarget] = useState<OrderHistoryItem | null>(
     null,
   );
@@ -70,6 +79,12 @@ export default function OrderHistoryScreen() {
     }
   };
 
+  const filteredOrders = orders.filter((o) =>
+    activeTab === "upcoming"
+      ? UPCOMING_STATUSES.includes(o.status)
+      : COMPLETED_STATUSES.includes(o.status)
+  );
+
   const header = (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -80,10 +95,32 @@ export default function OrderHistoryScreen() {
     </View>
   );
 
+  const tabs = (
+    <View style={styles.tabsRow}>
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "upcoming" && styles.tabActive]}
+        onPress={() => setActiveTab("upcoming")}
+      >
+        <Text style={[styles.tabText, activeTab === "upcoming" && styles.tabTextActive]}>
+          À venir
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "completed" && styles.tabActive]}
+        onPress={() => setActiveTab("completed")}
+      >
+        <Text style={[styles.tabText, activeTab === "completed" && styles.tabTextActive]}>
+          Terminées
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         {header}
+        {tabs}
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.main} />
         </View>
@@ -95,6 +132,7 @@ export default function OrderHistoryScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         {header}
+        {tabs}
         <View style={styles.centered}>
           <Text style={styles.errorText}>{error}</Text>
           <View style={{ marginTop: 12 }}>
@@ -105,26 +143,22 @@ export default function OrderHistoryScreen() {
     );
   }
 
-  if (orders.length === 0) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        {header}
-        <View style={styles.centered}>
-          <Text style={styles.emptyTitle}>Aucune réservation</Text>
-          <Text style={styles.emptyText}>
-            Vos réservations apparaîtront ici une fois que vous en aurez
-            effectué.
-          </Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.safeArea}>
       {header}
+      {tabs}
       <FlatList
-        data={orders}
+        data={filteredOrders}
+        ListEmptyComponent={
+          <View style={styles.centered}>
+            <Text style={styles.emptyTitle}>Aucune réservation</Text>
+            <Text style={styles.emptyText}>
+              {activeTab === "upcoming"
+                ? "Vous n'avez pas de réservations à venir."
+                : "Vous n'avez pas encore de réservations terminées."}
+            </Text>
+          </View>
+        }
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
@@ -183,6 +217,15 @@ export default function OrderHistoryScreen() {
                     style={styles.cancelButton}
                   />
                 </View>
+              )}
+
+              {item.status === "completed" && (
+                <ReviewSection
+                  cookRequestId={item.id}
+                  existingReview={item.review}
+                  cookName={`${item.cook.firstName} ${item.cook.lastName}`}
+                  onReviewSubmitted={refresh}
+                />
               )}
             </View>
           );
@@ -313,5 +356,33 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.mainDark,
     textAlign: "center",
+  },
+  tabsRow: {
+    flexDirection: "row",
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.background,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+  },
+  tabActive: {
+    backgroundColor: colors.main,
+    borderColor: colors.main,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  tabTextActive: {
+    color: colors.white,
   },
 });
