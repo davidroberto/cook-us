@@ -1,27 +1,118 @@
-## 🧱 BUILD
+# Cook'US
 
-### Installation et configuration
-
-Pour installer les dépendances en local (pour complétion du code)
-- Dans le dossier frontend : `npm install`
-- Dans le dossier backend : `npm install`
-- Dans le dossier mobile : `npm install`
-- Dans le dossier e2e : `npm install`
-
-- Copiez le fichier `.env` en `.env.local` et modifiez les variables d'environnement
+Marketplace mettant en relation des clients avec des cuisiniers particuliers pour des repas à domicile personnalisés.
 
 ---
 
-## ▶️ RUN
+## Stack technique
 
-Dev :
-- `docker compose --env-file .env.local -f docker-compose.dev.yml up` pour lancer l'application en dev
-- Le frontend est accessible sur `http://localhost`
-- Le backend est accessible sur `http://localhost/api/home/app-name` avec le endpoint en GET par défaut (`{"name":"cook'us"}`)
+| Couche | Technologie |
+|--------|-------------|
+| Backend | NestJS 11, TypeORM, PostgreSQL 16 |
+| Backoffice | React 19, Vite 7, TailwindCSS, shadcn/ui |
+| Mobile | React Native, Expo 54 |
+| Reverse proxy | Nginx |
+| Infra | Docker Compose |
 
-Mobile :
-- `cd mobile && npx expo start` pour lancer le serveur Expo
-- Scanner le QR code avec Expo Go sur le téléphone, ou `i` pour iOS / `a` pour Android
+---
+
+## Prérequis
+
+- Node.js 20+
+- Docker & Docker Compose
+- Expo Go (sur téléphone) ou simulateur iOS/Android
+
+---
+
+## Installation & lancement
+
+### 1. Configurer l'environnement
+
+```bash
+cp .env .env.local
+# Modifier les variables dans .env.local si nécessaire
+```
+
+### 2. Lancer l'application (backend + backoffice + base de données)
+
+```bash
+docker compose --env-file .env.local -f docker-compose.dev.yml up --build
+```
+
+- Backoffice : `http://localhost`
+- API : `http://localhost/api`
+
+### 3. Lancer le mobile
+
+```bash
+cd mobile
+npx expo start
+```
+
+Scanner le QR code avec Expo Go, ou appuyer sur `i` (iOS) / `a` (Android).
+
+---
+
+## Commandes utiles
+
+### Backend
+
+```bash
+cd backend
+npm run start:dev   # Serveur de développement (watch)
+npm run build       # Build + typecheck
+npm run lint        # Lint
+npm run seed        # Peupler la base de données avec des données de test
+```
+
+### Backoffice
+
+```bash
+cd frontend
+npm run dev         # Serveur Vite
+npm run build       # Typecheck + build
+npm run lint        # Lint
+```
+
+### Mobile
+
+```bash
+cd mobile
+npx expo start      # Serveur Expo
+```
+
+### E2E
+
+```bash
+cd e2e
+npm run test:e2e    # Tests Playwright
+```
+
+---
+
+## Structure du repo
+
+```
+cook-us/
+├── backend/     # API NestJS (Clean Architecture : Controller → UseCase)
+├── frontend/    # Backoffice React/Vite
+├── mobile/      # App React Native / Expo
+├── e2e/         # Tests end-to-end Playwright
+├── nginx/       # Configuration du reverse proxy
+└── docker-compose.dev.yml
+```
+
+---
+
+## Comptes de test
+
+> Créés automatiquement par `npm run seed` (dans `backend/`)
+
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Admin | admin@cookus.app | admin1234 |
+| Cuisinier | cook1@cookus.app | cook1234 |
+| Client | client1@cookus.app | client1234 |
 
 ---
 
