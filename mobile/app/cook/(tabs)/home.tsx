@@ -61,7 +61,7 @@ export default function CookHomeTab() {
     const isActioning = actionLoading === item.id;
 
     return (
-      <View style={styles.card}>
+      <View style={styles.card} testID="cook-request-card">
         <View style={styles.cardHeader}>
           <Text style={styles.clientName}>
             {item.client.firstName} {item.client.lastName}
@@ -72,7 +72,7 @@ export default function CookHomeTab() {
               { backgroundColor: STATUS_COLOR[item.status] },
             ]}
           >
-            <Text style={styles.statusText}>{STATUS_LABEL[item.status]}</Text>
+            <Text style={styles.statusText} testID="cook-request-status">{STATUS_LABEL[item.status]}</Text>
           </View>
         </View>
 
@@ -94,6 +94,7 @@ export default function CookHomeTab() {
             <View style={styles.actionBtn}>
               <Button
                 title="Accepter"
+                testID="accept-button"
                 variant="primary"
                 loading={isActioning}
                 disabled={actionLoading !== null}
@@ -103,6 +104,7 @@ export default function CookHomeTab() {
             <View style={styles.actionBtn}>
               <Button
                 title="Refuser"
+                testID="refuse-button"
                 variant="outline"
                 disabled={actionLoading !== null}
                 onPress={() => refuse(item.id)}

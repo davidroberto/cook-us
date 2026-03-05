@@ -202,7 +202,7 @@ export default function OrderHistoryScreen() {
               </Text>
 
               {item.cancellationReason && (
-                <Text style={styles.cancellationReason}>
+                <Text style={styles.cancellationReason} testID="cancellation-reason">
                   Motif : {item.cancellationReason}
                 </Text>
               )}
