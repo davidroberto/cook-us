@@ -12,6 +12,11 @@ function validateCommand(command: RegisterCommand): void {
     throw new Error("L'adresse email est invalide.");
   if (command.password.length < 6)
     throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+  if (command.role === "client") {
+    if (!command.street?.trim()) throw new Error("La rue est requise.");
+    if (!command.postalCode?.trim()) throw new Error("Le code postal est requis.");
+    if (!command.city?.trim()) throw new Error("La ville est requise.");
+  }
   if (command.role === "cook" && !command.cookProfile?.speciality)
     throw new Error("La spécialité est requise pour un compte cuisinier.");
 }
@@ -52,7 +57,10 @@ async function uploadThumbnail(uri: string): Promise<string> {
   }
 
   const data = (await response.json()) as { url: string };
-  return data.url;
+  const relativeUrl = data.url;
+  if (relativeUrl.startsWith("http")) return relativeUrl;
+  const baseUrl = API_URL.replace(/\/api$/, "");
+  return `${baseUrl}${relativeUrl}`;
 }
 
 export function useRegister() {

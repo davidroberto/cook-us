@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { getApiUrl } from "@/features/api/getApiUrl";
 
-export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled";
+export type CookRequestStatus = "pending" | "accepted" | "refused" | "cancelled" | "completed";
+
+export interface OrderReview {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+}
 
 export interface OrderHistoryItem {
   id: number;
@@ -18,6 +25,7 @@ export interface OrderHistoryItem {
     lastName: string;
     speciality: string;
   };
+  review: OrderReview | null;
 }
 
 export interface UseOrderHistoryResult {
@@ -32,11 +40,12 @@ export const useOrderHistory = (): UseOrderHistoryResult => {
   const [orders, setOrders] = useState<OrderHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasLoadedOnce = useRef(false);
 
   const fetchOrders = useCallback(async () => {
     if (!token) return;
 
-    setLoading(true);
+    if (!hasLoadedOnce.current) setLoading(true);
     setError(null);
 
     try {
@@ -56,6 +65,7 @@ export const useOrderHistory = (): UseOrderHistoryResult => {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
+      hasLoadedOnce.current = true;
       setLoading(false);
     }
   }, [token]);

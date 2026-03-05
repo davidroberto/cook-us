@@ -42,6 +42,14 @@ export interface CookImage {
   updatedAt: string;
 }
 
+export interface CookReview {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  clientFirstName: string;
+}
+
 /** Table : cook (avec relations jointes telles que retournées par l'API) */
 export interface Cook {
   id: string;
@@ -57,6 +65,11 @@ export interface Cook {
   user: User;
   /** Relation : cook_image[] */
   images: CookImage[];
+  /** Calculé côté backend */
+  averageRating: number | null;
+  reviewCount: number;
+  /** Relation : review[] (présent sur GET /cooks/:id uniquement) */
+  reviews?: CookReview[];
 }
 
 // ─── Modèle UI (après mapping, consommé par les composants) ─────────────────
@@ -71,4 +84,6 @@ export interface CookerCardData {
   thumbnail: string | null;
   hourly_rate: number;
   city: string;
+  averageRating: number | null;
+  reviewCount: number;
 }

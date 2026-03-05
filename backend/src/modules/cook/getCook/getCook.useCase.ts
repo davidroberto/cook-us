@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { Cook } from "@src/modules/cook/cook.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class GetCookUseCase {
@@ -13,7 +13,11 @@ export class GetCookUseCase {
   async execute(id: string) {
     const cook = await this.cookRepository.findOne({
       where: { id },
-      relations: { user: true, images: true, reviews: true },
+      relations: {
+        user: true,
+        images: true,
+        reviews: { client: { user: true } },
+      },
       select: {
         id: true,
         firstName: true,
@@ -43,6 +47,7 @@ export class GetCookUseCase {
           rating: true,
           comment: true,
           createdAt: true,
+          client: { id: true, user: { firstName: true } },
         },
       },
     });
@@ -51,6 +56,27 @@ export class GetCookUseCase {
       throw new NotFoundException(`Cook ${id} not found`);
     }
 
-    return cook;
+    const reviews = (cook.reviews ?? [])
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+      .map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.createdAt,
+        clientFirstName: r.client?.user?.firstName ?? "Client",
+      }));
+
+    const averageRating =
+      reviews.length > 0
+        ? Math.round(
+            (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) *
+              10
+          ) / 10
+        : null;
+
+    return { ...cook, reviews, averageRating };
   }
 }

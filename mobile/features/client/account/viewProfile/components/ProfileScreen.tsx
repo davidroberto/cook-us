@@ -6,24 +6,61 @@
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useProfile } from "../useProfile";
 import { PasswordForm } from "./PasswordForm";
 import { ProfileForm } from "./ProfileForm";
+import { uploadProfileThumbnail, updateProfile } from "../repository";
+import { getApiUrl } from "@/features/api/getApiUrl";
+
+function toAbsoluteUrl(url: string): string {
+  if (url.startsWith("http")) return url;
+  return `${getApiUrl().replace(/\/api$/, "")}${url}`;
+}
 
 export const ProfileScreen = () => {
-  const { user } = useProfile();
-  const { clearAuth } = useAuth();
+  const { user, token, updateUser, clearAuth } = useAuth();
+  const { user: profileUser } = useProfile();
   const router = useRouter();
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState(false);
+
+  const handlePickPhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (result.canceled || !token) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      const url = await uploadProfileThumbnail(result.assets[0].uri);
+      const updatedUser = await updateProfile(token, { thumbnail: url });
+      updateUser(updatedUser);
+      setThumbnailError(false);
+    } catch {
+      Alert.alert("Erreur", "Impossible de mettre à jour la photo de profil.");
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handleLogout = () => {
     if (Platform.OS === "web") {
@@ -50,7 +87,7 @@ export const ProfileScreen = () => {
     ]);
   };
 
-  if (!user) {
+  if (!profileUser) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.main} />
@@ -58,28 +95,52 @@ export const ProfileScreen = () => {
     );
   }
 
+  const showThumbnail = !!user?.thumbnail && !thumbnailError;
+
   return (
     <ScrollView
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.avatarContainer}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarInitials}>
-            {user.firstName[0].toUpperCase()}
-            {user.lastName[0].toUpperCase()}
-          </Text>
-        </View>
+        <TouchableOpacity
+          onPress={handlePickPhoto}
+          disabled={isUploadingPhoto}
+          style={styles.avatarWrapper}
+          testID="avatar-picker"
+        >
+          {showThumbnail ? (
+            <Image
+              source={{ uri: toAbsoluteUrl(user!.thumbnail!) }}
+              style={styles.avatarImage}
+              onError={() => setThumbnailError(true)}
+            />
+          ) : (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarInitials}>
+                {profileUser.firstName[0].toUpperCase()}
+                {profileUser.lastName[0].toUpperCase()}
+              </Text>
+            </View>
+          )}
+          <View style={styles.avatarEditBadge}>
+            {isUploadingPhoto ? (
+              <ActivityIndicator size="small" color={colors.white} />
+            ) : (
+              <Ionicons name="camera" size={14} color={colors.white} />
+            )}
+          </View>
+        </TouchableOpacity>
         <Text style={styles.userName}>
-          {user.firstName} {user.lastName}
+          {profileUser.firstName} {profileUser.lastName}
         </Text>
         <Text style={styles.userRole}>
-          {user.role === "cook" ? "Cuisinier" : "Client"}
+          {profileUser.role === "cook" ? "Cuisinier" : "Client"}
         </Text>
       </View>
 
       <View style={styles.section}>
-        <ProfileForm user={user} />
+        <ProfileForm user={profileUser} />
       </View>
 
       <View style={styles.section}>
@@ -119,6 +180,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
+  avatarWrapper: {
+    position: "relative",
+    marginBottom: 12,
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
   avatar: {
     width: 80,
     height: 80,
@@ -126,12 +196,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tertiary,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 12,
   },
   avatarInitials: {
     fontSize: 28,
     fontWeight: "700",
     color: colors.mainDark,
+  },
+  avatarEditBadge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.main,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: colors.background,
   },
   userName: {
     fontSize: 22,

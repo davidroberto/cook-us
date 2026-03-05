@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { mapCooksToCardData } from "./mapper";
 import { getCooks, type CookFilters } from "./repository";
@@ -8,6 +8,7 @@ interface UseCookerListResult {
   cooks: CookerCardData[];
   loading: boolean;
   error: string | null;
+  refresh: () => void;
 }
 
 export const useCookerList = (filters: CookFilters = {}): UseCookerListResult => {
@@ -16,37 +17,18 @@ export const useCookerList = (filters: CookFilters = {}): UseCookerListResult =>
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!token) return;
-
-    let cancelled = false;
-
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const data = await getCooks(token, filters);
-
-        if (!cancelled) {
-          setCooks(mapCooksToCardData(data));
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError("Impossible de charger les cuisiniers.");
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    load();
-
-    return () => {
-      cancelled = true;
-    };
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getCooks(token, filters);
+      setCooks(mapCooksToCardData(data));
+    } catch {
+      setError("Impossible de charger les cuisiniers.");
+    } finally {
+      setLoading(false);
+    }
   }, [
     token,
     filters.search,
@@ -55,5 +37,9 @@ export const useCookerList = (filters: CookFilters = {}): UseCookerListResult =>
     filters.maxHourlyRate,
   ]);
 
-  return { cooks, loading, error };
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { cooks, loading, error, refresh: load };
 };

@@ -59,6 +59,9 @@ test.describe("Inscription visiteur", () => {
     await page.getByTestId("email-input").pressSequentially(uniqueEmail);
     await page.getByTestId("password-input").pressSequentially("password123");
     await page.getByTestId("role-client").click();
+    await page.getByTestId("street-input").pressSequentially("12 rue de la Paix");
+    await page.getByTestId("postalcode-input").pressSequentially("75001");
+    await page.getByTestId("city-input").pressSequentially("Paris");
 
     const [response] = await Promise.all([
       page.waitForResponse(

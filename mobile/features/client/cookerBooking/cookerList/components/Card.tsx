@@ -69,6 +69,12 @@ export const CookerCard = ({ cooker, onPress }: CookerCardProps) => {
             {formatRate(cooker.hourly_rate)}
           </Text>
         </View>
+        {cooker.averageRating !== null && (
+          <Text style={styles.rating} testID="cooker-rating">
+            ★ {cooker.averageRating.toFixed(1)}{" "}
+            <Text style={styles.ratingCount}>({cooker.reviewCount})</Text>
+          </Text>
+        )}
       </View>
     </Card>
   );
@@ -122,6 +128,18 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 13,
     color: colors.text,
+    opacity: colors.opacity[56],
+  },
+  rating: {
+    fontSize: 13,
+    color: colors.secondary,
+    fontWeight: "700",
+    marginTop: 2,
+  },
+  ratingCount: {
+    fontSize: 12,
+    color: colors.text,
+    fontWeight: "400",
     opacity: colors.opacity[56],
   },
   rate: {

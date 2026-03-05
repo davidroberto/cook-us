@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { Cook } from "@src/modules/cook/cook.entity";
 import { GetCooksQueryDto } from "@src/modules/cook/getCooks/getCooks.dto";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class GetCooksUseCase {
@@ -11,7 +11,7 @@ export class GetCooksUseCase {
     private readonly cookRepository: Repository<Cook>
   ) {}
 
-  execute(query: GetCooksQueryDto = {}) {
+  async execute(query: GetCooksQueryDto = {}) {
     const { speciality, minHourlyRate, maxHourlyRate, city, search } = query;
 
     const qb = this.cookRepository
@@ -39,6 +39,14 @@ export class GetCooksUseCase {
         "images.imgUrl",
         "images.description",
       ]);
+
+    qb.addSelect(
+      "(SELECT COALESCE(AVG(r.rating), 0) FROM review r WHERE r.cook_id = cook.id)",
+      "cook_averageRating"
+    ).addSelect(
+      "(SELECT COUNT(r.id) FROM review r WHERE r.cook_id = cook.id)",
+      "cook_reviewCount"
+    );
 
     qb.andWhere("cook.isValidated = true").andWhere("cook.isActive = true");
 
@@ -69,6 +77,31 @@ export class GetCooksUseCase {
       );
     }
 
-    return qb.getMany();
+    const { entities, raw } = await qb.getRawAndEntities();
+
+    const statsMap = new Map<
+      string,
+      { averageRating: number; reviewCount: number }
+    >();
+    for (const row of raw) {
+      if (!statsMap.has(row.cook_id)) {
+        statsMap.set(row.cook_id, {
+          averageRating: Number(row.cook_averageRating),
+          reviewCount: Number(row.cook_reviewCount),
+        });
+      }
+    }
+
+    return entities.map((cook) => {
+      const stats = statsMap.get(cook.id);
+      return {
+        ...cook,
+        averageRating:
+          stats && stats.reviewCount > 0
+            ? Math.round(stats.averageRating * 10) / 10
+            : null,
+        reviewCount: stats?.reviewCount ?? 0,
+      };
+    });
   }
 }

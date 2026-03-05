@@ -50,6 +50,14 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
         {hourlyRateLabel}
       </Text>
 
+      {cook.averageRating !== null && (
+        <View style={styles.ratingRow} testID="profile-average-rating">
+          <Text style={styles.ratingStar}>★</Text>
+          <Text style={styles.ratingValue}>{cook.averageRating.toFixed(1)}</Text>
+          <Text style={styles.ratingCount}>({cook.reviews.length} avis)</Text>
+        </View>
+      )}
+
       {cook.description ? (
         <Text style={styles.description} testID="profile-description">
           {cook.description}
@@ -79,6 +87,39 @@ export const ProfileCard = ({ cook, onProposeCreneau }: ProfileCardProps) => {
               </View>
             ))}
           </View>
+        </View>
+      )}
+
+      {cook.reviews.length > 0 && (
+        <View style={styles.reviewsSection} testID="profile-reviews">
+          <Text style={styles.reviewsTitle}>Avis clients</Text>
+          {cook.reviews.map((review) => (
+            <View key={review.id} style={styles.reviewCard} testID="profile-review-item">
+              <View style={styles.reviewHeader}>
+                <Text style={styles.reviewAuthor}>{review.clientFirstName}</Text>
+                <View style={styles.reviewStars}>
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Text
+                      key={s}
+                      style={[styles.reviewStar, s <= review.rating && styles.reviewStarFilled]}
+                    >
+                      ★
+                    </Text>
+                  ))}
+                </View>
+                <Text style={styles.reviewDate}>
+                  {new Date(review.createdAt).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </Text>
+              </View>
+              {review.comment ? (
+                <Text style={styles.reviewComment}>{review.comment}</Text>
+              ) : null}
+            </View>
+          ))}
         </View>
       )}
     </View>
@@ -174,6 +215,83 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     ...typography.styles.body1Bold,
     color: colors.white,
+  },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  ratingStar: {
+    fontSize: 18,
+    color: colors.secondary,
+  },
+  ratingValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  ratingCount: {
+    fontSize: 13,
+    color: colors.text,
+    opacity: colors.opacity[56],
+  },
+  reviewsSection: {
+    width: "100%",
+    marginTop: 24,
+    alignItems: "flex-start",
+  },
+  reviewsTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.text,
+    marginBottom: 12,
+  },
+  reviewCard: {
+    width: "100%",
+    backgroundColor: colors.white,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    shadowColor: colors.text,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  reviewHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 6,
+  },
+  reviewAuthor: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  reviewStars: {
+    flexDirection: "row",
+    gap: 1,
+  },
+  reviewStar: {
+    fontSize: 13,
+    color: colors.tertiary,
+  },
+  reviewStarFilled: {
+    color: colors.secondary,
+  },
+  reviewDate: {
+    fontSize: 12,
+    color: colors.text,
+    opacity: colors.opacity[40],
+    marginLeft: "auto",
+  },
+  reviewComment: {
+    fontSize: 13,
+    color: colors.text,
+    lineHeight: 19,
+    opacity: colors.opacity[80],
   },
   gallerySection: {
     width: "100%",

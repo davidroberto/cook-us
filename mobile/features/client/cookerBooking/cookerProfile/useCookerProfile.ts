@@ -27,6 +27,14 @@ const mapToCookerProfile = (cook: Cook): CookerProfile => {
       url: toAbsoluteUrl(img.imgUrl),
       description: img.description,
     })),
+    reviews: (cook.reviews ?? []).map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+      createdAt: r.createdAt,
+      clientFirstName: r.clientFirstName,
+    })),
+    averageRating: cook.averageRating ?? null,
   };
 };
 

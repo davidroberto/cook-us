@@ -13,6 +13,9 @@ export interface CookRequestItem {
   endDate: string | null;
   status: CookRequestStatus;
   cancellationReason: string | null;
+  street: string | null;
+  postalCode: string | null;
+  city: string | null;
   client: {
     id: number;
     firstName: string;

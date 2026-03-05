@@ -218,6 +218,9 @@ const CLIENTS_DATA = [
     email: "lucas.bernard@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200",
+    street: "15 rue de Rivoli",
+    postalCode: "75001",
+    city: "Paris",
   },
   {
     firstName: "Emma",
@@ -225,11 +228,17 @@ const CLIENTS_DATA = [
     email: "emma.petit@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
+    street: "8 avenue Jean Jaurès",
+    postalCode: "69007",
+    city: "Lyon",
   },
   {
     firstName: "Hugo",
     lastName: "Simon",
     email: "hugo.simon@cookus.app",
+    street: "22 boulevard de la Canebière",
+    postalCode: "13001",
+    city: "Marseille",
   },
   {
     firstName: "Chloé",
@@ -237,11 +246,17 @@ const CLIENTS_DATA = [
     email: "chloe.dubois@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200",
+    street: "5 place Bellecour",
+    postalCode: "69002",
+    city: "Lyon",
   },
   {
     firstName: "Nathan",
     lastName: "Leroy",
     email: "nathan.leroy@cookus.app",
+    street: "12 rue du Faubourg Saint-Honoré",
+    postalCode: "75008",
+    city: "Paris",
   },
   {
     firstName: "Zoé",
@@ -249,6 +264,9 @@ const CLIENTS_DATA = [
     email: "zoe.girard@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200",
+    street: "3 rue de la République",
+    postalCode: "33000",
+    city: "Bordeaux",
   },
   {
     firstName: "Théo",
@@ -256,11 +274,17 @@ const CLIENTS_DATA = [
     email: "theo.bonnet@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200",
+    street: "18 rue Alsace-Lorraine",
+    postalCode: "31000",
+    city: "Toulouse",
   },
   {
     firstName: "Manon",
     lastName: "Lefebvre",
     email: "manon.lefebvre@cookus.app",
+    street: "7 rue de Siam",
+    postalCode: "29200",
+    city: "Brest",
   },
   {
     firstName: "Raphaël",
@@ -268,6 +292,9 @@ const CLIENTS_DATA = [
     email: "raphael.marchand@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=200",
+    street: "25 avenue de la Liberté",
+    postalCode: "06000",
+    city: "Nice",
   },
   {
     firstName: "Inès",
@@ -275,21 +302,33 @@ const CLIENTS_DATA = [
     email: "ines.bertrand@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=200",
+    street: "10 rue Nationale",
+    postalCode: "59000",
+    city: "Lille",
   },
   {
     firstName: "Louis",
     lastName: "Dumont",
     email: "louis.dumont@cookus.app",
+    street: "14 quai des Chartrons",
+    postalCode: "33000",
+    city: "Bordeaux",
   },
   {
     firstName: "Alice",
     lastName: "Renard",
     email: "alice.renard@cookus.app",
+    street: "6 rue Kléber",
+    postalCode: "67000",
+    city: "Strasbourg",
   },
   {
     firstName: "Valentin",
     lastName: "Morin",
     email: "valentin.morin@cookus.app",
+    street: "20 rue Crébillon",
+    postalCode: "44000",
+    city: "Nantes",
   },
   {
     firstName: "Pauline",
@@ -297,11 +336,17 @@ const CLIENTS_DATA = [
     email: "pauline.simon@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200",
+    street: "9 place du Capitole",
+    postalCode: "31000",
+    city: "Toulouse",
   },
   {
     firstName: "Clément",
     lastName: "Laurent",
     email: "clement.laurent@cookus.app",
+    street: "11 cours Mirabeau",
+    postalCode: "13100",
+    city: "Aix-en-Provence",
   },
 ];
 
@@ -310,7 +355,7 @@ async function seed() {
   console.log("Connecté à la base de données");
 
   await dataSource.query(
-    "TRUNCATE TABLE conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
+    "TRUNCATE TABLE review, conversation, cook_request, cook_image, client, cook, users RESTART IDENTITY CASCADE"
   );
   console.log("Tables vidées");
 
@@ -319,6 +364,7 @@ async function seed() {
   const cookImageRepo = dataSource.getRepository(CookImage);
   const clientRepo = dataSource.getRepository(Client);
   const cookRequestRepo = dataSource.getRepository(CookRequestEntity);
+  const reviewRepo = dataSource.getRepository(Review);
   const conversationRepo = dataSource.getRepository(Conversation);
   const participantRepo = dataSource.getRepository(ConversationParticipant);
   const messageRepo = dataSource.getRepository(Message);
@@ -602,7 +648,12 @@ async function seed() {
         ? { thumbnail: data.thumbnail }
         : {}),
     });
-    const client = await clientRepo.save({ userId: user.id });
+    const client = await clientRepo.save({
+      userId: user.id,
+      street: data.street,
+      postalCode: data.postalCode,
+      city: data.city,
+    });
     clients.push(client);
   }
   console.log(`${clients.length} clients créés`);
@@ -798,6 +849,35 @@ async function seed() {
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
     },
+    // Terminées - completed (pour tester la notation)
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-10-05T19:00:00Z"),
+      endDate: new Date("2025-10-05T22:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[0].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      message: "Super soirée, cuisine française excellente.",
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-09-14T12:00:00Z"),
+      endDate: new Date("2025-09-14T15:00:00Z"),
+      cookId: cooks[1].id,
+      clientId: clients[0].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2025-08-20T19:00:00Z"),
+      endDate: new Date("2025-08-20T23:00:00Z"),
+      cookId: cooks[5].id,
+      clientId: clients[1].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+    },
     // À venir - pending
     {
       guestsNumber: 4,
@@ -940,6 +1020,8 @@ async function seed() {
     },
   ];
 
+  const savedRequests: CookRequestEntity[] = [];
+
   for (const reqData of requests) {
     const cook = cooks.find((c) => c.id === reqData.cookId);
     const client = clients.find((c) => c.id === reqData.clientId);
@@ -955,6 +1037,7 @@ async function seed() {
       ...reqData,
       conversationId,
     });
+    savedRequests.push(saved);
 
     await messageRepo.save(
       messageRepo.create({
@@ -973,6 +1056,25 @@ async function seed() {
   console.log(
     `${requests.length} demandes de cook créées avec conversations et messages`
   );
+
+  // --- Reviews (une seule prestation COMPLETED déjà notée pour lucas.bernard) ---
+  const completedWithReview = savedRequests.find(
+    (r) =>
+      r.cookId === cooks[1].id &&
+      r.clientId === clients[0].id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (completedWithReview) {
+    await reviewRepo.save({
+      rating: 5,
+      comment:
+        "Marie est une cuisinière exceptionnelle, les pâtes fraîches étaient divines !",
+      clientId: clients[0].id,
+      cookId: cooks[1].id,
+      cookRequestId: completedWithReview.id,
+    });
+  }
+  console.log("Reviews créées");
 
   await dataSource.destroy();
   console.log("\nSeed terminé avec succès !");
