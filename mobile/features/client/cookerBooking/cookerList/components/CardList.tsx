@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { colors } from "@/styles/colors";
 import { CookerCard, SPECIALITY_LABEL } from "./Card";
@@ -54,15 +55,26 @@ export const CookerList = () => {
 
   return (
     <View style={styles.wrapper}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Rechercher par nom ou ville..."
-        placeholderTextColor={colors.text + "80"}
-        value={searchInput}
-        onChangeText={setSearchInput}
-        autoCorrect={false}
-        testID="search-input"
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Rechercher par nom ou ville..."
+          placeholderTextColor={colors.text + "80"}
+          value={searchInput}
+          onChangeText={setSearchInput}
+          autoCorrect={false}
+          testID="search-input"
+        />
+        {searchInput.length > 0 && (
+          <TouchableOpacity
+            onPress={() => setSearchInput("")}
+            style={styles.clearButton}
+            testID="search-clear-btn"
+          >
+            <Ionicons name="close-circle" size={18} color={colors.text + "80"} />
+          </TouchableOpacity>
+        )}
+      </View>
 
       <View style={styles.priceRow}>
         <TextInput
@@ -166,17 +178,26 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
   },
-  searchInput: {
+  searchContainer: {
     marginHorizontal: 16,
     marginBottom: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.white,
     borderRadius: 10,
-    fontSize: 15,
-    color: colors.text,
     borderWidth: 1,
     borderColor: colors.tertiary,
+  },
+  searchInput: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: colors.text,
+  },
+  clearButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   priceRow: {
     flexDirection: "row",
