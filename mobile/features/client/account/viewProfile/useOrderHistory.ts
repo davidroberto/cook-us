@@ -19,6 +19,9 @@ export interface OrderHistoryItem {
   status: CookRequestStatus;
   mealType: string;
   cancellationReason: string | null;
+  street: string | null;
+  postalCode: string | null;
+  city: string | null;
   cook: {
     id: string;
     firstName: string;

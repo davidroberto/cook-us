@@ -3,7 +3,7 @@ import { SPECIALITY_LABEL } from "@/features/client/cookerBooking/cookerList/com
 import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from "react-native";
 import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
 import { PropositionFormFields } from "./PropositionFormFields";
@@ -62,9 +62,14 @@ export function SendPropositionForm({
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
     <ScrollView
       testID="send-proposition-form"
       contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
     >
       <Card style={styles.cookerHeader}>
         <Text style={styles.cookerLabel}>Cuisinier sélectionné</Text>
@@ -96,6 +101,7 @@ export function SendPropositionForm({
         error={error}
       />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

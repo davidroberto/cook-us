@@ -59,13 +59,14 @@ export default function MessagingPage() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
         <ConversationOrdersButton
-        conversationId={parseInt(requestId ?? "0", 10)}
-        cookName={
-          state.status === "success"
-            ? `${state.conversation.otherFirstName} ${state.conversation.otherLastName}`
-            : undefined
-        }
-      />
+          conversationId={parseInt(requestId ?? "0", 10)}
+          cookName={
+            state.status === "success"
+              ? `${state.conversation.otherFirstName} ${state.conversation.otherLastName}`
+              : undefined
+          }
+          onClose={retry}
+        />
       </View>
       <ConversationView
         conversation={state.conversation}

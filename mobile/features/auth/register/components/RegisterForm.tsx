@@ -4,6 +4,8 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -68,7 +70,11 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   };
 
   return (
-    <ScrollView testID="register-form" contentContainerStyle={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <ScrollView testID="register-form" contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Créer un compte</Text>
 
       {/* Photo de profil */}
@@ -303,6 +309,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
         <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

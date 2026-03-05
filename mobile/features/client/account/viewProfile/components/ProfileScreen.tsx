@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -98,9 +99,14 @@ export const ProfileScreen = () => {
   const showThumbnail = !!user?.thumbnail && !thumbnailError;
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
     <ScrollView
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
       <View style={styles.avatarContainer}>
         <TouchableOpacity
@@ -163,6 +169,7 @@ export const ProfileScreen = () => {
         />
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
