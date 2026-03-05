@@ -77,6 +77,11 @@ export function PropositionFormFields({
       }
     } else if (date) {
       setTempDate(date);
+      if (Platform.OS !== "ios") {
+        setSelectedDate(date);
+        onStartDateChange(formatDate(date));
+        setShowPicker(false);
+      }
     }
   };
 
@@ -109,48 +114,59 @@ export function PropositionFormFields({
 
       <View style={styles.dateContainer}>
         <Text style={styles.dateLabel}>Date de début</Text>
-        <Pressable
-          testID="start-date-input"
-          style={({ pressed }) => [
-            styles.dateButton,
-            pressed && styles.dateButtonPressed,
-          ]}
-          onPress={() => {
-            if (!startDate) {
-              onStartDateChange(formatDate(getTomorrow()));
-            }
-            setShowPicker(true);
-          }}
-        >
-          <Text
-            style={[styles.dateText, !startDate && styles.datePlaceholder]}
-          >
-            {startDate || "Sélectionner une date"}
-          </Text>
-        </Pressable>
+        {Platform.OS === "web" ? (
+          <Input
+            testID="start-date-input"
+            value={startDate}
+            onChangeText={onStartDateChange}
+            placeholder="JJ-MM-AAAA"
+          />
+        ) : (
+          <>
+            <Pressable
+              testID="start-date-input"
+              style={({ pressed }) => [
+                styles.dateButton,
+                pressed && styles.dateButtonPressed,
+              ]}
+              onPress={() => {
+                if (!startDate) {
+                  onStartDateChange(formatDate(getTomorrow()));
+                }
+                setShowPicker(true);
+              }}
+            >
+              <Text
+                style={[styles.dateText, !startDate && styles.datePlaceholder]}
+              >
+                {startDate || "Sélectionner une date"}
+              </Text>
+            </Pressable>
 
-        {showPicker && (
-          <View>
-            <DateTimePicker
-              testID="date-picker"
-              value={Platform.OS === "ios" ? tempDate : selectedDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              minimumDate={getTomorrow()}
-              locale="fr-FR"
-              onChange={handleDateChange}
-            />
-            {Platform.OS === "ios" && (
-              <View style={styles.pickerActions}>
-                <Pressable onPress={handleCancelIOS} style={styles.pickerCancel}>
-                  <Text style={styles.pickerCancelText}>Annuler</Text>
-                </Pressable>
-                <Pressable onPress={handleConfirmIOS} style={styles.pickerConfirm}>
-                  <Text style={styles.pickerConfirmText}>Confirmer</Text>
-                </Pressable>
+            {showPicker && (
+              <View>
+                <DateTimePicker
+                  testID="date-picker"
+                  value={Platform.OS === "ios" ? tempDate : selectedDate}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  minimumDate={getTomorrow()}
+                  locale="fr-FR"
+                  onChange={handleDateChange}
+                />
+                {Platform.OS === "ios" && (
+                  <View style={styles.pickerActions}>
+                    <Pressable onPress={handleCancelIOS} style={styles.pickerCancel}>
+                      <Text style={styles.pickerCancelText}>Annuler</Text>
+                    </Pressable>
+                    <Pressable onPress={handleConfirmIOS} style={styles.pickerConfirm}>
+                      <Text style={styles.pickerConfirmText}>Confirmer</Text>
+                    </Pressable>
+                  </View>
+                )}
               </View>
             )}
-          </View>
+          </>
         )}
       </View>
 

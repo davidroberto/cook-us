@@ -10,6 +10,7 @@ export interface OrderHistoryItem {
   startDate: string;
   endDate: string | null;
   status: CookRequestStatus;
+  mealType: string;
   cancellationReason: string | null;
   cook: {
     id: string;

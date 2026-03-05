@@ -54,7 +54,7 @@ function ConversationItem({
   const unreadCount = conversation.unreadCount ?? 0;
 
   return (
-    <TouchableOpacity style={styles.item} onPress={onPress}>
+    <TouchableOpacity style={styles.item} onPress={onPress} testID="conversation-item">
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
       </View>

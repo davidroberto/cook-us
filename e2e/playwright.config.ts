@@ -1,18 +1,21 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export default defineConfig({
-  testMatch: '**/*.e2e-spec.ts',
+  testMatch: "**/*.e2e-spec.ts",
   fullyParallel: true,
   workers: 4,
   timeout: 30_000,
   use: {
-    baseURL: 'http://localhost',
+    baseURL: process.env.E2E_MOBILE_URL ?? "http://localhost:8081",
   },
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
       },
     },
   ],
