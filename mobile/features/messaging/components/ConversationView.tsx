@@ -17,7 +17,7 @@ import { MessageInput } from "./MessageInput";
 type Props = {
   conversation: Conversation;
   onSendMessage: (content: string) => void;
-  onSendImage?: (uri: string, mimeType?: string, fileName?: string) => void;
+  onSendImage?: (uri: string, mimeType?: string, fileName?: string, caption?: string) => void;
   onLoadMore?: () => void;
   hasMore?: boolean;
   loadingMore?: boolean;

@@ -344,13 +344,13 @@ export function useConversation(conversationId: number) {
   );
 
   const sendImage = useCallback(
-    async (imageUri: string, imageMimeType?: string, imageFileName?: string) => {
+    async (imageUri: string, imageMimeType?: string, imageFileName?: string, caption?: string) => {
       // Optimistic update with local URI
       setState((prev) => {
         if (prev.status !== "success") return prev;
         const newMessage: Message = {
           id: Date.now(),
-          content: "",
+          content: caption ?? "",
           sender: "client",
           sentAt: new Date().toISOString(),
           imageUrl: imageUri,
@@ -398,7 +398,7 @@ export function useConversation(conversationId: number) {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ message: "", imageUrl }),
+            body: JSON.stringify({ message: caption ?? "", imageUrl }),
           },
         );
         console.log("[sendImage] message POST status:", response.status);
@@ -415,7 +415,7 @@ export function useConversation(conversationId: number) {
     state,
     retry: load,
     sendMessage,
-    sendImage: sendImage as (uri: string, mimeType?: string, fileName?: string) => Promise<void>,
+    sendImage: sendImage as (uri: string, mimeType?: string, fileName?: string, caption?: string) => Promise<void>,
     loadMore,
   };
 }
