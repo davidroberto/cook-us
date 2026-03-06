@@ -178,19 +178,19 @@ export const ProfileScreen = () => {
         </Text>
       </View>
 
-      <View style={styles.historySection}>
-        <TouchableOpacity
-          style={styles.historyButton}
-          onPress={() => router.push("/client/orderHistory")}
-          testID="history-button"
-        >
-          <View style={styles.historyButtonLeft}>
-            <Ionicons name="time-outline" size={22} color={colors.main} />
-            <Text style={styles.historyButtonText}>Historique des réservations</Text>
+      <TouchableOpacity
+        style={styles.section}
+        onPress={() => router.push("/client/orderHistory")}
+        testID="history-button"
+      >
+        <View style={styles.accordionHeader}>
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="time-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Historique des réservations</Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color={colors.main} />
-        </TouchableOpacity>
-      </View>
+          <Ionicons name="chevron-forward" size={18} color={colors.main} />
+        </View>
+      </TouchableOpacity>
 
       <View style={styles.section}>
         <TouchableOpacity
@@ -200,7 +200,7 @@ export const ProfileScreen = () => {
         >
           <View style={styles.accordionHeaderLeft}>
             <Ionicons name="person-outline" size={20} color={colors.main} />
-            <Text style={styles.accordionTitle}>Modifier mes informations</Text>
+            <Text style={styles.accordionTitle}>Mes informations</Text>
           </View>
           <Ionicons
             name={profileOpen ? "chevron-up" : "chevron-down"}
@@ -289,7 +289,7 @@ export const ProfileScreen = () => {
         >
           <View style={styles.accordionHeaderLeft}>
             <Ionicons name="lock-closed-outline" size={20} color={colors.main} />
-            <Text style={styles.accordionTitle}>Changer de mot de passe</Text>
+            <Text style={styles.accordionTitle}>Mot de passe</Text>
           </View>
           <Ionicons
             name={passwordOpen ? "chevron-up" : "chevron-down"}
@@ -414,32 +414,6 @@ const styles = StyleSheet.create({
   },
   addressNoticeError: {
     color: colors.mainDark,
-  },
-  historySection: {
-    marginBottom: 16,
-  },
-  historyButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 18,
-    shadowColor: colors.text,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: colors.opacity[8],
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  historyButtonLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  historyButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
   },
   logoutSection: {
     marginTop: 8,
