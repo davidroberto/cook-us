@@ -7,6 +7,7 @@ import { UserDetailPage } from '@src/modules/users/userDetail.page'
 import { CreateAdminPage } from '@src/modules/users/createAdmin.page'
 import { CookRequestsTablePage } from '@src/modules/cookRequests/cookRequestsTable.page'
 import { PendingCooksPage } from '@src/modules/pendingCooks/pendingCooks.page'
+import { DashboardPage } from '@src/modules/dashboard/dashboard.page'
 
 export const App = () => {
     return (
@@ -20,7 +21,8 @@ export const App = () => {
                         </ProtectedRoute>
                     }
                 >
-                    <Route index element={<Navigate to="/users" replace />} />
+                    <Route index element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/users" element={<UsersTablePage />} />
                     <Route path="/users/create" element={<CreateAdminPage />} />
                     <Route path="/users/:id" element={<UserDetailPage />} />
