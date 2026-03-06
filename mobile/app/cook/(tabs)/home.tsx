@@ -4,6 +4,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { ScreenBackground } from "@/components/ui/ScreenBackground";
@@ -35,7 +36,20 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
   completed: "#607D8B",
 };
 
+type Tab = "active" | "completed" | "refused";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "active", label: "En cours" },
+  { key: "completed", label: "Terminées" },
+  { key: "refused", label: "Refusées" },
+];
+
+const ACTIVE_STATUSES: CookRequestStatus[] = ["pending", "accepted", "paid"];
+const COMPLETED_STATUSES: CookRequestStatus[] = ["completed"];
+const REFUSED_STATUSES: CookRequestStatus[] = ["refused", "cancelled"];
+
 export default function CookHomeTab() {
+  const [activeTab, setActiveTab] = useState<Tab>("active");
   const {
     requests,
     loading,
@@ -126,6 +140,12 @@ export default function CookHomeTab() {
       </View>
     );
   }
+
+  const filteredRequests = requests.filter((r) => {
+    if (activeTab === "active") return ACTIVE_STATUSES.includes(r.status);
+    if (activeTab === "completed") return COMPLETED_STATUSES.includes(r.status);
+    return REFUSED_STATUSES.includes(r.status);
+  });
 
   const clientName = selectedRequest
     ? `${selectedRequest.client.firstName} ${selectedRequest.client.lastName}`
@@ -223,22 +243,49 @@ export default function CookHomeTab() {
     );
   };
 
+  const emptyLabel =
+    activeTab === "active"
+      ? "Aucune proposition en cours"
+      : activeTab === "completed"
+        ? "Aucune prestation terminée"
+        : "Aucune proposition refusée ou annulée";
+
   return (
     <ScreenBackground edges={["top"]}>
       <FlatList
-        data={requests}
+        data={filteredRequests}
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
-          <Text style={styles.header}>Mes propositions</Text>
+          <>
+            <Text style={styles.header}>Mes propositions</Text>
+            <View style={styles.tabs}>
+              {TABS.map((tab) => (
+                <TouchableOpacity
+                  key={tab.key}
+                  style={[
+                    styles.tab,
+                    activeTab === tab.key && styles.tabActive,
+                  ]}
+                  onPress={() => setActiveTab(tab.key)}
+                >
+                  <Text
+                    style={[
+                      styles.tabText,
+                      activeTab === tab.key && styles.tabTextActive,
+                    ]}
+                  >
+                    {tab.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>Aucune proposition</Text>
-            <Text style={styles.emptyText}>
-              Vos propositions de réservation apparaîtront ici.
-            </Text>
+            <Text style={styles.emptyTitle}>{emptyLabel}</Text>
           </View>
         }
         onRefresh={refresh}
@@ -289,7 +336,32 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     color: colors.text,
-    paddingBottom: 8,
+    paddingBottom: 12,
+  },
+  tabs: {
+    flexDirection: "row",
+    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 4,
+    gap: 2,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 9,
+    alignItems: "center",
+  },
+  tabActive: {
+    backgroundColor: colors.main,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  tabTextActive: {
+    color: colors.white,
   },
   list: {
     padding: 16,
@@ -378,14 +450,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: colors.text,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.text,
-    opacity: 0.56,
-    textAlign: "center",
-    lineHeight: 20,
   },
   errorText: {
     fontSize: 15,
