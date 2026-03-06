@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,7 +33,10 @@ export function GoogleSignInButton({
         <ActivityIndicator color={colors.text} />
       ) : (
         <View style={styles.content}>
-          <Text style={styles.googleLogo}>G</Text>
+          <Image
+            source={require("@/assets/images/google-logo.png")}
+            style={styles.googleLogo}
+          />
           <Text style={styles.buttonText}>{label}</Text>
         </View>
       )}
@@ -58,9 +62,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   googleLogo: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#4285F4",
+    width: 20,
+    height: 20,
   },
   buttonText: {
     color: colors.text,
