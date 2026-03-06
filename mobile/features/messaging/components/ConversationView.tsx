@@ -17,6 +17,7 @@ import { MessageInput } from "./MessageInput";
 type Props = {
   conversation: Conversation;
   onSendMessage: (content: string) => void;
+  onSendImage?: (uri: string, mimeType?: string, fileName?: string) => void;
   onLoadMore?: () => void;
   hasMore?: boolean;
   loadingMore?: boolean;
@@ -25,6 +26,7 @@ type Props = {
 export function ConversationView({
   conversation,
   onSendMessage,
+  onSendImage,
   onLoadMore,
   hasMore,
   loadingMore,
@@ -93,7 +95,7 @@ export function ConversationView({
           ) : null
         }
       />
-      <MessageInput onSend={onSendMessage} bottomInset={bottomInset} />
+      <MessageInput onSend={onSendMessage} onSendImage={onSendImage} bottomInset={bottomInset} />
     </>
   );
 

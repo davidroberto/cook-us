@@ -19,7 +19,7 @@ export default function CookMessagingPage() {
   const router = useRouter();
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
-  const { state, retry, sendMessage, loadMore } = useConversation(parseInt(conversationId ?? "0", 10));
+  const { state, retry, sendMessage, sendImage, loadMore } = useConversation(parseInt(conversationId ?? "0", 10));
 
   useFocusEffect(
     useCallback(() => {
@@ -65,6 +65,7 @@ export default function CookMessagingPage() {
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        onSendImage={sendImage}
         onLoadMore={loadMore}
         hasMore={state.hasMore}
         loadingMore={state.loadingMore}

@@ -13,6 +13,7 @@ export type ApiMessage = {
   author: ApiUser;
   conversationId: number;
   message: string;
+  imageUrl: string | null;
   readAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -55,6 +56,7 @@ export type Message = {
   sender: MessageSender;
   sentAt: string;
   readAt?: string | null;
+  imageUrl?: string | null;
   requestData?: {
     startDate: string;
     guestsNumber: number;

@@ -1,11 +1,12 @@
-import { useCallback } from "react";
-import { useConversation } from "@/features/messaging/useConversation";
-import { ConversationView } from "@/features/messaging/components/ConversationView";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { ConversationOrdersButton } from "@/features/messaging/components/ConversationOrdersButton";
+import { ConversationView } from "@/features/messaging/components/ConversationView";
+import { useConversation } from "@/features/messaging/useConversation";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ScreenBackground } from "@/components/ui/ScreenBackground";
 
 export default function MessagingPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function MessagingPage() {
     otherLastName?: string;
   }>();
 
-  const { state, retry, sendMessage, loadMore } = useConversation(
+  const { state, retry, sendMessage, sendImage, loadMore } = useConversation(
     parseInt(requestId ?? "0", 10),
   );
 
@@ -31,7 +31,7 @@ export default function MessagingPage() {
   useFocusEffect(
     useCallback(() => {
       retry();
-    }, [retry])
+    }, [retry]),
   );
 
   const headerTitle =
@@ -95,6 +95,7 @@ export default function MessagingPage() {
       <ConversationView
         conversation={state.conversation}
         onSendMessage={sendMessage}
+        onSendImage={sendImage}
         onLoadMore={loadMore}
         hasMore={state.hasMore}
         loadingMore={state.loadingMore}

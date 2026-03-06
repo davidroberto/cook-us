@@ -1,6 +1,7 @@
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import type { Message } from "../types";
 import { RequestSummaryCard } from "./RequestSummaryCard";
 import { AcceptSummaryCard } from "./AcceptSummaryCard";
@@ -30,6 +31,7 @@ function formatReadAt(iso: string): string {
 export function MessageBubble({ message, showReadReceipt }: Props) {
   const isClient = message.sender === "client";
   const isSystem = message.sender === "system";
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
   if (isSystem) {
     return (
@@ -39,12 +41,9 @@ export function MessageBubble({ message, showReadReceipt }: Props) {
     );
   }
 
-  return (
-    <View
-      style={[styles.bubbleContainer, isClient ? styles.clientSide : styles.cookSide]}
-      testID={isClient ? "message-bubble-client" : "message-bubble-cook"}
-    >
-      {message.requestData ? (
+  const renderBubbleContent = () => {
+    if (message.requestData) {
+      return (
         <RequestSummaryCard
           startDate={message.requestData.startDate}
           guestsNumber={message.requestData.guestsNumber}
@@ -55,27 +54,89 @@ export function MessageBubble({ message, showReadReceipt }: Props) {
           city={message.requestData.city}
           isSentByMe={isClient}
         />
-      ) : message.acceptData ? (
+      );
+    }
+
+    if (message.acceptData) {
+      return (
         <AcceptSummaryCard
           price={message.acceptData.price}
           isSentByMe={!isClient}
         />
-      ) : message.paidData ? (
+      );
+    }
+
+    if (message.paidData) {
+      return (
         <PaidSummaryCard
           total={message.paidData.total}
           isSentByMe={isClient}
         />
-      ) : (
-        <View style={[styles.bubble, isClient ? styles.clientBubble : styles.cookBubble]}>
+      );
+    }
+
+    return (
+      <View style={[styles.bubble, isClient ? styles.clientBubble : styles.cookBubble]}>
+        {message.imageUrl ? (
+          <>
+            <TouchableOpacity onPress={() => setFullScreenImage(message.imageUrl!)}>
+              <Image
+                source={{ uri: message.imageUrl }}
+                style={styles.messageImage}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+            {message.content ? (
+              <Text style={[styles.messageText, isClient ? styles.clientText : styles.cookText, styles.imageCaption]}>
+                {message.content}
+              </Text>
+            ) : null}
+          </>
+        ) : (
           <Text style={[styles.messageText, isClient ? styles.clientText : styles.cookText]}>
             {message.content}
           </Text>
+        )}
+      </View>
+    );
+  };
+
+  return (
+    <>
+      <View
+        style={[styles.bubbleContainer, isClient ? styles.clientSide : styles.cookSide]}
+        testID={isClient ? "message-bubble-client" : "message-bubble-cook"}
+      >
+        {renderBubbleContent()}
+        {showReadReceipt && message.readAt && (
+          <Text style={styles.readReceipt}>{formatReadAt(message.readAt)}</Text>
+        )}
+      </View>
+
+      <Modal
+        visible={fullScreenImage !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFullScreenImage(null)}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            style={styles.modalClose}
+            onPress={() => setFullScreenImage(null)}
+            accessibilityLabel="Fermer"
+          >
+            <Text style={styles.modalCloseText}>✕</Text>
+          </TouchableOpacity>
+          {fullScreenImage && (
+            <Image
+              source={{ uri: fullScreenImage }}
+              style={styles.fullScreenImage}
+              resizeMode="contain"
+            />
+          )}
         </View>
-      )}
-      {showReadReceipt && message.readAt && (
-        <Text style={styles.readReceipt}>{formatReadAt(message.readAt)}</Text>
-      )}
-    </View>
+      </Modal>
+    </>
   );
 }
 
@@ -103,6 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 10,
     paddingHorizontal: 14,
+    overflow: "hidden",
   },
   clientBubble: {
     backgroundColor: colors.main,
@@ -117,11 +179,41 @@ const styles = StyleSheet.create({
   },
   clientText: { color: colors.white },
   cookText: { color: colors.text },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+  },
+  imageCaption: {
+    marginTop: 6,
+  },
   readReceipt: {
     fontSize: 11,
     color: colors.text,
     opacity: 0.45,
     marginTop: 2,
     textAlign: "right" as const,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.92)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalClose: {
+    position: "absolute",
+    top: 52,
+    right: 20,
+    zIndex: 10,
+    padding: 8,
+  },
+  modalCloseText: {
+    fontSize: 24,
+    color: colors.white,
+    fontWeight: "600",
+  },
+  fullScreenImage: {
+    width: "100%",
+    height: "85%",
   },
 });

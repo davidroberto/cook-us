@@ -1,14 +1,17 @@
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, Text, View } from "react-native";
+import { Alert, StyleSheet, TextInput, TouchableOpacity, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 type Props = {
   onSend: (content: string) => void;
+  onSendImage?: (uri: string, mimeType?: string, fileName?: string) => void;
   bottomInset?: number;
 };
 
-export function MessageInput({ onSend, bottomInset = 0 }: Props) {
+export function MessageInput({ onSend, onSendImage, bottomInset = 0 }: Props) {
   const [text, setText] = useState("");
 
   const handleSend = () => {
@@ -18,8 +21,61 @@ export function MessageInput({ onSend, bottomInset = 0 }: Props) {
     setText("");
   };
 
+  const handlePickImage = () => {
+    Alert.alert("Envoyer une image", undefined, [
+      {
+        text: "Prendre une photo",
+        onPress: async () => {
+          const { granted } = await ImagePicker.requestCameraPermissionsAsync();
+          if (!granted) {
+            Alert.alert("Permission refusée", "L'accès à l'appareil photo est nécessaire.");
+            return;
+          }
+          const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: "images",
+            quality: 0.5,
+          });
+          if (!result.canceled && onSendImage) {
+            const asset = result.assets[0];
+            onSendImage(asset.uri, asset.mimeType ?? undefined, asset.fileName ?? undefined);
+          }
+        },
+      },
+      {
+        text: "Choisir dans la galerie",
+        onPress: async () => {
+          const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (!granted) {
+            Alert.alert("Permission refusée", "L'accès à la galerie est nécessaire.");
+            return;
+          }
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: "images",
+            quality: 0.7,
+          });
+          if (!result.canceled && onSendImage) {
+            const asset = result.assets[0];
+            onSendImage(asset.uri, asset.mimeType ?? undefined, asset.fileName ?? undefined);
+          }
+        },
+      },
+      { text: "Annuler", style: "cancel" },
+    ]);
+  };
+
   return (
     <View style={[styles.container, { paddingBottom: 10 + bottomInset }]} testID="message-input-container">
+      {onSendImage && (
+        <TouchableOpacity
+          testID="message-image-button"
+          style={styles.imageButton}
+          onPress={handlePickImage}
+          accessibilityRole="button"
+          accessibilityLabel="Envoyer une image"
+        >
+          <Ionicons name="camera-outline" size={24} color={colors.main} />
+        </TouchableOpacity>
+      )}
       <TextInput
         testID="message-text-input"
         style={styles.input}
@@ -51,6 +107,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: 1,
     borderTopColor: colors.tertiary,
+  },
+  imageButton: {
+    padding: 6,
+    marginRight: 4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
     flex: 1,

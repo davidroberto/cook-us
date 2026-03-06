@@ -67,11 +67,25 @@ function parsePaidData(
   }
 }
 
+function getMimeType(uri: string): string {
+  const ext = uri.split(".").pop()?.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    heic: "image/heic",
+    heif: "image/heif",
+    webp: "image/webp",
+  };
+  return mimeTypes[ext ?? ""] ?? "image/jpeg";
+}
+
 function toMessage(
   msg: {
     id: number;
     authorId: number;
     message: string;
+    imageUrl?: string | null;
     createdAt: string;
     readAt?: string | null;
   },
@@ -86,6 +100,7 @@ function toMessage(
     sender: msg.authorId === currentUserId ? "client" : "cook",
     sentAt: msg.createdAt,
     readAt: msg.readAt ?? null,
+    imageUrl: msg.imageUrl ?? null,
     ...(requestData ? { requestData } : {}),
     ...(acceptData ? { acceptData } : {}),
     ...(paidData ? { paidData } : {}),
@@ -223,6 +238,7 @@ export function useConversation(conversationId: number) {
         authorId: number;
         conversationId: number;
         message: string;
+        imageUrl?: string | null;
         createdAt: string;
       }) => {
         if (msg.conversationId !== conversationId) return;
@@ -327,5 +343,79 @@ export function useConversation(conversationId: number) {
     [conversationId, token, load],
   );
 
-  return { state, retry: load, sendMessage, loadMore };
+  const sendImage = useCallback(
+    async (imageUri: string, imageMimeType?: string, imageFileName?: string) => {
+      // Optimistic update with local URI
+      setState((prev) => {
+        if (prev.status !== "success") return prev;
+        const newMessage: Message = {
+          id: Date.now(),
+          content: "",
+          sender: "client",
+          sentAt: new Date().toISOString(),
+          imageUrl: imageUri,
+        };
+        return {
+          ...prev,
+          conversation: {
+            ...prev.conversation,
+            messages: [newMessage, ...prev.conversation.messages],
+          },
+        };
+      });
+
+      try {
+        const mimeType = imageMimeType ?? getMimeType(imageUri);
+        const filename = imageFileName ?? imageUri.split("/").pop() ?? "image.jpg";
+        console.log("[sendImage] uri:", imageUri);
+        console.log("[sendImage] mimeType:", mimeType, "filename:", filename);
+
+        const formData = new FormData();
+        formData.append("file", { uri: imageUri, type: mimeType, name: filename } as unknown as Blob);
+
+        const uploadRes = await fetch(`${API_URL}/upload`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        console.log("[sendImage] upload status:", uploadRes.status);
+        if (!uploadRes.ok) {
+          const body = await uploadRes.text().catch(() => "");
+          console.log("[sendImage] upload error body:", body);
+          throw new Error(`Upload failed: ${uploadRes.status} ${body}`);
+        }
+
+        const { url } = (await uploadRes.json()) as { url: string };
+        const baseUrl = API_URL.replace(/\/api$/, "");
+        const imageUrl = url.startsWith("http") ? url : `${baseUrl}${url}`;
+        console.log("[sendImage] imageUrl:", imageUrl);
+
+        const response = await fetch(
+          `${API_URL}/conversations/${conversationId}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ message: "", imageUrl }),
+          },
+        );
+        console.log("[sendImage] message POST status:", response.status);
+        if (!response.ok) throw new Error(`Message POST failed: ${response.status}`);
+      } catch (err) {
+        console.log("[sendImage] ERROR:", err);
+        load();
+      }
+    },
+    [conversationId, token, load],
+  );
+
+  return {
+    state,
+    retry: load,
+    sendMessage,
+    sendImage: sendImage as (uri: string, mimeType?: string, fileName?: string) => Promise<void>,
+    loadMore,
+  };
 }
