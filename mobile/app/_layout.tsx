@@ -11,9 +11,11 @@ import { useFonts } from "expo-font";
 import {
   Alexandria_400Regular,
   Alexandria_700Bold,
+  Alexandria_800ExtraBold,
 } from "@expo-google-fonts/alexandria";
 import {
   DancingScript_400Regular,
+  DancingScript_700Bold,
 } from "@expo-google-fonts/dancing-script";
 import {
   Merriweather_300Light,
@@ -32,7 +34,9 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Alexandria_400Regular,
     Alexandria_700Bold,
+    Alexandria_800ExtraBold,
     DancingScript_400Regular,
+    DancingScript_700Bold,
     Merriweather_300Light,
     Merriweather_400Regular,
     Merriweather_700Bold,
