@@ -37,6 +37,7 @@ const dataSource = new DataSource({
 
 const COOK_PASSWORD = "cook1234";
 const CLIENT_PASSWORD = "client1234";
+const DEMO_PASSWORD = "demo1234";
 
 const COOKS_DATA = [
   {
@@ -418,6 +419,34 @@ async function seed() {
   }
   console.log(`${cooks.length} cooks créés`);
 
+  // --- Demo cook: Sophie Lambert (index 15) ---
+  const demoHashedCookPassword = await bcrypt.hash(DEMO_PASSWORD, 10);
+  const demoSophieUser = await userRepo.save({
+    firstName: "Sophie",
+    lastName: "Lambert",
+    email: "sophie.lambert@demo.cookus.app",
+    role: UserRole.COOK,
+    password: demoHashedCookPassword,
+    thumbnail:
+      "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=200",
+  });
+  const demoSophieCook = await cookRepo.save({
+    firstName: "Sophie",
+    lastName: "Lambert",
+    speciality: "french_cooking",
+    siret: "89234701500012",
+    hourlyRate: 58,
+    city: "Paris",
+    isActive: true,
+    validationStatus: CookValidationStatus.VALIDATED,
+    description:
+      "Passée par les cuisines du Bristol et de Taillevent, je propose une cuisine française gastronomique à domicile. Produits de saison, vins sélectionnés, service raffiné.",
+    photoUrl:
+      "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=200",
+    userId: demoSophieUser.id,
+  });
+  cooks.push(demoSophieCook); // index 15
+
   // --- Cook images (photos de plats) ---
   const COOK_IMAGES: {
     cookIndex: number;
@@ -640,6 +669,32 @@ async function seed() {
   }
   console.log(`${COOK_IMAGES.length} photos de plats créées`);
 
+  // --- Photos de plats Sophie Lambert (démo) ---
+  for (const [description, imgUrl] of [
+    [
+      "Sole meunière au beurre clarifié",
+      "https://images.unsplash.com/photo-1519984388953-d2406bc725e1?w=600",
+    ],
+    [
+      "Filet de bœuf Wellington",
+      "https://images.unsplash.com/photo-1544025162-d76694265947?w=600",
+    ],
+    [
+      "Soufflé au fromage de Comté",
+      "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600",
+    ],
+    [
+      "Mille-feuille à la vanille Bourbon",
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+    ],
+  ]) {
+    await cookImageRepo.save({
+      cookId: demoSophieCook.id,
+      imgUrl,
+      description,
+    });
+  }
+
   // --- Clients ---
   const hashedClientPassword = await bcrypt.hash(CLIENT_PASSWORD, 10);
   const clients: Client[] = [];
@@ -722,6 +777,25 @@ async function seed() {
   }
   console.log(`${clients.length} clients créés`);
 
+  // --- Demo client: Alexis Martin (index 15) ---
+  const demoHashedClientPassword = await bcrypt.hash(DEMO_PASSWORD, 10);
+  const demoAlexisUser = await userRepo.save({
+    firstName: "Alexis",
+    lastName: "Martin",
+    email: "alexis.martin@demo.cookus.app",
+    role: UserRole.CLIENT,
+    password: demoHashedClientPassword,
+    thumbnail:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200",
+  });
+  const demoAlexisClient = await clientRepo.save({
+    userId: demoAlexisUser.id,
+    street: "25 rue du Faubourg Saint-Antoine",
+    postalCode: "75011",
+    city: "Paris",
+  });
+  clients.push(demoAlexisClient); // index 15
+
   // --- Cook requests avec conversations ---
   // Reproduit le comportement du backend : chaque cook request a une conversation.
   // Si un même couple client/cook a plusieurs demandes, elles partagent la même conversation.
@@ -762,6 +836,12 @@ async function seed() {
     { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 18 test.addr.client
     { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 19 test.profile.client
     { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 20 test.cliaddr.client
+    // Alexis Martin — démo (index 15)
+    {
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
   ];
 
   function formatDateDDMMYYYY(date: Date): string {
@@ -1417,6 +1497,170 @@ async function seed() {
       price: 220,
       ...addr(18),
     },
+    // ---- Demo requests ----
+
+    // Alexis (demoAlexisClient) → Sophie (demoSophieCook)
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-10-18T19:00:00Z"),
+      endDate: new Date("2025-10-18T22:30:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      message:
+        "Diner d'anniversaire de ma femme, merci pour cette soiree memorable.",
+      price: 232,
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-12-06T19:30:00Z"),
+      endDate: new Date("2025-12-06T23:00:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      message: "Repas de Noel en avance, parfaitement execute.",
+      price: 348,
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2026-03-22T19:00:00Z"),
+      endDate: new Date("2026-03-22T23:00:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Soiree entre amis, quelques vegetariens parmi nous.",
+      price: 464,
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-04-20T12:00:00Z"),
+      endDate: new Date("2026-04-20T14:30:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.PENDING,
+      mealType: MealType.LUNCH,
+      message: "Dejeuner professionnel, cuisine raffinee souhaitee.",
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 10,
+      startDate: new Date("2025-11-15T19:00:00Z"),
+      endDate: new Date("2025-11-15T23:00:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
+      cancellationReason:
+        "Changement de planning de derniere minute, toutes mes excuses.",
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+
+    // Alexis (demoAlexisClient) → cooks existants
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-04-05T19:30:00Z"),
+      endDate: new Date("2026-04-05T22:30:00Z"),
+      cookId: cooks[1].id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
+      message:
+        "Soiree italienne pour 4, des pates fraiches maison s'il vous plait !",
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2026-03-28T19:00:00Z"),
+      endDate: new Date("2026-03-28T23:00:00Z"),
+      cookId: cooks[7].id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      message: "Soiree japonaise pour l'anniversaire de mon fils.",
+      price: 420,
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+    {
+      guestsNumber: 12,
+      startDate: new Date("2025-09-20T18:00:00Z"),
+      endDate: new Date("2025-09-20T23:00:00Z"),
+      cookId: cooks[5].id,
+      clientId: demoAlexisClient.id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      message: "Buffet de desserts pour un mariage civil.",
+      price: 744,
+      street: "25 rue du Faubourg Saint-Antoine",
+      postalCode: "75011",
+      city: "Paris",
+    },
+
+    // Clients existants → Sophie (demoSophieCook)
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-04-12T19:00:00Z"),
+      endDate: new Date("2026-04-12T22:30:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: clients[0].id,
+      status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
+      message:
+        "Bonjour Sophie, j'ai entendu beaucoup de bien de vous. Soiree pour 4 personnes.",
+      ...addr(0),
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2026-03-20T19:00:00Z"),
+      endDate: new Date("2026-03-20T23:00:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: clients[2].id,
+      status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      price: 464,
+      ...addr(2),
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2026-01-18T19:30:00Z"),
+      endDate: new Date("2026-01-18T23:00:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: clients[4].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      price: 348,
+      ...addr(4),
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-11-08T19:00:00Z"),
+      endDate: new Date("2025-11-08T22:30:00Z"),
+      cookId: demoSophieCook.id,
+      clientId: clients[6].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      price: 232,
+      ...addr(6),
+    },
   ];
 
   const savedRequests: CookRequestEntity[] = [];
@@ -1458,6 +1702,37 @@ async function seed() {
   console.log(
     `${requests.length} demandes de cook créées avec conversations et messages`
   );
+
+  // --- Messages texte dans la conversation démo Alexis ↔ Sophie ---
+  const demoConvId = conversationMap.get(
+    `${demoAlexisUser.id}-${demoSophieUser.id}`
+  );
+  if (demoConvId) {
+    await messageRepo.save(
+      messageRepo.create({
+        authorId: demoSophieUser.id,
+        conversationId: demoConvId,
+        message:
+          "Bonjour Alexis, j'ai bien reçu votre demande. Avez-vous des contraintes alimentaires à me préciser ?",
+      })
+    );
+    await messageRepo.save(
+      messageRepo.create({
+        authorId: demoAlexisUser.id,
+        conversationId: demoConvId,
+        message:
+          "Bonjour Sophie ! Un invité est intolérant au gluten, les autres n'ont pas de contraintes particulières.",
+      })
+    );
+    await messageRepo.save(
+      messageRepo.create({
+        authorId: demoSophieUser.id,
+        conversationId: demoConvId,
+        message:
+          "Parfait, je préparerai un menu entièrement sans gluten qui ravira tout le monde. À très bientôt !",
+      })
+    );
+  }
 
   // --- Reviews ---
 
@@ -1568,12 +1843,91 @@ async function seed() {
 
   console.log("Reviews créées");
 
+  // --- Reviews démo ---
+  const alexisSophieCompleted = savedRequests.filter(
+    (r) =>
+      r.cookId === demoSophieCook.id &&
+      r.clientId === demoAlexisClient.id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  const alexisSophieComments = [
+    "Sophie a cree une atmosphere magique tout en nous regalant. Une adresse a garder precieusement.",
+    "Notre meilleure table de l'annee, et c'etait chez nous ! Bravo Sophie.",
+  ];
+  for (
+    let i = 0;
+    i < alexisSophieCompleted.length && i < alexisSophieComments.length;
+    i++
+  ) {
+    await reviewRepo.save({
+      rating: 5,
+      comment: alexisSophieComments[i],
+      clientId: demoAlexisClient.id,
+      cookId: demoSophieCook.id,
+      cookRequestId: alexisSophieCompleted[i].id,
+    });
+  }
+
+  const alexisCamilleCompleted = savedRequests.find(
+    (r) =>
+      r.cookId === cooks[5].id &&
+      r.clientId === demoAlexisClient.id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (alexisCamilleCompleted) {
+    await reviewRepo.save({
+      rating: 5,
+      comment:
+        "Des desserts absolument somptueux, tous nos invites etaient enchantes !",
+      clientId: demoAlexisClient.id,
+      cookId: cooks[5].id,
+      cookRequestId: alexisCamilleCompleted.id,
+    });
+  }
+
+  const nathanSophieCompleted = savedRequests.find(
+    (r) =>
+      r.cookId === demoSophieCook.id &&
+      r.clientId === clients[4].id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (nathanSophieCompleted) {
+    await reviewRepo.save({
+      rating: 5,
+      comment:
+        "Sophie est une cuisiniere hors pair, ses preparations etaient dignes d'un restaurant etoile !",
+      clientId: clients[4].id,
+      cookId: demoSophieCook.id,
+      cookRequestId: nathanSophieCompleted.id,
+    });
+  }
+
+  const theoSophieCompleted = savedRequests.find(
+    (r) =>
+      r.cookId === demoSophieCook.id &&
+      r.clientId === clients[6].id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (theoSophieCompleted) {
+    await reviewRepo.save({
+      rating: 4,
+      comment: "Tres belle soiree, cuisine delicate et service impeccable.",
+      clientId: clients[6].id,
+      cookId: demoSophieCook.id,
+      cookRequestId: theoSophieCompleted.id,
+    });
+  }
+
+  console.log("Reviews démo créées");
+
   await dataSource.destroy();
   console.log("\nSeed terminé avec succès !");
   console.log("──────────────────────────────────────");
   console.log(`Admin    : admin@cookus.app / admin1234`);
   console.log(`Cooks    : *@cookus.app    / ${COOK_PASSWORD}`);
   console.log(`Clients  : *@cookus.app    / ${CLIENT_PASSWORD}`);
+  console.log(`Démo cook: sophie.lambert@demo.cookus.app / ${DEMO_PASSWORD}`);
+  console.log(`Démo client: alexis.martin@demo.cookus.app / ${DEMO_PASSWORD}`);
   console.log("──────────────────────────────────────");
 }
 
