@@ -13,7 +13,7 @@ import {
 import { Client } from "@src/modules/client/client.entity";
 import { UserRole } from "@src/modules/user/user.entity";
 
-const PLATFORM_COMMISSION_RATE = 0.15;
+const PLATFORM_COMMISSION_RATE = 0.3;
 
 @Injectable()
 export class GetCookRequestPriceUseCase {
@@ -46,29 +46,31 @@ export class GetCookRequestPriceUseCase {
       }
     }
 
+    if (currentUser.role === UserRole.COOK) {
+      if (cookRequest.cook.userId !== currentUser.id) {
+        throw new ForbiddenException(
+          "Vous n'êtes pas autorisé à consulter cette réservation."
+        );
+      }
+    }
+
     if (cookRequest.status !== CookRequestStatus.ACCEPTED) {
       throw new BadRequestException(
         "Le détail du prix n'est disponible que pour les réservations acceptées."
       );
     }
 
-    if (!cookRequest.endDate) {
+    if (!cookRequest.price) {
       throw new BadRequestException(
-        "La date de fin est requise pour calculer le prix."
+        "Le prix n'a pas encore été défini pour cette réservation."
       );
     }
 
-    const hourlyRate = Number(cookRequest.cook.hourlyRate);
-    const durationMs =
-      cookRequest.endDate.getTime() - cookRequest.startDate.getTime();
-    const hours = durationMs / (1000 * 60 * 60);
-    const subtotal = hourlyRate * hours;
+    const subtotal = Number(cookRequest.price);
     const commission = subtotal * PLATFORM_COMMISSION_RATE;
     const total = subtotal + commission;
 
     return {
-      hourlyRate,
-      hours,
       subtotal: Math.round(subtotal * 100) / 100,
       commissionRate: PLATFORM_COMMISSION_RATE,
       commission: Math.round(commission * 100) / 100,

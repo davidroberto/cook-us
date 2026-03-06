@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Param,
   ParseIntPipe,
@@ -15,6 +16,7 @@ import { AcceptCookRequestUseCase } from "@src/modules/cook-request/acceptCookRe
 import { Roles } from "@src/modules/auth/roles.decorator";
 import { UserRole } from "@src/modules/user/user.entity";
 import { CookRequestEntity } from "@src/modules/cook-request/cookRequest.entity";
+import { AcceptCookRequestDto } from "@src/modules/cook-request/acceptCookRequest/acceptCookRequest.dto";
 
 @ApiTags("Cook Request")
 @ApiBearerAuth()
@@ -34,7 +36,11 @@ export class AcceptCookRequestController {
   })
   @ApiResponse({ status: 400, description: "Statut non acceptable" })
   @ApiResponse({ status: 404, description: "Réservation introuvable" })
-  accept(@Param("id", ParseIntPipe) id: number, @Request() req) {
-    return this.acceptCookRequestUseCase.execute(id, req.user.id);
+  accept(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() dto: AcceptCookRequestDto,
+    @Request() req
+  ) {
+    return this.acceptCookRequestUseCase.execute(id, req.user.id, dto.price);
   }
 }

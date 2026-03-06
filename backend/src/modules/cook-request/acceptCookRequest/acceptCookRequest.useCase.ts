@@ -29,7 +29,11 @@ export class AcceptCookRequestUseCase {
     private readonly notificationService: NotificationService
   ) {}
 
-  async execute(id: number, currentUserId: number): Promise<CookRequestEntity> {
+  async execute(
+    id: number,
+    currentUserId: number,
+    price: number
+  ): Promise<CookRequestEntity> {
     const cookRequest = await this.cookRequestRepository.findOne({
       where: { id },
       relations: ["cook"],
@@ -52,6 +56,7 @@ export class AcceptCookRequestUseCase {
     }
 
     cookRequest.status = CookRequestStatus.ACCEPTED;
+    cookRequest.price = price;
     const saved = await this.cookRequestRepository.save(cookRequest);
 
     this.sendAcceptedNotification(

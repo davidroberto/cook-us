@@ -92,6 +92,10 @@ export class CookRequestEntity {
   })
   cancellationReason: string | null;
 
+  @ApiPropertyOptional({ example: 150.0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  price: number | null;
+
   @Column({ nullable: true })
   street: string | null;
 
