@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, View } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { colors } from "@/styles/colors";
@@ -56,7 +56,10 @@ export function AcceptPriceModal({
       animationType="fade"
       onRequestClose={handleClose}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <View style={styles.modal}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>Proposition de {clientName}</Text>
@@ -117,7 +120,7 @@ export function AcceptPriceModal({
             />
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
