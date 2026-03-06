@@ -25,6 +25,7 @@ type ConversationState =
     };
 
 export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
+export const COOK_ACCEPT_MESSAGE_PREFIX = "__COOK_ACCEPT__";
 
 function parseRequestData(
   raw: string,
@@ -45,6 +46,17 @@ function parseRequestData(
   }
 }
 
+function parseAcceptData(
+  raw: string,
+): { price: number; cookRequestId: number } | null {
+  if (!raw.startsWith(COOK_ACCEPT_MESSAGE_PREFIX)) return null;
+  try {
+    return JSON.parse(raw.slice(COOK_ACCEPT_MESSAGE_PREFIX.length));
+  } catch {
+    return null;
+  }
+}
+
 function toMessage(
   msg: {
     id: number;
@@ -56,6 +68,7 @@ function toMessage(
   currentUserId: number,
 ): Message {
   const requestData = parseRequestData(msg.message);
+  const acceptData = parseAcceptData(msg.message);
   return {
     id: msg.id,
     content: msg.message,
@@ -63,6 +76,7 @@ function toMessage(
     sentAt: msg.createdAt,
     readAt: msg.readAt ?? null,
     ...(requestData ? { requestData } : {}),
+    ...(acceptData ? { acceptData } : {}),
   };
 }
 

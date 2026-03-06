@@ -13,7 +13,10 @@ import {
 } from "@src/modules/cook-request/cookRequest.entity";
 import { Client } from "@src/modules/client/client.entity";
 import { User } from "@src/modules/user/user.entity";
+import { Message } from "@src/modules/conversation/message.entity";
 import { NotificationService } from "@src/modules/notification/notification.service";
+
+const COOK_ACCEPT_PREFIX = "__COOK_ACCEPT__";
 
 @Injectable()
 export class AcceptCookRequestUseCase {
@@ -26,6 +29,8 @@ export class AcceptCookRequestUseCase {
     private readonly clientRepository: Repository<Client>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
     private readonly notificationService: NotificationService
   ) {}
 
@@ -58,6 +63,19 @@ export class AcceptCookRequestUseCase {
     cookRequest.status = CookRequestStatus.ACCEPTED;
     cookRequest.price = price;
     const saved = await this.cookRequestRepository.save(cookRequest);
+
+    if (cookRequest.conversationId) {
+      await this.messageRepository.save(
+        this.messageRepository.create({
+          authorId: currentUserId,
+          conversationId: cookRequest.conversationId,
+          message: `${COOK_ACCEPT_PREFIX}${JSON.stringify({
+            price,
+            cookRequestId: cookRequest.id,
+          })}`,
+        })
+      );
+    }
 
     this.sendAcceptedNotification(
       cookRequest.clientId,

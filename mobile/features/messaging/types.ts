@@ -64,6 +64,10 @@ export type Message = {
     postalCode?: string;
     city?: string;
   };
+  acceptData?: {
+    price: number;
+    cookRequestId: number;
+  };
 };
 
 export type Conversation = {
