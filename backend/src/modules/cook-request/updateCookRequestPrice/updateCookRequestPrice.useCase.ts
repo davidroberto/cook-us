@@ -10,12 +10,17 @@ import {
   CookRequestEntity,
   CookRequestStatus,
 } from "@src/modules/cook-request/cookRequest.entity";
+import { Message } from "@src/modules/conversation/message.entity";
+
+const COOK_ACCEPT_PREFIX = "__COOK_ACCEPT__";
 
 @Injectable()
 export class UpdateCookRequestPriceUseCase {
   constructor(
     @InjectRepository(CookRequestEntity)
-    private readonly cookRequestRepository: Repository<CookRequestEntity>
+    private readonly cookRequestRepository: Repository<CookRequestEntity>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>
   ) {}
 
   async execute(
@@ -48,6 +53,21 @@ export class UpdateCookRequestPriceUseCase {
     }
 
     cookRequest.price = price;
-    return this.cookRequestRepository.save(cookRequest);
+    const saved = await this.cookRequestRepository.save(cookRequest);
+
+    if (cookRequest.conversationId) {
+      await this.messageRepository.save(
+        this.messageRepository.create({
+          authorId: currentUserId,
+          conversationId: cookRequest.conversationId,
+          message: `${COOK_ACCEPT_PREFIX}${JSON.stringify({
+            price,
+            cookRequestId: cookRequest.id,
+          })}`,
+        })
+      );
+    }
+
+    return saved;
   }
 }
