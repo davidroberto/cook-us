@@ -41,7 +41,9 @@ export const ProfileScreen = () => {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [thumbnailError, setThumbnailError] = useState(false);
 
+  const [profileOpen, setProfileOpen] = useState(false);
   const [addressOpen, setAddressOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const [street, setStreet] = useState(user?.address?.street ?? "");
   const [postalCode, setPostalCode] = useState(user?.address?.postalCode ?? "");
   const [city, setCity] = useState(user?.address?.city ?? "");
@@ -176,8 +178,41 @@ export const ProfileScreen = () => {
         </Text>
       </View>
 
+      <View style={styles.historySection}>
+        <TouchableOpacity
+          style={styles.historyButton}
+          onPress={() => router.push("/client/orderHistory")}
+          testID="history-button"
+        >
+          <View style={styles.historyButtonLeft}>
+            <Ionicons name="time-outline" size={22} color={colors.main} />
+            <Text style={styles.historyButtonText}>Historique des réservations</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.main} />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.section}>
-        <ProfileForm user={profileUser} />
+        <TouchableOpacity
+          style={styles.accordionHeader}
+          testID="accordion-profile-header"
+          onPress={() => setProfileOpen((v) => !v)}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="person-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Modifier mes informations</Text>
+          </View>
+          <Ionicons
+            name={profileOpen ? "chevron-up" : "chevron-down"}
+            size={18}
+            color={colors.main}
+          />
+        </TouchableOpacity>
+        {profileOpen && (
+          <View style={styles.accordionBody}>
+            <ProfileForm user={profileUser} />
+          </View>
+        )}
       </View>
 
       {user?.role === "client" && (
@@ -190,7 +225,10 @@ export const ProfileScreen = () => {
               setAddressNotice(null);
             }}
           >
-            <Text style={styles.accordionTitle}>Mon adresse</Text>
+            <View style={styles.accordionHeaderLeft}>
+              <Ionicons name="location-outline" size={20} color={colors.main} />
+              <Text style={styles.accordionTitle}>Mon adresse</Text>
+            </View>
             <Ionicons
               name={addressOpen ? "chevron-up" : "chevron-down"}
               size={18}
@@ -244,15 +282,26 @@ export const ProfileScreen = () => {
       )}
 
       <View style={styles.section}>
-        <PasswordForm />
-      </View>
-
-      <View style={styles.historySection}>
-        <Button
-          title="Voir mon historique de réservations"
-          variant="primary"
-          onPress={() => router.push("/client/orderHistory")}
-        />
+        <TouchableOpacity
+          style={styles.accordionHeader}
+          testID="accordion-password-header"
+          onPress={() => setPasswordOpen((v) => !v)}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="lock-closed-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Changer de mot de passe</Text>
+          </View>
+          <Ionicons
+            name={passwordOpen ? "chevron-up" : "chevron-down"}
+            size={18}
+            color={colors.main}
+          />
+        </TouchableOpacity>
+        {passwordOpen && (
+          <View style={styles.accordionBody}>
+            <PasswordForm />
+          </View>
+        )}
       </View>
 
       <View style={styles.logoutSection}>
@@ -343,6 +392,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  accordionHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
   accordionTitle: {
     fontSize: 18,
     fontWeight: "700",
@@ -363,6 +417,29 @@ const styles = StyleSheet.create({
   },
   historySection: {
     marginBottom: 16,
+  },
+  historyButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 18,
+    shadowColor: colors.text,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: colors.opacity[8],
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  historyButtonLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  historyButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.text,
   },
   logoutSection: {
     marginTop: 8,

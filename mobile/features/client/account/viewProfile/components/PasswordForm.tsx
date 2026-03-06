@@ -49,8 +49,6 @@ export const PasswordForm = () => {
 
   return (
     <View>
-      <Text style={styles.sectionTitle}>Changer de mot de passe</Text>
-
       <Input
         label="Mot de passe actuel"
         value={currentPassword}
@@ -107,12 +105,6 @@ export const PasswordForm = () => {
 };
 
 const styles = StyleSheet.create({
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginBottom: 16,
-  },
   notice: {
     fontSize: 13,
     color: colors.mainDark,

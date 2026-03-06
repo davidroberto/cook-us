@@ -40,8 +40,6 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
 
   return (
     <View>
-      <Text style={styles.sectionTitle}>Mes informations</Text>
-
       <Input
         label="Prénom"
         value={firstName}
@@ -87,12 +85,6 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
 };
 
 const styles = StyleSheet.create({
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginBottom: 16,
-  },
   notice: {
     fontSize: 13,
     color: colors.mainDark,
