@@ -11,13 +11,16 @@ import {
 } from "react-native";
 import { useLogin } from "../useLogin";
 import type { AuthResponse } from "../types";
+import { GoogleSignInButton } from "@/features/auth/google/GoogleSignInButton";
 
 type Props = {
   onSuccess: (response: AuthResponse) => void;
   onNavigateRegister: () => void;
+  onGooglePress: () => void;
+  googleLoading?: boolean;
 };
 
-export function LoginForm({ onSuccess, onNavigateRegister }: Props) {
+export function LoginForm({ onSuccess, onNavigateRegister, onGooglePress, googleLoading }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { error, isLoading, login } = useLogin();
@@ -70,6 +73,18 @@ export function LoginForm({ onSuccess, onNavigateRegister }: Props) {
           <Text style={styles.buttonText}>Se connecter</Text>
         )}
       </TouchableOpacity>
+
+      <View style={styles.separator}>
+        <View style={styles.separatorLine} />
+        <Text style={styles.separatorText}>ou</Text>
+        <View style={styles.separatorLine} />
+      </View>
+
+      <GoogleSignInButton
+        label="Se connecter avec Google"
+        onPress={onGooglePress}
+        isLoading={googleLoading}
+      />
 
       {error !== null && (
         <View testID="error-message" style={styles.errorContainer}>
@@ -154,5 +169,21 @@ const styles = StyleSheet.create({
     color: colors.main,
     fontSize: 14,
     fontWeight: "600",
+  },
+  separator: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.tertiary,
+  },
+  separatorText: {
+    marginHorizontal: 16,
+    color: colors.text,
+    opacity: 0.56,
+    fontSize: 14,
   },
 });

@@ -20,6 +20,8 @@ import { GetProfileController } from "@src/modules/auth/getProfile/getProfile.co
 import { GetProfileUseCase } from "@src/modules/auth/getProfile/getProfile.useCase";
 import { RegisterPushTokenController } from "@src/modules/auth/registerPushToken/registerPushToken.controller";
 import { RegisterPushTokenUseCase } from "@src/modules/auth/registerPushToken/registerPushToken.useCase";
+import { GoogleAuthController } from "@src/modules/auth/googleAuth/googleAuth.controller";
+import { GoogleAuthUseCase } from "@src/modules/auth/googleAuth/googleAuth.useCase";
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { RegisterPushTokenUseCase } from "@src/modules/auth/registerPushToken/re
     ChangePasswordController,
     RefreshTokenController,
     RegisterPushTokenController,
+    GoogleAuthController,
   ],
   providers: [
     JwtStrategy,
@@ -49,6 +52,7 @@ import { RegisterPushTokenUseCase } from "@src/modules/auth/registerPushToken/re
     ChangePasswordUseCase,
     RefreshTokenUseCase,
     RegisterPushTokenUseCase,
+    GoogleAuthUseCase,
   ],
   exports: [JwtModule],
 })
