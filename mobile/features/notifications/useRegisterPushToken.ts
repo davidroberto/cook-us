@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { useAuth } from "@/features/auth/AuthContext";
 import { getApiUrl } from "@/features/api/getApiUrl";
 
 const isExpoGo = Constants.appOwnership === "expo";
+const isAndroidExpoGo = Platform.OS === "android" && isExpoGo;
 
 const API_URL = getApiUrl();
 
@@ -15,6 +15,8 @@ async function getExpoPushToken(): Promise<string | null> {
     console.warn("Push notifications require a physical device");
     return null;
   }
+
+  const Notifications = require("expo-notifications") as typeof import("expo-notifications");
 
   const { status: existingStatus } =
     await Notifications.getPermissionsAsync();
@@ -50,7 +52,7 @@ export function useRegisterPushToken() {
 
   useEffect(() => {
     if (!token || !user || registeredRef.current) return;
-    if (Platform.OS === "android" && isExpoGo) return;
+    if (isAndroidExpoGo) return;
 
     getExpoPushToken().then(async (pushToken) => {
       if (!pushToken) return;
