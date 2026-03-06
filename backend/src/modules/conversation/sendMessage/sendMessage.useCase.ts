@@ -49,7 +49,8 @@ export class SendMessageUseCase {
     const message = this.messageRepository.create({
       authorId,
       conversationId,
-      message: dto.message,
+      message: dto.message ?? "",
+      imageUrl: dto.imageUrl ?? null,
     });
 
     const savedMessage = await this.messageRepository.save(message);
@@ -60,7 +61,7 @@ export class SendMessageUseCase {
       savedMessage
     );
 
-    this.sendPushNotifications(conversationId, authorId, dto.message).catch(
+    this.sendPushNotifications(conversationId, authorId, dto.message ?? "", dto.imageUrl ?? null).catch(
       (err) => this.logger.error(`Push notification error: ${err}`)
     );
 
@@ -70,7 +71,8 @@ export class SendMessageUseCase {
   private async sendPushNotifications(
     conversationId: number,
     authorId: number,
-    messageContent: string
+    messageContent: string,
+    imageUrl: string | null
   ): Promise<void> {
     const participants = await this.participantRepository.find({
       where: { conversationId },
@@ -97,10 +99,9 @@ export class SendMessageUseCase {
       ? `${author.firstName} ${author.lastName}`
       : "Nouveau message";
 
+    const rawBody = messageContent || (imageUrl ? "Image" : "");
     const body =
-      messageContent.length > 100
-        ? messageContent.slice(0, 100) + "..."
-        : messageContent;
+      rawBody.length > 100 ? rawBody.slice(0, 100) + "..." : rawBody;
 
     await this.notificationService.sendPushNotifications(
       pushTokens,

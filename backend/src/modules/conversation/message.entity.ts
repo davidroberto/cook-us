@@ -32,6 +32,9 @@ export class Message {
   @Column({ type: "varchar" })
   message: string;
 
+  @Column({ name: "image_url", type: "varchar", nullable: true, default: null })
+  imageUrl: string | null;
+
   @Column({ name: "read_at", type: "timestamp", nullable: true, default: null })
   readAt: Date | null;
 
