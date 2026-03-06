@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 32,
-    backgroundColor: colors.background,
   },
   iconContainer: {
     width: 80,

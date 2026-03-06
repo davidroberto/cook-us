@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 
 export default function MessagingPage() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function MessagingPage() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <ScreenBackground edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.replace("/client/(tabs)/messages")} style={styles.backButton}>
           <Text style={styles.backText}>← Retour</Text>
@@ -74,21 +74,16 @@ export default function MessagingPage() {
         hasMore={state.hasMore}
         loadingMore={state.loadingMore}
       />
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   centered: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",

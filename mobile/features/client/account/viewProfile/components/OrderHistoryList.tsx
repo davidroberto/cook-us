@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   emptyContainer: {
-    backgroundColor: colors.background,
     borderRadius: 12,
     padding: 24,
     alignItems: "center",

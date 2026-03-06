@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useMyConversations } from "@/features/messaging/useMyConversations";
@@ -75,29 +75,29 @@ export default function CookMessagesTab() {
 
   if (state.status === "loading") {
     return (
-      <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScreenBackground edges={["top"]}>
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.main} />
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   if (state.status === "error") {
     return (
-      <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScreenBackground edges={["top"]}>
         <View style={styles.centered}>
           <Text style={styles.errorText}>Impossible de charger les conversations.</Text>
           <TouchableOpacity onPress={retry} style={styles.retryButton}>
             <Text style={styles.retryText}>Réessayer</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <ScreenBackground edges={["top"]}>
       <Text style={styles.title}>Messages</Text>
       {state.conversations.length === 0 ? (
         <View style={styles.centered}>
@@ -122,15 +122,11 @@ export default function CookMessagesTab() {
           contentContainerStyle={styles.list}
         />
       )}
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   title: {
     ...typography.styles.body1Bold,
     color: colors.text,

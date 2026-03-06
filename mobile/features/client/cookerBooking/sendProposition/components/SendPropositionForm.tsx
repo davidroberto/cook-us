@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     paddingBottom: 48,
-    backgroundColor: colors.background,
   },
   cookerHeader: {
     backgroundColor: colors.tertiary,

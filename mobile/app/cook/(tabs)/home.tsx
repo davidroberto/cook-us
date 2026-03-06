@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { colors } from "@/styles/colors";
 import { Button } from "@/components/ui/Button";
 import { useCookRequests } from "@/features/cook/cookRequests/useCookRequests";
@@ -117,7 +117,7 @@ export default function CookHomeTab() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <ScreenBackground edges={["top"]}>
       <FlatList
         data={requests}
         keyExtractor={(item) => String(item.id)}
@@ -137,15 +137,11 @@ export default function CookHomeTab() {
         onRefresh={refresh}
         refreshing={false}
       />
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   centered: {
     flex: 1,
     alignItems: "center",

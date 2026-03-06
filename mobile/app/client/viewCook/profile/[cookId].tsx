@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { colors, typography } from "@/styles";
 import {
   ProfileCard,
@@ -34,7 +34,7 @@ export default function CookerProfilePage() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenBackground>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backText}>← Retour</Text>
@@ -75,15 +75,11 @@ export default function CookerProfilePage() {
           />
         )}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",
