@@ -46,6 +46,15 @@ export default function CookTabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="stats"
+        options={{
+          title: "Stats",
+          tabBarIcon: ({ color, size }) => (
+            <TabBarIcon name="bar-chart" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="compte"
         options={{
           title: "Compte",
