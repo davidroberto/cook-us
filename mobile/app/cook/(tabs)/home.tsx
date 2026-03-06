@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,6 +10,8 @@ import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { colors } from "@/styles/colors";
 import { Button } from "@/components/ui/Button";
 import { useCookRequests } from "@/features/cook/cookRequests/useCookRequests";
+import { AcceptPriceModal } from "@/features/cook/cookRequests/components/AcceptPriceModal";
+import { RefuseModal } from "@/features/cook/cookRequests/components/RefuseModal";
 import type {
   CookRequestItem,
   CookRequestStatus,
@@ -19,6 +22,8 @@ const STATUS_LABEL: Record<CookRequestStatus, string> = {
   accepted: "Acceptée",
   refused: "Refusée",
   cancelled: "Annulée",
+  paid: "Payée",
+  completed: "Terminée",
 };
 
 const STATUS_COLOR: Record<CookRequestStatus, string> = {
@@ -26,11 +31,82 @@ const STATUS_COLOR: Record<CookRequestStatus, string> = {
   accepted: "#4CAF50",
   refused: colors.mainDark,
   cancelled: "#9E9E9E",
+  paid: "#2196F3",
+  completed: "#607D8B",
 };
 
 export default function CookHomeTab() {
-  const { requests, loading, error, refresh, accept, refuse, actionLoading } =
-    useCookRequests();
+  const {
+    requests,
+    loading,
+    error,
+    actionError,
+    refresh,
+    accept,
+    refuse,
+    updatePrice,
+    actionLoading,
+    clearActionError,
+  } = useCookRequests();
+
+  const [selectedRequest, setSelectedRequest] =
+    useState<CookRequestItem | null>(null);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [showRefuseModal, setShowRefuseModal] = useState(false);
+  const [showEditPriceModal, setShowEditPriceModal] = useState(false);
+
+  const openAcceptModal = (item: CookRequestItem) => {
+    clearActionError();
+    setSelectedRequest(item);
+    setShowAcceptModal(true);
+  };
+
+  const openRefuseModal = (item: CookRequestItem) => {
+    clearActionError();
+    setSelectedRequest(item);
+    setShowRefuseModal(true);
+  };
+
+  const openEditPriceModal = (item: CookRequestItem) => {
+    clearActionError();
+    setSelectedRequest(item);
+    setShowEditPriceModal(true);
+  };
+
+  const handleAcceptConfirm = async (price: number) => {
+    if (!selectedRequest) return;
+    const success = await accept(selectedRequest.id, price);
+    if (success) {
+      setShowAcceptModal(false);
+      setSelectedRequest(null);
+    }
+  };
+
+  const handleRefuseConfirm = async () => {
+    if (!selectedRequest) return;
+    const success = await refuse(selectedRequest.id);
+    if (success) {
+      setShowRefuseModal(false);
+      setSelectedRequest(null);
+    }
+  };
+
+  const handleEditPriceConfirm = async (price: number) => {
+    if (!selectedRequest) return;
+    const success = await updatePrice(selectedRequest.id, price);
+    if (success) {
+      setShowEditPriceModal(false);
+      setSelectedRequest(null);
+    }
+  };
+
+  const closeModals = () => {
+    setShowAcceptModal(false);
+    setShowRefuseModal(false);
+    setShowEditPriceModal(false);
+    setSelectedRequest(null);
+    clearActionError();
+  };
 
   if (loading) {
     return (
@@ -51,6 +127,10 @@ export default function CookHomeTab() {
     );
   }
 
+  const clientName = selectedRequest
+    ? `${selectedRequest.client.firstName} ${selectedRequest.client.lastName}`
+    : "";
+
   const renderItem = ({ item }: { item: CookRequestItem }) => {
     const date = new Date(item.startDate).toLocaleDateString("fr-FR", {
       day: "numeric",
@@ -58,7 +138,9 @@ export default function CookHomeTab() {
       year: "numeric",
     });
     const isPending = item.status === "pending";
-    const isActioning = actionLoading === item.id;
+    const isAccepted = item.status === "accepted";
+    const canEditPrice =
+      isAccepted && item.status !== "paid" && item.status !== "completed";
 
     return (
       <View style={styles.card} testID="cook-request-card">
@@ -72,7 +154,9 @@ export default function CookHomeTab() {
               { backgroundColor: STATUS_COLOR[item.status] },
             ]}
           >
-            <Text style={styles.statusText} testID="cook-request-status">{STATUS_LABEL[item.status]}</Text>
+            <Text style={styles.statusText} testID="cook-request-status">
+              {STATUS_LABEL[item.status]}
+            </Text>
           </View>
         </View>
 
@@ -85,8 +169,19 @@ export default function CookHomeTab() {
 
         {(item.street || item.city) && (
           <Text style={styles.address}>
-            {[item.street, item.postalCode, item.city].filter(Boolean).join(", ")}
+            {[item.street, item.postalCode, item.city]
+              .filter(Boolean)
+              .join(", ")}
           </Text>
+        )}
+
+        {item.price != null && (
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>Prix fixé</Text>
+            <Text style={styles.priceValue}>
+              {Number(item.price).toFixed(2)} €
+            </Text>
+          </View>
         )}
 
         {isPending && (
@@ -96,9 +191,8 @@ export default function CookHomeTab() {
                 title="Accepter"
                 testID="accept-button"
                 variant="primary"
-                loading={isActioning}
                 disabled={actionLoading !== null}
-                onPress={() => accept(item.id)}
+                onPress={() => openAcceptModal(item)}
               />
             </View>
             <View style={styles.actionBtn}>
@@ -107,7 +201,20 @@ export default function CookHomeTab() {
                 testID="refuse-button"
                 variant="outline"
                 disabled={actionLoading !== null}
-                onPress={() => refuse(item.id)}
+                onPress={() => openRefuseModal(item)}
+              />
+            </View>
+          </View>
+        )}
+
+        {canEditPrice && (
+          <View style={styles.actions}>
+            <View style={styles.actionBtn}>
+              <Button
+                title="Modifier le prix"
+                variant="outline"
+                disabled={actionLoading !== null}
+                onPress={() => openEditPriceModal(item)}
               />
             </View>
           </View>
@@ -136,6 +243,36 @@ export default function CookHomeTab() {
         }
         onRefresh={refresh}
         refreshing={false}
+      />
+
+      <AcceptPriceModal
+        visible={showAcceptModal}
+        clientName={clientName}
+        isLoading={actionLoading !== null}
+        error={actionError}
+        onCancel={closeModals}
+        onConfirm={handleAcceptConfirm}
+      />
+
+      <AcceptPriceModal
+        visible={showEditPriceModal}
+        clientName={clientName}
+        isLoading={actionLoading !== null}
+        error={actionError}
+        initialPrice={selectedRequest?.price}
+        title="Modifier le prix"
+        confirmLabel="Modifier"
+        onCancel={closeModals}
+        onConfirm={handleEditPriceConfirm}
+      />
+
+      <RefuseModal
+        visible={showRefuseModal}
+        clientName={clientName}
+        isLoading={actionLoading !== null}
+        error={actionError}
+        onCancel={closeModals}
+        onConfirm={handleRefuseConfirm}
       />
     </ScreenBackground>
   );
@@ -205,6 +342,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     opacity: 0.7,
+  },
+  priceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.tertiary,
+  },
+  priceLabel: {
+    fontSize: 14,
+    color: colors.text,
+    fontWeight: "600",
+  },
+  priceValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.main,
   },
   actions: {
     flexDirection: "row",

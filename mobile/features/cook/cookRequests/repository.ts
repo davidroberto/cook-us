@@ -4,7 +4,9 @@ export type CookRequestStatus =
   | "pending"
   | "accepted"
   | "refused"
-  | "cancelled";
+  | "cancelled"
+  | "paid"
+  | "completed";
 
 export interface CookRequestItem {
   id: number;
@@ -13,6 +15,7 @@ export interface CookRequestItem {
   endDate: string | null;
   status: CookRequestStatus;
   cancellationReason: string | null;
+  price: number | null;
   street: string | null;
   postalCode: string | null;
   city: string | null;
@@ -39,10 +42,13 @@ export const getCookRequests = async (
 
 export const acceptRequest = async (
   token: string,
-  id: number
+  id: number,
+  price: number
 ): Promise<void> => {
   const res = await authFetch(`/cook-request/${id}/accept`, token, {
     method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ price }),
   });
   if (!res.ok) throw new Error("Impossible d'accepter la proposition.");
 };
@@ -55,4 +61,17 @@ export const refuseRequest = async (
     method: "PATCH",
   });
   if (!res.ok) throw new Error("Impossible de refuser la proposition.");
+};
+
+export const updateRequestPrice = async (
+  token: string,
+  id: number,
+  price: number
+): Promise<void> => {
+  const res = await authFetch(`/cook-request/${id}/price`, token, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ price }),
+  });
+  if (!res.ok) throw new Error("Impossible de modifier le prix.");
 };
