@@ -13,20 +13,22 @@ export class GetCookCookRequestsUseCase {
     private readonly cookRepository: Repository<Cook>
   ) {}
 
-  async execute(userId: number) {
+  async execute(userId: number, page = 1, limit = 20) {
     const cook = await this.cookRepository.findOne({ where: { userId } });
 
     if (!cook) {
       throw new NotFoundException("Cuisinier introuvable");
     }
 
-    const requests = await this.cookRequestRepository.find({
+    const [requests, total] = await this.cookRequestRepository.findAndCount({
       where: { cookId: cook.id },
       relations: { client: { user: true } },
       order: { startDate: "DESC" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    return requests.map((r) => ({
+    const data = requests.map((r) => ({
       id: r.id,
       guestsNumber: r.guestsNumber,
       startDate: r.startDate,
@@ -42,5 +44,7 @@ export class GetCookCookRequestsUseCase {
         lastName: r.client.user.lastName,
       },
     }));
+
+    return { data, total, hasMore: page * limit < total };
   }
 }

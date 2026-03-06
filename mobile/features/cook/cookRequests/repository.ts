@@ -32,10 +32,21 @@ const authFetch = (url: string, token: string, options: RequestInit = {}) =>
     headers: { Authorization: `Bearer ${token}`, ...options.headers },
   });
 
+export type PaginatedCookRequests = {
+  data: CookRequestItem[];
+  total: number;
+  hasMore: boolean;
+};
+
 export const getCookRequests = async (
-  token: string
-): Promise<CookRequestItem[]> => {
-  const res = await authFetch("/cook-request/for-me", token);
+  token: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedCookRequests> => {
+  const res = await authFetch(
+    `/cook-request/for-me?page=${page}&limit=${limit}`,
+    token
+  );
   if (!res.ok) throw new Error("Impossible de charger les propositions.");
   return res.json();
 };

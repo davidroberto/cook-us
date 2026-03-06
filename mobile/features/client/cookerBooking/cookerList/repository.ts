@@ -8,10 +8,18 @@ export type CookFilters = {
   maxHourlyRate?: number;
 };
 
+export type PaginatedCooks = {
+  data: Cook[];
+  total: number;
+  hasMore: boolean;
+};
+
 export const getCooks = async (
   token: string,
-  filters: CookFilters = {}
-): Promise<Cook[]> => {
+  filters: CookFilters = {},
+  page = 1,
+  limit = 20
+): Promise<PaginatedCooks> => {
   const params = new URLSearchParams();
   if (filters.search) params.set("search", filters.search);
   if (filters.speciality) params.set("speciality", filters.speciality);
@@ -19,10 +27,11 @@ export const getCooks = async (
     params.set("minHourlyRate", String(filters.minHourlyRate));
   if (filters.maxHourlyRate !== undefined)
     params.set("maxHourlyRate", String(filters.maxHourlyRate));
+  params.set("page", String(page));
+  params.set("limit", String(limit));
 
-  const query = params.toString();
   const response = await fetch(
-    `${getApiUrl()}/cooks${query ? `?${query}` : ""}`,
+    `${getApiUrl()}/cooks?${params.toString()}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 

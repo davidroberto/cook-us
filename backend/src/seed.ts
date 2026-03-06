@@ -232,7 +232,414 @@ const COOKS_DATA = [
     city: "Paris",
     validationStatus: CookValidationStatus.VALIDATED,
     siret: "11122233300044",
-    description: "Compte dédié aux tests e2e.",
+    description: "Compte dédié aux tests e2e."},
+  {
+    firstName: "Sophie",
+    lastName: "Blanc",
+    email: "sophie.blanc@cookus.app",
+    speciality: "indian_cooking",
+    hourlyRate: 44,
+    city: "Paris",
+    isValidated: true,
+    siret: "21349876500028",
+    description:
+      "Après 3 ans passés à Mumbai et Chennai, je maîtrise les épices indiennes comme personne. Tandooris, biryanis et currys parfumés pour des soirées exotiques.",
+  },
+  {
+    firstName: "Hugo",
+    lastName: "Morvan",
+    email: "hugo.morvan@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 50,
+    city: "Bordeaux",
+    isValidated: true,
+    siret: "67832104900051",
+    description:
+      "Passionné de cuisine du Sud-Ouest, je travaille avec les producteurs locaux de la région. Canard, foie gras et vins de Bordeaux sont mes alliés.",
+  },
+  {
+    firstName: "Lucie",
+    lastName: "Perrin",
+    email: "lucie.perrin@cookus.app",
+    speciality: "vegetarian_cooking",
+    hourlyRate: 38,
+    city: "Montpellier",
+    isValidated: true,
+    siret: "54219038700042",
+    description:
+      "Chef végétarienne certifiée, je crée des menus colorés et savoureux sans viande ni poisson. Cuisine crudivore, fermentée et végane sur demande.",
+  },
+  {
+    firstName: "Alexis",
+    lastName: "Faure",
+    email: "alexis.faure@cookus.app",
+    speciality: "asian_cooking",
+    hourlyRate: 46,
+    city: "Lyon",
+    isValidated: true,
+    siret: "38920147600073",
+    description:
+      "Amoureux des cuisines coréenne et japonaise, je propose bibimbap, bulgogi et ramen maison. Produits importés directement d'Asie pour une authenticité maximale.",
+  },
+  {
+    firstName: "Mélanie",
+    lastName: "Caron",
+    email: "melanie.caron@cookus.app",
+    speciality: "pastry_cooking",
+    hourlyRate: 57,
+    city: "Nantes",
+    isValidated: true,
+    siret: "72018394500064",
+    description:
+      "Pâtissière MOF (Meilleure Ouvrière de France) en chocolaterie, je sublime vos événements avec des créations en chocolat et entremets sur mesure.",
+  },
+  {
+    firstName: "David",
+    lastName: "Nguyen",
+    email: "david.nguyen@cookus.app",
+    speciality: "asian_cooking",
+    hourlyRate: 42,
+    city: "Paris",
+    isValidated: true,
+    siret: "89301274600037",
+    description:
+      "Franco-vietnamien, je perpétue les recettes familiales : phở, bún bò huế et bánh mì. Une cuisine fraîche, légère et pleine de parfums du Vietnam.",
+  },
+  {
+    firstName: "Cécile",
+    lastName: "Hubert",
+    email: "cecile.hubert@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 53,
+    city: "Lille",
+    isValidated: true,
+    siret: "43892016500089",
+    description:
+      "Spécialiste de la cuisine nordiste, je propose carbonade flamande, potjevleesch et gaufres de Liège. Le terroir ch'ti revisité avec modernité.",
+  },
+  {
+    firstName: "Julien",
+    lastName: "Dupuis",
+    email: "julien.dupuis@cookus.app",
+    speciality: "italian_cooking",
+    hourlyRate: 47,
+    city: "Marseille",
+    isValidated: true,
+    siret: "16274039800015",
+    description:
+      "Demi-finaliste Top Chef 2022, je propose une cuisine italienne créative loin des clichés. Pasta fraîche, ossobuco revisité et desserts siciliens inédits.",
+  },
+  {
+    firstName: "Nathalie",
+    lastName: "Vidal",
+    email: "nathalie.vidal@cookus.app",
+    speciality: "mexican_cooking",
+    hourlyRate: 40,
+    city: "Toulouse",
+    isValidated: true,
+    siret: "57193048200026",
+    description:
+      "Mexicaine d'adoption, je prépare pozole, mole negro et tamales comme une grand-mère de Oaxaca. Piments, maïs et citron vert au cœur de chaque plat.",
+  },
+  {
+    firstName: "Sébastien",
+    lastName: "Lemaire",
+    email: "sebastien.lemaire@cookus.app",
+    speciality: "autre",
+    hourlyRate: 75,
+    city: "Paris",
+    isValidated: true,
+    siret: "30481957200058",
+    description:
+      "Spécialiste de la cuisine fusion franco-asiatique, j'ai officié dans des restaurants 2 étoiles à Paris et Hong Kong. Accords audacieux et présentation artistique.",
+  },
+  {
+    firstName: "Laure",
+    lastName: "Benoit",
+    email: "laure.benoit@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 49,
+    city: "Strasbourg",
+    isValidated: true,
+    siret: "91837264500031",
+    description:
+      "Alsacienne de cœur, je cuisine la choucroute, le baeckeoffe et la flammekueche comme ma grand-mère. Un héritage culinaire transmis avec amour.",
+  },
+  {
+    firstName: "Karim",
+    lastName: "Meziani",
+    email: "karim.meziani@cookus.app",
+    speciality: "autre",
+    hourlyRate: 43,
+    city: "Lyon",
+    isValidated: true,
+    siret: "62748013900047",
+    description:
+      "Passionné de cuisine méditerranéenne et du Maghreb, je propose couscous, tajines et mezze. Des recettes familiales transmises de génération en génération.",
+  },
+  {
+    firstName: "Virginie",
+    lastName: "Roussel",
+    email: "virginie.roussel@cookus.app",
+    speciality: "pastry_cooking",
+    hourlyRate: 60,
+    city: "Bordeaux",
+    isValidated: true,
+    siret: "47219380600062",
+    description:
+      "Ancienne cheffe pâtissière du Grand Hôtel de Bordeaux, je crée des desserts gastronomiques pour vos dîners. Wedding cakes et pièces sculptées sur commande.",
+  },
+  {
+    firstName: "Thibault",
+    lastName: "Gros",
+    email: "thibault.gros@cookus.app",
+    speciality: "japanese_cooking",
+    hourlyRate: 65,
+    city: "Paris",
+    isValidated: true,
+    siret: "28394710500083",
+    description:
+      "Itamae certifié après 4 ans à Tokyo, je prépare des omakase sushi de haute qualité. Poissons travaillés à la minute, riz vinaigrés à la tradition japonaise.",
+  },
+  {
+    firstName: "Aurélie",
+    lastName: "Collet",
+    email: "aurelie.collet@cookus.app",
+    speciality: "vegetarian_cooking",
+    hourlyRate: 41,
+    city: "Paris",
+    isValidated: true,
+    siret: "63901847200019",
+    description:
+      "Ancienne diététicienne reconvertie en cheffe végé, je concocte des menus sains et gourmands. Spécialiste des superaliments, farines alternatives et substituts créatifs.",
+  },
+  {
+    firstName: "Benoît",
+    lastName: "Pichon",
+    email: "benoit.pichon@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 55,
+    city: "Rennes",
+    isValidated: true,
+    siret: "14829036700074",
+    description:
+      "Breton passionné, je cuisine les crustacés, fruits de mer et galettes au sarrasin avec des produits de la criée de Quimper. La Bretagne dans votre assiette.",
+  },
+  {
+    firstName: "Yasmine",
+    lastName: "Touati",
+    email: "yasmine.touati@cookus.app",
+    speciality: "indian_cooking",
+    hourlyRate: 46,
+    city: "Nice",
+    isValidated: true,
+    siret: "50738294100038",
+    description:
+      "Cheffe franco-tunisienne formée à Delhi, je mêle les épices du Maghreb et de l'Inde. Mes currys et biryanis d'inspiration fusion ravissent les papilles les plus exigeantes.",
+  },
+  {
+    firstName: "Grégoire",
+    lastName: "Masson",
+    email: "gregoire.masson@cookus.app",
+    speciality: "autre",
+    hourlyRate: 85,
+    city: "Paris",
+    isValidated: true,
+    siret: "76019283400055",
+    description:
+      "Chef consultant ex-Robuchon, je propose des menus de chef à domicile à partir de 6 convives. Technique classique, produits d'exception, service discret et professionnel.",
+  },
+  {
+    firstName: "Marion",
+    lastName: "Fleury",
+    email: "marion.fleury@cookus.app",
+    speciality: "italian_cooking",
+    hourlyRate: 51,
+    city: "Aix-en-Provence",
+    isValidated: true,
+    siret: "31847590200066",
+    description:
+      "Revenue de Florence après un stage chez Cibrèo, je prépare une cuisine toscane authentique. Ribollita, bistecca fiorentina et panna cotta selon les saisons.",
+  },
+  {
+    firstName: "Christophe",
+    lastName: "Aubert",
+    email: "christophe.aubert@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 48,
+    city: "Montpellier",
+    isValidated: true,
+    siret: "82946031500021",
+    description:
+      "Chef du terroir languedocien, je travaille avec les vignerons et producteurs locaux. Tielle sétoise, bourride et fromages de brebis sublimés par nos vins du Languedoc.",
+  },
+  {
+    firstName: "Elodie",
+    lastName: "Marchal",
+    email: "elodie.marchal@cookus.app",
+    speciality: "asian_cooking",
+    hourlyRate: 39,
+    city: "Lille",
+    isValidated: true,
+    siret: "49038176200093",
+    description:
+      "Passionnée de street food asiatique, je reproduis les saveurs des marchés de Bangkok et Taipei. Som tam, laksa et char siu bao faits maison avec authenticité.",
+  },
+  {
+    firstName: "Florian",
+    lastName: "Tessier",
+    email: "florian.tessier@cookus.app",
+    speciality: "autre",
+    hourlyRate: 54,
+    city: "Nantes",
+    isValidated: true,
+    siret: "65103928400044",
+    description:
+      "Spécialiste des cuisines du monde, j'ai travaillé sur des yachts privés en Méditerranée. Menus thématiques : soirée grecque, espagnole, libanaise ou marocaine.",
+  },
+  {
+    firstName: "Sandrine",
+    lastName: "Breton",
+    email: "sandrine.breton@cookus.app",
+    speciality: "pastry_cooking",
+    hourlyRate: 59,
+    city: "Lyon",
+    isValidated: true,
+    siret: "27490163800056",
+    description:
+      "Pâtissière lyonnaise formée chez Bernachon, je travaille exclusivement le chocolat grand cru. Ganaches, mousses et pralinés d'une finesse inégalée pour vos occasions.",
+  },
+  {
+    firstName: "Patrick",
+    lastName: "Jourdain",
+    email: "patrick.jourdain@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 45,
+    city: "Toulouse",
+    isValidated: true,
+    siret: "93712048600012",
+    description:
+      "Gascon de souche, je cuisine le cassoulet, le confit de canard et le magret comme un art de vivre. Produits du Gers, recettes ancestrales, convivialité garantie.",
+  },
+  {
+    firstName: "Aline",
+    lastName: "Renaud",
+    email: "aline.renaud@cookus.app",
+    speciality: "vegetarian_cooking",
+    hourlyRate: 37,
+    city: "Bordeaux",
+    isValidated: true,
+    siret: "58302941700069",
+    description:
+      "Militante du bien-manger, je propose une cuisine végétale locale et de saison. Zéro déchet, circuits courts et saveurs intenses pour prendre soin de vous et la planète.",
+  },
+  {
+    firstName: "Rémi",
+    lastName: "Guilbert",
+    email: "remi.guilbert@cookus.app",
+    speciality: "japanese_cooking",
+    hourlyRate: 72,
+    city: "Bordeaux",
+    isValidated: true,
+    siret: "40281937600035",
+    description:
+      "Amoureux du Japon depuis l'enfance, je réalise des kaiseki selon les saisons. Chaque plat est un équilibre entre goût, couleur et texture, inspiré de la philosophie zen.",
+  },
+  {
+    firstName: "Paulette",
+    lastName: "Savary",
+    email: "paulette.savary@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 35,
+    city: "Clermont-Ferrand",
+    isValidated: true,
+    siret: "71493028500077",
+    description:
+      "Cuisinière du Massif Central, je propose potée auvergnate, truffade et pounti. Des recettes robustes et chaleureuses transmises par ma grand-mère, à partager en famille.",
+  },
+  {
+    firstName: "Baptiste",
+    lastName: "Coste",
+    email: "baptiste.coste@cookus.app",
+    speciality: "italian_cooking",
+    hourlyRate: 44,
+    city: "Paris",
+    isValidated: true,
+    siret: "36720419800048",
+    description:
+      "Passé par plusieurs trattorias romaines, je maîtrise les sauces mères italiennes sur le bout des doigts. Carbonara à l'œuf frais, cacio e pepe et supplì di riso.",
+  },
+  {
+    firstName: "Delphine",
+    lastName: "Guérin",
+    email: "delphine.guerin@cookus.app",
+    speciality: "indian_cooking",
+    hourlyRate: 48,
+    city: "Paris",
+    isValidated: true,
+    siret: "84031976200023",
+    description:
+      "Formatrice en cuisine indienne pour l'école Ritz Escoffier, je propose des cours et prestations à domicile. Du masala chai aux biryani, l'Inde dans votre cuisine.",
+  },
+  {
+    firstName: "Mathieu",
+    lastName: "Picard",
+    email: "mathieu.picard@cookus.app",
+    speciality: "autre",
+    hourlyRate: 62,
+    city: "Rennes",
+    isValidated: true,
+    siret: "59214830700081",
+    description:
+      "Chef aventurier et globe-trotter, je propose des dîners immersifs : un pays, une musique, une cuisine. Pérou, Éthiopie, Géorgie... dépaysement total garanti.",
+  },
+  {
+    firstName: "Hélène",
+    lastName: "Carrier",
+    email: "helene.carrier@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 56,
+    city: "Nice",
+    isValidated: true,
+    siret: "20948371600054",
+    description:
+      "Sommelière et cheffe, je compose des menus avec accords mets et vins. Chaque plat est pensé pour mettre en valeur un vin d'exception de ma cave personnelle.",
+  },
+  {
+    firstName: "Franck",
+    lastName: "Delmas",
+    email: "franck.delmas@cookus.app",
+    speciality: "asian_cooking",
+    hourlyRate: 43,
+    city: "Marseille",
+    isValidated: true,
+    siret: "73819204500016",
+    description:
+      "Spécialiste de la cuisine sino-cantonaise après 2 ans à Guangzhou, je reproduis les dim sum, canard laqué et riz sauté wok comme dans les grandes brasseries de Canton.",
+  },
+  {
+    firstName: "Céline",
+    lastName: "Ferrand",
+    email: "celine.ferrand@cookus.app",
+    speciality: "pastry_cooking",
+    hourlyRate: 63,
+    city: "Paris",
+    isValidated: true,
+    siret: "61037492800087",
+    description:
+      "Cheffe pâtissière et blogueuse culinaire avec 200k abonnés, je crée des pâtisseries aussi belles que bonnes. Entremets, layer cakes et viennoiseries beurre pur.",
+  },
+  {
+    firstName: "Olivier",
+    lastName: "Charpentier",
+    email: "olivier.charpentier@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 66,
+    city: "Lyon",
+    isValidated: true,
+    siret: "48291063700032",
+    description:
+      "Ancien chef de partie chez Paul Bocuse, je perpétue la grande tradition lyonnaise. Quenelles, volaille de Bresse et tarte praline pour honorer la capitale de la gastronomie.",
   },
 ];
 
@@ -657,6 +1064,598 @@ async function seed() {
       description: "Empanadas argentines",
       imgUrl:
         "https://images.unsplash.com/photo-1604467707321-70d009801bf4?w=600",
+    },
+    // Sophie Blanc — indian_cooking
+    {
+      cookIndex: 15,
+      description: "Biryani de poulet aux épices",
+      imgUrl:
+        "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600",
+    },
+    {
+      cookIndex: 15,
+      description: "Naan au beurre et à l'ail",
+      imgUrl:
+        "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600",
+    },
+    {
+      cookIndex: 15,
+      description: "Thali végétarien aux multiples chutneys",
+      imgUrl:
+        "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600",
+    },
+    // Hugo Morvan — french_cooking (Sud-Ouest)
+    {
+      cookIndex: 16,
+      description: "Confit de canard aux pommes sarladaises",
+      imgUrl:
+        "https://images.unsplash.com/photo-1608855238293-a8853e7f7c98?w=600",
+    },
+    {
+      cookIndex: 16,
+      description: "Soupe à l'oignon gratinée",
+      imgUrl:
+        "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
+    },
+    {
+      cookIndex: 16,
+      description: "Entrecôte bordelaise sauce à l'échalote",
+      imgUrl:
+        "https://images.unsplash.com/photo-1544025162-d76694265947?w=600",
+    },
+    // Lucie Perrin — vegetarian_cooking
+    {
+      cookIndex: 17,
+      description: "Buddha bowl coloré et nourrissant",
+      imgUrl:
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+    },
+    {
+      cookIndex: 17,
+      description: "Tarte aux légumes de saison",
+      imgUrl:
+        "https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=600",
+    },
+    {
+      cookIndex: 17,
+      description: "Risotto crémeux aux champignons des bois",
+      imgUrl:
+        "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600",
+    },
+    // Alexis Faure — asian_cooking (coréen/japonais)
+    {
+      cookIndex: 18,
+      description: "Bibimbap traditionnel aux légumes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1617196034096-e8c58b2dc7e6?w=600",
+    },
+    {
+      cookIndex: 18,
+      description: "Bulgogi de bœuf mariné au sésame",
+      imgUrl:
+        "https://images.unsplash.com/photo-1583032015879-e4022bd87cc7?w=600",
+    },
+    {
+      cookIndex: 18,
+      description: "Kimchi maison fermenté",
+      imgUrl:
+        "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
+    },
+    // Mélanie Caron — pastry_cooking (chocolat)
+    {
+      cookIndex: 19,
+      description: "Entremets chocolat praliné noisette",
+      imgUrl:
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+    },
+    {
+      cookIndex: 19,
+      description: "Croissants pur beurre feuilletés",
+      imgUrl:
+        "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600",
+    },
+    {
+      cookIndex: 19,
+      description: "Gâteau d'anniversaire au chocolat",
+      imgUrl:
+        "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600",
+    },
+    // David Nguyen — asian_cooking (vietnamien)
+    {
+      cookIndex: 20,
+      description: "Phở bò traditionnel de Hanoï",
+      imgUrl:
+        "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600",
+    },
+    {
+      cookIndex: 20,
+      description: "Bánh mì crevettes grillées",
+      imgUrl:
+        "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
+    },
+    {
+      cookIndex: 20,
+      description: "Bún bò huế épicé aux herbes fraîches",
+      imgUrl:
+        "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600",
+    },
+    // Cécile Hubert — french_cooking (nordiste)
+    {
+      cookIndex: 21,
+      description: "Carbonade flamande aux bières du Nord",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600",
+    },
+    {
+      cookIndex: 21,
+      description: "Welsh rarebit et frites maison",
+      imgUrl:
+        "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=600",
+    },
+    // Julien Dupuis — italian_cooking (créatif)
+    {
+      cookIndex: 22,
+      description: "Pasta fraîche au homard et bisque",
+      imgUrl:
+        "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=600",
+    },
+    {
+      cookIndex: 22,
+      description: "Pizza napolitaine aux tomates San Marzano",
+      imgUrl:
+        "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=600",
+    },
+    {
+      cookIndex: 22,
+      description: "Ossobuco alla milanese avec gremolata",
+      imgUrl:
+        "https://images.unsplash.com/photo-1598866594230-a7c00e8d8152?w=600",
+    },
+    // Nathalie Vidal — mexican_cooking
+    {
+      cookIndex: 23,
+      description: "Mole negro de Oaxaca au chocolat",
+      imgUrl:
+        "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600",
+    },
+    {
+      cookIndex: 23,
+      description: "Pozole rojo aux hominy et épices",
+      imgUrl:
+        "https://images.unsplash.com/photo-1570461226513-e08b58a52a21?w=600",
+    },
+    {
+      cookIndex: 23,
+      description: "Tamales de maïs à la vapeur",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600",
+    },
+    // Sébastien Lemaire — autre (fusion franco-asiatique)
+    {
+      cookIndex: 24,
+      description: "Saint-Jacques laquées au miso",
+      imgUrl:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600",
+    },
+    {
+      cookIndex: 24,
+      description: "Canard confit au jus de yuzu",
+      imgUrl:
+        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
+    },
+    // Laure Benoit — french_cooking (alsacienne)
+    {
+      cookIndex: 25,
+      description: "Choucroute garnie aux saucisses d'Alsace",
+      imgUrl:
+        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600",
+    },
+    {
+      cookIndex: 25,
+      description: "Flammekueche crème fraîche et lardons",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600",
+    },
+    {
+      cookIndex: 25,
+      description: "Baeckeoffe de veau au riesling",
+      imgUrl:
+        "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600",
+    },
+    // Karim Meziani — autre (maghrébin/méditerranéen)
+    {
+      cookIndex: 26,
+      description: "Tajine d'agneau aux pruneaux et amandes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600",
+    },
+    {
+      cookIndex: 26,
+      description: "Couscous royal à la merguez",
+      imgUrl:
+        "https://images.unsplash.com/photo-1585325701956-60dd9c8399b6?w=600",
+    },
+    {
+      cookIndex: 26,
+      description: "Mezze libanais assortis",
+      imgUrl:
+        "https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=600",
+    },
+    // Virginie Roussel — pastry_cooking
+    {
+      cookIndex: 27,
+      description: "Opéra au café et chocolat noir",
+      imgUrl:
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+    },
+    {
+      cookIndex: 27,
+      description: "Wedding cake floral en fondant",
+      imgUrl:
+        "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600",
+    },
+    {
+      cookIndex: 27,
+      description: "Mille-feuille crème vanille bourbon",
+      imgUrl:
+        "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+    },
+    // Thibault Gros — japanese_cooking (omakase)
+    {
+      cookIndex: 28,
+      description: "Omakase sushi plateau 12 pièces",
+      imgUrl:
+        "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600",
+    },
+    {
+      cookIndex: 28,
+      description: "Sashimi de thon rouge et daurade",
+      imgUrl:
+        "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600",
+    },
+    {
+      cookIndex: 28,
+      description: "Chirashi bowl au riz vinaigré",
+      imgUrl:
+        "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
+    },
+    // Aurélie Collet — vegetarian_cooking (superaliments)
+    {
+      cookIndex: 29,
+      description: "Açaï bowl aux fruits tropicaux",
+      imgUrl:
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
+    },
+    {
+      cookIndex: 29,
+      description: "Tartines avocat et graines germées",
+      imgUrl:
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+    },
+    // Benoît Pichon — french_cooking (breton)
+    {
+      cookIndex: 30,
+      description: "Plateau de fruits de mer breton",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600",
+    },
+    {
+      cookIndex: 30,
+      description: "Galette sarrasin jambon-fromage",
+      imgUrl:
+        "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?w=600",
+    },
+    {
+      cookIndex: 30,
+      description: "Bisque de homard à la crème",
+      imgUrl:
+        "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
+    },
+    // Yasmine Touati — indian_cooking (fusion maghreb-inde)
+    {
+      cookIndex: 31,
+      description: "Curry de crevettes coco et citronnelle",
+      imgUrl:
+        "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600",
+    },
+    {
+      cookIndex: 31,
+      description: "Samosas frits aux légumes épicés",
+      imgUrl:
+        "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600",
+    },
+    // Grégoire Masson — autre (gastronomique)
+    {
+      cookIndex: 32,
+      description: "Homard bleu rôti au beurre clarifié",
+      imgUrl:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600",
+    },
+    {
+      cookIndex: 32,
+      description: "Foie gras poêlé aux figues de Solliès",
+      imgUrl:
+        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
+    },
+    {
+      cookIndex: 32,
+      description: "Soufflé chaud au Grand Marnier",
+      imgUrl:
+        "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=600",
+    },
+    // Marion Fleury — italian_cooking (toscane)
+    {
+      cookIndex: 33,
+      description: "Ribollita toscane aux légumes d'hiver",
+      imgUrl:
+        "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=600",
+    },
+    {
+      cookIndex: 33,
+      description: "Bistecca alla fiorentina saignante",
+      imgUrl:
+        "https://images.unsplash.com/photo-1558030006-450675393462?w=600",
+    },
+    {
+      cookIndex: 33,
+      description: "Panna cotta aux fruits rouges",
+      imgUrl:
+        "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
+    },
+    // Christophe Aubert — french_cooking (languedocien)
+    {
+      cookIndex: 34,
+      description: "Tielle sétoise aux poulpes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=600",
+    },
+    {
+      cookIndex: 34,
+      description: "Bourride de lotte à l'aïoli",
+      imgUrl:
+        "https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=600",
+    },
+    // Elodie Marchal — asian_cooking (street food)
+    {
+      cookIndex: 35,
+      description: "Som tam thaï papaye verte et crevettes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
+    },
+    {
+      cookIndex: 35,
+      description: "Char siu bao vapeur au porc",
+      imgUrl:
+        "https://images.unsplash.com/photo-1583032015879-e4022bd87cc7?w=600",
+    },
+    {
+      cookIndex: 35,
+      description: "Laksa malaisien aux nouilles de riz",
+      imgUrl:
+        "https://images.unsplash.com/photo-1562967916-eb82221dfb44?w=600",
+    },
+    // Florian Tessier — autre (world food)
+    {
+      cookIndex: 36,
+      description: "Soirée grecque : mezze et moussaka",
+      imgUrl:
+        "https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=600",
+    },
+    {
+      cookIndex: 36,
+      description: "Paella valenciana aux fruits de mer",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534352956036-cd81e27dd615?w=600",
+    },
+    // Sandrine Breton — pastry_cooking (chocolat)
+    {
+      cookIndex: 37,
+      description: "Tablette de chocolat noir grand cru",
+      imgUrl:
+        "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600",
+    },
+    {
+      cookIndex: 37,
+      description: "Fondant coulant chocolat Valrhona",
+      imgUrl:
+        "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600",
+    },
+    {
+      cookIndex: 37,
+      description: "Truffes chocolat noir et fleur de sel",
+      imgUrl:
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+    },
+    // Patrick Jourdain — french_cooking (gascon)
+    {
+      cookIndex: 38,
+      description: "Cassoulet au canard confit de Castelnaudary",
+      imgUrl:
+        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600",
+    },
+    {
+      cookIndex: 38,
+      description: "Magret de canard aux cerises",
+      imgUrl:
+        "https://images.unsplash.com/photo-1608855238293-a8853e7f7c98?w=600",
+    },
+    {
+      cookIndex: 38,
+      description: "Armagnac et pastis gascon en dessert",
+      imgUrl:
+        "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=600",
+    },
+    // Aline Renaud — vegetarian_cooking (zéro déchet)
+    {
+      cookIndex: 39,
+      description: "Curry de légumes racines et lentilles",
+      imgUrl:
+        "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=600",
+    },
+    {
+      cookIndex: 39,
+      description: "Soupe de saison au pain grillé maison",
+      imgUrl:
+        "https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=600",
+    },
+    // Rémi Guilbert — japanese_cooking (kaiseki)
+    {
+      cookIndex: 40,
+      description: "Kaiseki printanier en 8 services",
+      imgUrl:
+        "https://images.unsplash.com/photo-1615361200141-f45040f367be?w=600",
+    },
+    {
+      cookIndex: 40,
+      description: "Wagyu japonais A5 grillé au charbon",
+      imgUrl:
+        "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
+    },
+    {
+      cookIndex: 40,
+      description: "Mochi glacés aux parfums du Japon",
+      imgUrl:
+        "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600",
+    },
+    // Paulette Savary — french_cooking (auvergnate)
+    {
+      cookIndex: 41,
+      description: "Truffade auvergnate au lard et tomme",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600",
+    },
+    {
+      cookIndex: 41,
+      description: "Potée auvergnate aux choux d'hiver",
+      imgUrl:
+        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600",
+    },
+    // Baptiste Coste — italian_cooking (romain)
+    {
+      cookIndex: 42,
+      description: "Cacio e pepe à la romaine",
+      imgUrl:
+        "https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600",
+    },
+    {
+      cookIndex: 42,
+      description: "Carbonara traditionnelle sans crème",
+      imgUrl:
+        "https://images.unsplash.com/photo-1598866594230-a7c00e8d8152?w=600",
+    },
+    {
+      cookIndex: 42,
+      description: "Supplì di riso au jus de viande",
+      imgUrl:
+        "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600",
+    },
+    // Delphine Guérin — indian_cooking
+    {
+      cookIndex: 43,
+      description: "Dhal makhani aux lentilles noires",
+      imgUrl:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600",
+    },
+    {
+      cookIndex: 43,
+      description: "Palak paneer aux épinards et fromage frais",
+      imgUrl:
+        "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600",
+    },
+    {
+      cookIndex: 43,
+      description: "Lassi mangue et cardamome",
+      imgUrl:
+        "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600",
+    },
+    // Mathieu Picard — autre (world food immersif)
+    {
+      cookIndex: 44,
+      description: "Ceviche péruvien tigre de lait",
+      imgUrl:
+        "https://images.unsplash.com/photo-1604467707321-70d009801bf4?w=600",
+    },
+    {
+      cookIndex: 44,
+      description: "Injera éthiopien aux wots colorés",
+      imgUrl:
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
+    },
+    // Hélène Carrier — french_cooking (accord mets et vins)
+    {
+      cookIndex: 45,
+      description: "Turbot rôti aux légumes primeurs",
+      imgUrl:
+        "https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=600",
+    },
+    {
+      cookIndex: 45,
+      description: "Plateau de fromages affinés sélectionnés",
+      imgUrl:
+        "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
+    },
+    {
+      cookIndex: 45,
+      description: "Ris de veau aux morilles et vin jaune",
+      imgUrl:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600",
+    },
+    // Franck Delmas — asian_cooking (cantonais)
+    {
+      cookIndex: 46,
+      description: "Canard laqué pékinois aux crêpes",
+      imgUrl:
+        "https://images.unsplash.com/photo-1617196034096-e8c58b2dc7e6?w=600",
+    },
+    {
+      cookIndex: 46,
+      description: "Dim sum vapeur assortis",
+      imgUrl:
+        "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
+    },
+    {
+      cookIndex: 46,
+      description: "Riz cantonais au wok, crevettes et œufs",
+      imgUrl:
+        "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
+    },
+    // Céline Ferrand — pastry_cooking (blogueuse)
+    {
+      cookIndex: 47,
+      description: "Layer cake vanille fraise en hauteur",
+      imgUrl:
+        "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+    },
+    {
+      cookIndex: 47,
+      description: "Kouign-amann breton au beurre salé",
+      imgUrl:
+        "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600",
+    },
+    {
+      cookIndex: 47,
+      description: "Tarte au citron meringuée italienne",
+      imgUrl:
+        "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600",
+    },
+    // Olivier Charpentier — french_cooking (lyonnais)
+    {
+      cookIndex: 48,
+      description: "Quenelles de brochet sauce Nantua",
+      imgUrl:
+        "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=600",
+    },
+    {
+      cookIndex: 48,
+      description: "Volaille de Bresse à la crème et morilles",
+      imgUrl:
+        "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600",
+    },
+    {
+      cookIndex: 48,
+      description: "Tarte praline rose lyonnaise",
+      imgUrl:
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600",
     },
   ];
 

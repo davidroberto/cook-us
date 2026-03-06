@@ -12,7 +12,7 @@ export class GetCooksUseCase {
   ) {}
 
   async execute(query: GetCooksQueryDto = {}) {
-    const { speciality, minHourlyRate, maxHourlyRate, city, search } = query;
+    const { speciality, minHourlyRate, maxHourlyRate, city, search, page = 1, limit = 20 } = query;
 
     const qb = this.cookRepository
       .createQueryBuilder("cook")
@@ -78,6 +78,10 @@ export class GetCooksUseCase {
       );
     }
 
+    const total = await qb.getCount();
+
+    qb.skip((page - 1) * limit).take(limit);
+
     const { entities, raw } = await qb.getRawAndEntities();
 
     const statsMap = new Map<
@@ -93,7 +97,7 @@ export class GetCooksUseCase {
       }
     }
 
-    return entities.map((cook) => {
+    const data = entities.map((cook) => {
       const stats = statsMap.get(cook.id);
       return {
         ...cook,
@@ -104,5 +108,7 @@ export class GetCooksUseCase {
         reviewCount: stats?.reviewCount ?? 0,
       };
     });
+
+    return { data, total, hasMore: page * limit < total };
   }
 }

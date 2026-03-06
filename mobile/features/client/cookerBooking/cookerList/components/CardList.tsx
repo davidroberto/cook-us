@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import {
   ActivityIndicator,
@@ -21,6 +21,8 @@ const ALL_SPECIALITIES = Object.keys(SPECIALITY_LABEL) as CookSpeciality[];
 
 export const CookerList = () => {
   const router = useRouter();
+  const flatListRef = useRef<FlatList<CookerCardData>>(null);
+  const scrollOffsetRef = useRef(0);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -34,20 +36,31 @@ export const CookerList = () => {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
+  // Quand les filtres changent, la liste est rechargée depuis le début
+  useEffect(() => {
+    scrollOffsetRef.current = 0;
+  }, [debouncedSearch, selectedSpeciality, minPriceInput, maxPriceInput]);
+
   const minHourlyRate = minPriceInput ? Number(minPriceInput) : undefined;
   const maxHourlyRate = maxPriceInput ? Number(maxPriceInput) : undefined;
 
-  const { cooks, loading, error, refresh } = useCookerList({
+  const { cooks, loading, loadingMore, error, refresh, loadMore } = useCookerList({
     search: debouncedSearch || undefined,
     speciality: selectedSpeciality ?? undefined,
     minHourlyRate,
     maxHourlyRate,
   });
 
+  // Restaure la position de scroll au retour depuis un profil
   useFocusEffect(
     useCallback(() => {
-      refresh();
-    }, [refresh])
+      if (scrollOffsetRef.current > 0) {
+        flatListRef.current?.scrollToOffset({
+          offset: scrollOffsetRef.current,
+          animated: false,
+        });
+      }
+    }, [])
   );
 
   if (error) {
@@ -162,6 +175,7 @@ export const CookerList = () => {
         </View>
       ) : (
         <FlatList<CookerCardData>
+          ref={flatListRef}
           data={cooks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
@@ -175,6 +189,21 @@ export const CookerList = () => {
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           testID="cooker-list"
+          onScroll={(e) => {
+            scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.3}
+          ListFooterComponent={
+            loadingMore ? (
+              <ActivityIndicator
+                size="small"
+                color={colors.main}
+                style={styles.footerLoader}
+              />
+            ) : null
+          }
         />
       )}
     </View>
@@ -267,6 +296,9 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingVertical: 8,
+  },
+  footerLoader: {
+    paddingVertical: 16,
   },
   centered: {
     flex: 1,

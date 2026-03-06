@@ -60,7 +60,7 @@ export default function CookHomeTab() {
     refuse,
     updatePrice,
     actionLoading,
-    clearActionError,
+    clearActionError, loadingMore, loadMore
   } = useCookRequests();
 
   const [selectedRequest, setSelectedRequest] =
@@ -290,6 +290,17 @@ export default function CookHomeTab() {
         }
         onRefresh={refresh}
         refreshing={false}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator
+              size="small"
+              color={colors.main}
+              style={styles.footerLoader}
+            />
+          ) : null
+        }
       />
 
       <AcceptPriceModal
@@ -455,5 +466,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.mainDark,
     textAlign: "center",
+  },
+  footerLoader: {
+    paddingVertical: 16,
   },
 });
