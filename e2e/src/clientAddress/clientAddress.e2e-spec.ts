@@ -3,7 +3,7 @@ import { expect, test, type APIRequestContext } from "@playwright/test";
 const API = "http://localhost:8080/api";
 
 // Credentials tirés du seed
-const CLIENT_EMAIL = "lucas.bernard@cookus.app";
+const CLIENT_EMAIL = "test.cliaddr.client@cookus.app";
 const CLIENT_PASSWORD = "client1234";
 const COOK_EMAIL = "pierre.martin@cookus.app";
 const COOK_PASSWORD = "cook1234";
@@ -267,8 +267,8 @@ test("GET /cook-request/:id retourne l'adresse de la prestation dans le détail 
   const detail = await detailRes.json();
 
   expect(detail.client).toMatchObject({
-    firstName: "Lucas",
-    lastName: "Bernard",
+    firstName: "Test",
+    lastName: "CliAddrClient",
     address: {
       street: "7 rue des Lilas",
       postalCode: "75020",

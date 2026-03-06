@@ -221,6 +221,18 @@ const COOKS_DATA = [
     description:
       "Chef créatif formé dans les grandes maisons alsaciennes, je propose une cuisine contemporaine alliant tradition et innovation. Menus personnalisés.",
   },
+  // ─── Compte dédié aux tests e2e (sendMessage) ───
+  {
+    firstName: "Test",
+    lastName: "Cook",
+    email: "test.msg.cook@cookus.app",
+    speciality: "french_cooking",
+    hourlyRate: 40,
+    city: "Paris",
+    validationStatus: CookValidationStatus.VALIDATED,
+    siret: "11122233300044",
+    description: "Compte dédié aux tests e2e.",
+  },
 ];
 
 const CLIENTS_DATA = [
@@ -314,6 +326,37 @@ const CLIENTS_DATA = [
     firstName: "Clément",
     lastName: "Laurent",
     email: "clement.laurent@cookus.app",
+  },
+  // ─── Comptes dédiés aux tests e2e ───────────────
+  {
+    firstName: "Test",
+    lastName: "MsgClient",
+    email: "test.msg.client@cookus.app",
+  },
+  {
+    firstName: "Test",
+    lastName: "PropClient",
+    email: "test.prop.client@cookus.app",
+  },
+  {
+    firstName: "Test",
+    lastName: "ReviewClient",
+    email: "test.review.client@cookus.app",
+  },
+  {
+    firstName: "Test",
+    lastName: "AddrClient",
+    email: "test.addr.client@cookus.app",
+  },
+  {
+    firstName: "Test",
+    lastName: "ProfileClient",
+    email: "test.profile.client@cookus.app",
+  },
+  {
+    firstName: "Test",
+    lastName: "CliAddrClient",
+    email: "test.cliaddr.client@cookus.app",
   },
 ];
 
@@ -626,6 +669,37 @@ async function seed() {
       postalCode: "06000",
       city: "Nice",
     },
+    // Comptes dédiés aux tests e2e
+    "test.msg.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "test.prop.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "test.review.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "test.addr.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "test.profile.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "test.cliaddr.client@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
   };
 
   for (const data of CLIENTS_DATA) {
@@ -681,6 +755,13 @@ async function seed() {
       postalCode: "13100",
       city: "Aix-en-Provence",
     },
+    // Adresses pour comptes e2e dédiés (indices 15-20)
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 15 test.msg.client
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 16 test.prop.client
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 17 test.review.client
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 18 test.addr.client
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 19 test.profile.client
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" }, // 20 test.cliaddr.client
   ];
 
   function formatDateDDMMYYYY(date: Date): string {
@@ -1288,6 +1369,54 @@ async function seed() {
       price: 420,
       ...addr(14),
     },
+    // ─── Données dédiées aux tests e2e parallèles ───────────────────────────
+    // test.msg.client (15) ↔ test.msg.cook (15) — sendMessage
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-07-01T19:00:00Z"),
+      endDate: null,
+      cookId: cooks[15].id,
+      clientId: clients[15].id,
+      status: CookRequestStatus.PENDING,
+      mealType: MealType.DINNER,
+      ...addr(15),
+    },
+    // test.review.client (17) ↔ Marie Dupont (1) — reviewPrestation : avec avis
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-10-15T19:00:00Z"),
+      endDate: new Date("2025-10-15T22:00:00Z"),
+      cookId: cooks[1].id,
+      clientId: clients[17].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      price: 160,
+      ...addr(17),
+    },
+    // test.review.client (17) ↔ Léa Fontaine (9) — reviewPrestation : sans avis
+    {
+      guestsNumber: 2,
+      startDate: new Date("2025-11-20T12:00:00Z"),
+      endDate: new Date("2025-11-20T15:00:00Z"),
+      cookId: cooks[9].id,
+      clientId: clients[17].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+      price: 90,
+      ...addr(17),
+    },
+    // test.addr.client (18) ↔ Camille Petit (5) — updateCookRequestAddress : demande éditable
+    {
+      guestsNumber: 6,
+      startDate: new Date("2026-08-15T19:00:00Z"),
+      endDate: null,
+      cookId: cooks[5].id,
+      clientId: clients[18].id,
+      status: CookRequestStatus.ACCEPTED,
+      mealType: MealType.DINNER,
+      price: 220,
+      ...addr(18),
+    },
   ];
 
   const savedRequests: CookRequestEntity[] = [];
@@ -1347,6 +1476,23 @@ async function seed() {
       clientId: clients[0].id,
       cookId: cooks[1].id,
       cookRequestId: completedWithReview.id,
+    });
+  }
+
+  // test.review.client — 1 avis existant (pour le test lecture seule)
+  const reviewClientCompleted = savedRequests.find(
+    (r) =>
+      r.cookId === cooks[1].id &&
+      r.clientId === clients[17].id &&
+      r.status === CookRequestStatus.COMPLETED
+  );
+  if (reviewClientCompleted) {
+    await reviewRepo.save({
+      rating: 4,
+      comment: "Excellente prestation, je recommande vivement.",
+      clientId: clients[17].id,
+      cookId: cooks[1].id,
+      cookRequestId: reviewClientCompleted.id,
     });
   }
 

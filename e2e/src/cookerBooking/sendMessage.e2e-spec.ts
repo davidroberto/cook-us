@@ -9,8 +9,8 @@ const TIMEOUT = 10_000;
 async function loginAsCook(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("pierre.martin@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("cook1234");
+  await page.getByTestId("email-input").fill("test.msg.cook@cookus.app");
+  await page.getByTestId("password-input").fill("cook1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/cook\/home/, { timeout: TIMEOUT });
 }
@@ -18,8 +18,8 @@ async function loginAsCook(page: Page) {
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("email-input").fill("test.msg.client@cookus.app");
+  await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: TIMEOUT });
 }
@@ -38,7 +38,7 @@ async function createClientConversation(browser: Browser) {
   await page.getByTestId("propose-creneau-button").click();
   await expect(page).toHaveURL(/\/client\/viewCook\/booking\//, { timeout: TIMEOUT });
 
-  await page.getByTestId("number-of-guests-input").pressSequentially("2");
+  await page.getByTestId("number-of-guests-input").fill("2");
   await page.getByTestId("start-date-input").fill("20-06-2027");
   await page.getByTestId("meal-type-lunch").click();
   await page.getByTestId("street-input").fill("15 rue de Rivoli");

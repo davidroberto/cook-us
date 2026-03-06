@@ -9,8 +9,8 @@ const TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("email-input").fill("test.review.client@cookus.app");
+  await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: TIMEOUT });
 }
@@ -22,7 +22,7 @@ async function goToTermineesTab(page: Page) {
 }
 
 // ─── Scénario : Avis déjà soumis — lecture seule ─────────────────────────────
-// Le seed contient une prestation terminée de lucas.bernard avec une note existante.
+// Le seed contient une prestation terminée de test.review.client avec une note existante.
 // Ce test est idempotent.
 
 test.describe("Avis déjà soumis — lecture seule", () => {
@@ -37,7 +37,7 @@ test.describe("Avis déjà soumis — lecture seule", () => {
 });
 
 // ─── Scénario : Formulaire de notation — affichage ───────────────────────────
-// Le seed contient une prestation terminée de lucas.bernard SANS note.
+// Le seed contient une prestation terminée de test.review.client SANS note.
 // Ces tests ne soumettent rien et sont toujours re-jouables.
 
 test.describe("Formulaire de notation d'une prestation terminée", () => {

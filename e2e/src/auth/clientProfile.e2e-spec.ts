@@ -10,15 +10,15 @@ const TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("email-input").fill("test.profile.client@cookus.app");
+  await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: TIMEOUT });
 }
 
 // ─── Scénario : Accordéon "Mon adresse" sur le profil client ─────────────────
 
-test.describe("Profil client — accordéon Mon adresse", () => {
+test.describe.serial("Profil client — accordéon Mon adresse", () => {
   test.beforeEach(async ({ page }) => {
     await loginAsClient(page);
     await page.goto(`${MOBILE_URL}/client/compte`);
@@ -84,7 +84,7 @@ test.describe("Profil client — accordéon Mon adresse", () => {
 
     // Vérification via l'API
     const loginRes = await request.post(`${API}/auth/login`, {
-      data: { email: "lucas.bernard@cookus.app", password: "client1234" },
+      data: { email: "test.profile.client@cookus.app", password: "client1234" },
     });
     const { token } = await loginRes.json();
     const profileRes = await request.get(`${API}/auth/me`, {

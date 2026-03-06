@@ -9,8 +9,8 @@ const FORM_TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: FORM_TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("email-input").fill("test.prop.client@cookus.app");
+  await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: FORM_TIMEOUT });
 }
@@ -33,7 +33,7 @@ async function navigateToBookingForm(page: Page) {
 
 // ─── Scénario : Client connecté — Envoyer une proposition au cuisinier ────────
 
-test.describe("Envoi d'une proposition au cuisinier", () => {
+test.describe.serial("Envoi d'une proposition au cuisinier", () => {
   test.beforeEach(async ({ page }) => {
     await loginAsClient(page);
     await navigateToBookingForm(page);
@@ -105,7 +105,7 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
         { timeout: FORM_TIMEOUT },
       ),
       (async () => {
-        await page.getByTestId("number-of-guests-input").pressSequentially("4");
+        await page.getByTestId("number-of-guests-input").fill("4");
         await page.getByTestId("start-date-input").fill("15-06-2026");
         await page.getByTestId("meal-type-dinner").click();
         await page.getByTestId("street-input").fill("15 rue de Rivoli");
@@ -136,7 +136,7 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
         { timeout: FORM_TIMEOUT },
       ),
       (async () => {
-        await page.getByTestId("number-of-guests-input").pressSequentially("2");
+        await page.getByTestId("number-of-guests-input").fill("2");
         await page.getByTestId("start-date-input").fill("20-06-2027");
         await page.getByTestId("meal-type-lunch").click();
         // Pas de remplissage des champs adresse — on utilise le pré-remplissage

@@ -9,7 +9,7 @@ const TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").fill("lucas.bernard@cookus.app");
+  await page.getByTestId("email-input").fill("test.addr.client@cookus.app");
   await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: TIMEOUT });
