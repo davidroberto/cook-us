@@ -61,9 +61,12 @@ export class SendMessageUseCase {
       savedMessage
     );
 
-    this.sendPushNotifications(conversationId, authorId, dto.message ?? "", dto.imageUrl ?? null).catch(
-      (err) => this.logger.error(`Push notification error: ${err}`)
-    );
+    this.sendPushNotifications(
+      conversationId,
+      authorId,
+      dto.message ?? "",
+      dto.imageUrl ?? null
+    ).catch((err) => this.logger.error(`Push notification error: ${err}`));
 
     return savedMessage;
   }
@@ -100,8 +103,7 @@ export class SendMessageUseCase {
       : "Nouveau message";
 
     const rawBody = messageContent || (imageUrl ? "Image" : "");
-    const body =
-      rawBody.length > 100 ? rawBody.slice(0, 100) + "..." : rawBody;
+    const body = rawBody.length > 100 ? rawBody.slice(0, 100) + "..." : rawBody;
 
     await this.notificationService.sendPushNotifications(
       pushTokens,
