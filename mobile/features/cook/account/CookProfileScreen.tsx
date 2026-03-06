@@ -3,6 +3,8 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,12 +18,12 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { colors } from "@/styles/colors";
-import { typography } from "@/styles/typography";
 import { getApiUrl } from "@/features/api/getApiUrl";
 import {
   uploadProfileThumbnail,
   updateProfile,
 } from "@/features/client/account/viewProfile/repository";
+import { ProfileForm } from "@/features/client/account/viewProfile/components/ProfileForm";
 import { useUpdateCookProfile } from "./useUpdateCookProfile";
 import { changePassword } from "./repository";
 import type { CookProfile } from "./repository";
@@ -50,6 +52,10 @@ export function CookProfileScreen() {
   const router = useRouter();
   const { isLoading, error, loadProfile, save, upload } =
     useUpdateCookProfile();
+
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [cookInfoOpen, setCookInfoOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<CookProfile | null>(null);
@@ -107,6 +113,14 @@ export function CookProfileScreen() {
   };
 
   const handleLogout = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+        clearAuth();
+        router.replace("/login");
+      }
+      return;
+    }
+
     Alert.alert("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", [
       { text: "Annuler", style: "cancel" },
       {
@@ -208,22 +222,28 @@ export function CookProfileScreen() {
 
   if (!user) return null;
 
-  const displayPhotoUri = photoUri ?? photoUrl ?? null;
+  const showThumbnail = !!user.thumbnail && !thumbnailError;
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
     <ScrollView
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
       <View style={styles.avatarContainer}>
         <TouchableOpacity
           onPress={handlePickProfilePhoto}
           disabled={isUploadingPhoto}
           style={styles.avatarWrapper}
+          testID="avatar-picker"
         >
-          {user.thumbnail && !thumbnailError ? (
+          {showThumbnail ? (
             <Image
-              source={{ uri: toAbsoluteUrl(user.thumbnail) }}
+              source={{ uri: toAbsoluteUrl(user.thumbnail!) }}
               style={styles.avatarImage}
               onError={() => setThumbnailError(true)}
             />
@@ -250,151 +270,200 @@ export function CookProfileScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Informations du compte</Text>
-        <Text style={styles.label}>Prénom</Text>
-        <Text style={styles.value}>{user.firstName}</Text>
-        <Text style={styles.label}>Nom</Text>
-        <Text style={styles.value}>{user.lastName}</Text>
-        <Text style={styles.label}>Email</Text>
-        <Text style={styles.value}>{user.email}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Informations cuisinier</Text>
-        <Text style={styles.label}>SIRET</Text>
-        <Text style={styles.value}>{user.siret ?? "—"}</Text>
-
-        {isEditing ? (
-          <>
-            <Input
-              label="Description"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              style={styles.textarea}
-              placeholder="Décrivez votre expérience..."
-            />
-            <Text style={styles.label}>Spécialité</Text>
-            <View style={styles.chipsContainer}>
-              {SPECIALITY_OPTIONS.map((opt) => (
-                <TouchableOpacity
-                  key={opt}
-                  onPress={() => setSpeciality(opt)}
-                  style={[
-                    styles.chip,
-                    speciality === opt && styles.chipSelected,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.chipText,
-                      speciality === opt && styles.chipTextSelected,
-                    ]}
-                  >
-                    {SPECIALITY_LABELS[opt]}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Input
-              label="Tarif horaire (€)"
-              value={hourlyRate}
-              onChangeText={setHourlyRate}
-              keyboardType="numeric"
-              placeholder="Ex : 25"
-            />
-            <Input
-              label="Ville"
-              value={city}
-              onChangeText={setCity}
-              placeholder="Ex : Paris"
-            />
-            {error && <Text style={styles.error}>{error}</Text>}
-            <View style={styles.editActions}>
-              <Button
-                title="Enregistrer"
-                onPress={handleSave}
-                loading={isLoading}
-                style={styles.saveButton}
-              />
-              <Button
-                title="Annuler"
-                variant="outline"
-                onPress={handleCancel}
-                disabled={isLoading}
-                style={styles.cancelButton}
-              />
-            </View>
-          </>
-        ) : (
-          <>
-            <Text style={styles.label}>Description</Text>
-            <Text style={styles.value}>{profile?.description || "—"}</Text>
-            <Text style={styles.label}>Spécialité</Text>
-            <Text style={styles.value}>
-              {profile?.speciality
-                ? (SPECIALITY_LABELS[profile.speciality] ?? profile.speciality)
-                : "—"}
-            </Text>
-            <Text style={styles.label}>Tarif horaire</Text>
-            <Text style={styles.value}>
-              {profile?.hourlyRate != null ? `${profile.hourlyRate} €/h` : "—"}
-            </Text>
-            <Text style={styles.label}>Ville</Text>
-            <Text style={styles.value}>{profile?.city || "—"}</Text>
-            <View style={styles.editButtonContainer}>
-              <Button
-                title="Modifier"
-                variant="primary"
-                onPress={() => setIsEditing(true)}
-              />
-            </View>
-          </>
+        <TouchableOpacity
+          style={styles.accordionHeader}
+          testID="accordion-account-header"
+          onPress={() => setAccountOpen((v) => !v)}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="person-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Mes informations</Text>
+          </View>
+          <Ionicons
+            name={accountOpen ? "chevron-up" : "chevron-down"}
+            size={18}
+            color={colors.main}
+          />
+        </TouchableOpacity>
+        {accountOpen && (
+          <View style={styles.accordionBody}>
+            <ProfileForm user={user} />
+          </View>
         )}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Changer de mot de passe</Text>
-        <Input
-          label="Mot de passe actuel"
-          value={currentPassword}
-          onChangeText={(v) => {
-            setCurrentPassword(v);
-            setPwdError(null);
-            setPwdNotice(null);
-          }}
-          secureTextEntry
-        />
-        <Input
-          label="Nouveau mot de passe"
-          value={newPassword}
-          onChangeText={(v) => {
-            setNewPassword(v);
-            setPwdError(null);
-            setPwdNotice(null);
-          }}
-          secureTextEntry
-          hint="6 caractères minimum"
-        />
-        <Input
-          label="Confirmer le mot de passe"
-          value={confirmPassword}
-          onChangeText={(v) => {
-            setConfirmPassword(v);
-            setPwdError(null);
-            setPwdNotice(null);
-          }}
-          secureTextEntry
-          error={pwdError ?? undefined}
-        />
-        {pwdNotice && <Text style={styles.notice}>{pwdNotice}</Text>}
-        <Button
-          title="Modifier le mot de passe"
-          variant="outline"
-          onPress={handleChangePassword}
-          loading={pwdLoading}
-        />
+        <TouchableOpacity
+          style={styles.accordionHeader}
+          testID="accordion-cook-info-header"
+          onPress={() => setCookInfoOpen((v) => !v)}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="restaurant-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Mon profil cuisinier</Text>
+          </View>
+          <Ionicons
+            name={cookInfoOpen ? "chevron-up" : "chevron-down"}
+            size={18}
+            color={colors.main}
+          />
+        </TouchableOpacity>
+        {cookInfoOpen && (
+          <View style={styles.accordionBody}>
+            <Text style={styles.label}>SIRET</Text>
+            <Text style={styles.value}>{user.siret ?? "—"}</Text>
+
+            {isEditing ? (
+              <>
+                <Input
+                  label="Description"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  style={styles.textarea}
+                  placeholder="Décrivez votre expérience..."
+                />
+                <Text style={styles.label}>Spécialité</Text>
+                <View style={styles.chipsContainer}>
+                  {SPECIALITY_OPTIONS.map((opt) => (
+                    <TouchableOpacity
+                      key={opt}
+                      onPress={() => setSpeciality(opt)}
+                      style={[
+                        styles.chip,
+                        speciality === opt && styles.chipSelected,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.chipText,
+                          speciality === opt && styles.chipTextSelected,
+                        ]}
+                      >
+                        {SPECIALITY_LABELS[opt]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <Input
+                  label="Tarif horaire (€)"
+                  value={hourlyRate}
+                  onChangeText={setHourlyRate}
+                  keyboardType="numeric"
+                  placeholder="Ex : 25"
+                />
+                <Input
+                  label="Ville"
+                  value={city}
+                  onChangeText={setCity}
+                  placeholder="Ex : Paris"
+                />
+                {error && <Text style={styles.error}>{error}</Text>}
+                <View style={styles.editActions}>
+                  <Button
+                    title="Enregistrer"
+                    onPress={handleSave}
+                    loading={isLoading}
+                    style={styles.saveButton}
+                  />
+                  <Button
+                    title="Annuler"
+                    variant="outline"
+                    onPress={handleCancel}
+                    disabled={isLoading}
+                    style={styles.cancelButton}
+                  />
+                </View>
+              </>
+            ) : (
+              <>
+                <Text style={styles.label}>Description</Text>
+                <Text style={styles.value}>{profile?.description || "—"}</Text>
+                <Text style={styles.label}>Spécialité</Text>
+                <Text style={styles.value}>
+                  {profile?.speciality
+                    ? (SPECIALITY_LABELS[profile.speciality] ?? profile.speciality)
+                    : "—"}
+                </Text>
+                <Text style={styles.label}>Tarif horaire</Text>
+                <Text style={styles.value}>
+                  {profile?.hourlyRate != null ? `${profile.hourlyRate} €/h` : "—"}
+                </Text>
+                <Text style={styles.label}>Ville</Text>
+                <Text style={styles.value}>{profile?.city || "—"}</Text>
+                <View style={styles.editButtonContainer}>
+                  <Button
+                    title="Modifier"
+                    variant="primary"
+                    onPress={() => setIsEditing(true)}
+                  />
+                </View>
+              </>
+            )}
+          </View>
+        )}
+      </View>
+
+      <View style={styles.section}>
+        <TouchableOpacity
+          style={styles.accordionHeader}
+          testID="accordion-password-header"
+          onPress={() => setPasswordOpen((v) => !v)}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <Ionicons name="lock-closed-outline" size={20} color={colors.main} />
+            <Text style={styles.accordionTitle}>Mot de passe</Text>
+          </View>
+          <Ionicons
+            name={passwordOpen ? "chevron-up" : "chevron-down"}
+            size={18}
+            color={colors.main}
+          />
+        </TouchableOpacity>
+        {passwordOpen && (
+          <View style={styles.accordionBody}>
+            <Input
+              label="Mot de passe actuel"
+              value={currentPassword}
+              onChangeText={(v) => {
+                setCurrentPassword(v);
+                setPwdError(null);
+                setPwdNotice(null);
+              }}
+              secureTextEntry
+            />
+            <Input
+              label="Nouveau mot de passe"
+              value={newPassword}
+              onChangeText={(v) => {
+                setNewPassword(v);
+                setPwdError(null);
+                setPwdNotice(null);
+              }}
+              secureTextEntry
+              hint="6 caractères minimum"
+            />
+            <Input
+              label="Confirmer le mot de passe"
+              value={confirmPassword}
+              onChangeText={(v) => {
+                setConfirmPassword(v);
+                setPwdError(null);
+                setPwdNotice(null);
+              }}
+              secureTextEntry
+              error={pwdError ?? undefined}
+            />
+            {pwdNotice && <Text style={styles.notice}>{pwdNotice}</Text>}
+            <Button
+              title={pwdLoading ? "Modification..." : "Modifier le mot de passe"}
+              variant="outline"
+              onPress={handleChangePassword}
+              disabled={pwdLoading}
+            />
+          </View>
+        )}
       </View>
 
       <View style={styles.logoutSection}>
@@ -405,6 +474,7 @@ export function CookProfileScreen() {
         />
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -474,19 +544,33 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  sectionTitle: {
-    ...typography.styles.body1Bold,
+  accordionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  accordionHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  accordionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
     color: colors.text,
-    marginBottom: 12,
+  },
+  accordionBody: {
+    marginTop: 16,
+    gap: 4,
   },
   label: {
-    ...typography.styles.body2Regular,
+    fontSize: 13,
     color: colors.text,
     opacity: 0.6,
     marginTop: 8,
   },
   value: {
-    ...typography.styles.body1Regular,
+    fontSize: 15,
     color: colors.text,
     marginTop: 2,
   },
@@ -514,7 +598,7 @@ const styles = StyleSheet.create({
     borderColor: colors.main,
   },
   chipText: {
-    ...typography.styles.body2Regular,
+    fontSize: 14,
     color: colors.text,
   },
   chipTextSelected: {
@@ -534,12 +618,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   error: {
-    ...typography.styles.body2Regular,
+    fontSize: 13,
     color: colors.mainDark,
     marginTop: 8,
   },
   notice: {
-    ...typography.styles.body2Regular,
+    fontSize: 13,
     color: colors.mainDark,
     marginBottom: 12,
     textAlign: "center",
