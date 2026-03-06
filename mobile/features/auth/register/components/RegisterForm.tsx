@@ -15,13 +15,16 @@ import {
 } from "react-native";
 import { COOK_SPECIALITIES, type CookSpeciality, type AuthUser } from "../types";
 import { useRegister } from "../useRegister";
+import { GoogleSignInButton } from "@/features/auth/google/GoogleSignInButton";
 
 type Props = {
   onSuccess: (token: string, refreshToken: string, user: AuthUser) => void;
   onNavigateLogin: () => void;
+  onGooglePress: () => void;
+  googleLoading?: boolean;
 };
 
-export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
+export function RegisterForm({ onSuccess, onNavigateLogin, onGooglePress, googleLoading }: Props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -77,6 +80,18 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
     >
     <ScrollView testID="register-form" contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Créer un compte</Text>
+
+      <GoogleSignInButton
+        label="S'inscrire avec Google"
+        onPress={onGooglePress}
+        isLoading={googleLoading}
+      />
+
+      <View style={styles.separator}>
+        <View style={styles.separatorLine} />
+        <Text style={styles.separatorText}>ou</Text>
+        <View style={styles.separatorLine} />
+      </View>
 
       {/* Photo de profil */}
       <View style={styles.avatarSection}>
@@ -484,5 +499,21 @@ const styles = StyleSheet.create({
   },
   required: {
     color: colors.main,
+  },
+  separator: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.tertiary,
+  },
+  separatorText: {
+    marginHorizontal: 16,
+    color: colors.text,
+    opacity: 0.56,
+    fontSize: 14,
   },
 });

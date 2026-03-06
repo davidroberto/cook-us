@@ -6,6 +6,8 @@ import Constants from "expo-constants";
 import { useAuth } from "@/features/auth/AuthContext";
 import { getApiUrl } from "@/features/api/getApiUrl";
 
+const isExpoGo = Constants.appOwnership === "expo";
+
 const API_URL = getApiUrl();
 
 async function getExpoPushToken(): Promise<string | null> {
@@ -48,6 +50,7 @@ export function useRegisterPushToken() {
 
   useEffect(() => {
     if (!token || !user || registeredRef.current) return;
+    if (Platform.OS === "android" && isExpoGo) return;
 
     getExpoPushToken().then(async (pushToken) => {
       if (!pushToken) return;
