@@ -87,8 +87,7 @@ export class GetDashboardStatsUseCase {
     const bySpeciality: Record<string, number> = {};
     const byValidationStatus: Record<string, number> = {};
     for (const cook of allCooks) {
-      bySpeciality[cook.speciality] =
-        (bySpeciality[cook.speciality] ?? 0) + 1;
+      bySpeciality[cook.speciality] = (bySpeciality[cook.speciality] ?? 0) + 1;
       byValidationStatus[cook.validationStatus] =
         (byValidationStatus[cook.validationStatus] ?? 0) + 1;
     }

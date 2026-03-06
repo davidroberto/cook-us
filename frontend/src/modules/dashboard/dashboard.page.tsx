@@ -64,7 +64,7 @@ function Sparkline({
     valueKey,
     color = '#E85D04',
 }: {
-    data: Record<string, number>[]
+    data: { [key: string]: number | string }[]
     valueKey: string
     color?: string
 }) {
