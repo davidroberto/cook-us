@@ -188,6 +188,9 @@ test.describe("Annuler une réservation (client)", () => {
         `API a répondu ${response.status()}: ${await response.text()}`,
       ).toBe(200);
 
+      // Attendre que la liste se rafraîchisse avant de changer d'onglet
+      await page.waitForLoadState("networkidle", { timeout: TIMEOUT });
+
       // Naviguer vers l'onglet "Terminées" pour vérifier le statut annulé
       await page.getByText("Terminées").click();
       await expect(page.getByTestId("order-item").first()).toBeVisible({

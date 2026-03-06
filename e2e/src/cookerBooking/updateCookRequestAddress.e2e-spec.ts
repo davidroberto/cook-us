@@ -39,7 +39,7 @@ test.describe("Modification d'adresse depuis le modal des commandes", () => {
       timeout: TIMEOUT,
     });
     await page.getByTestId("orders-button").click();
-    await expect(page.getByTestId("request-summary-card").first()).toBeVisible({
+    await expect(page.getByTestId("order-item").first()).toBeVisible({
       timeout: TIMEOUT,
     });
   });
