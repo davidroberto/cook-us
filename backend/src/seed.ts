@@ -933,6 +933,199 @@ async function seed() {
       price: 248,
       ...addr(1),
     },
+    // --- Pierre Martin — données stats ---
+    // Complétées sur 12 mois
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-03-12T19:00:00Z"),
+      endDate: new Date("2025-03-12T22:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[3].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(3),
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-04-08T12:00:00Z"),
+      endDate: new Date("2025-04-08T15:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[4].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+      ...addr(4),
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2025-05-17T19:00:00Z"),
+      endDate: new Date("2025-05-17T23:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[5].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(5),
+    },
+    {
+      guestsNumber: 2,
+      startDate: new Date("2025-06-21T09:00:00Z"),
+      endDate: new Date("2025-06-21T11:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[6].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.BREAKFAST,
+      ...addr(6),
+    },
+    {
+      guestsNumber: 10,
+      startDate: new Date("2025-07-05T19:30:00Z"),
+      endDate: new Date("2025-07-05T23:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[7].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(7),
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-09-06T12:00:00Z"),
+      endDate: new Date("2025-09-06T15:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[9].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+      ...addr(9),
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2025-10-11T19:00:00Z"),
+      endDate: new Date("2025-10-11T22:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[10].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(10),
+    },
+    {
+      guestsNumber: 5,
+      startDate: new Date("2025-11-15T19:00:00Z"),
+      endDate: new Date("2025-11-15T22:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[11].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(11),
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2025-12-08T19:00:00Z"),
+      endDate: new Date("2025-12-08T22:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[1].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(1),
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2025-12-19T12:00:00Z"),
+      endDate: new Date("2025-12-19T15:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[12].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+      ...addr(12),
+    },
+    {
+      guestsNumber: 8,
+      startDate: new Date("2026-01-11T19:00:00Z"),
+      endDate: new Date("2026-01-11T22:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[3].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(3),
+    },
+    {
+      guestsNumber: 2,
+      startDate: new Date("2026-01-22T09:30:00Z"),
+      endDate: new Date("2026-01-22T11:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[13].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.BREAKFAST,
+      ...addr(13),
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2026-01-30T19:30:00Z"),
+      endDate: new Date("2026-01-30T22:30:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[14].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(14),
+    },
+    {
+      guestsNumber: 10,
+      startDate: new Date("2026-02-08T19:00:00Z"),
+      endDate: new Date("2026-02-08T23:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[6].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(6),
+    },
+    {
+      guestsNumber: 5,
+      startDate: new Date("2026-02-22T12:00:00Z"),
+      endDate: new Date("2026-02-22T15:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[7].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.LUNCH,
+      ...addr(7),
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-03-01T19:00:00Z"),
+      endDate: new Date("2026-03-01T22:00:00Z"),
+      cookId: cooks[0].id,
+      clientId: clients[8].id,
+      status: CookRequestStatus.COMPLETED,
+      mealType: MealType.DINNER,
+      ...addr(8),
+    },
+    // Refusées / annulées Pierre Martin
+    {
+      guestsNumber: 12,
+      startDate: new Date("2025-12-03T18:00:00Z"),
+      endDate: null,
+      cookId: cooks[0].id,
+      clientId: clients[12].id,
+      status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
+      ...addr(12),
+    },
+    {
+      guestsNumber: 6,
+      startDate: new Date("2026-01-05T19:00:00Z"),
+      endDate: null,
+      cookId: cooks[0].id,
+      clientId: clients[13].id,
+      status: CookRequestStatus.REFUSED,
+      mealType: MealType.DINNER,
+      ...addr(13),
+    },
+    {
+      guestsNumber: 4,
+      startDate: new Date("2026-02-14T20:00:00Z"),
+      endDate: null,
+      cookId: cooks[0].id,
+      clientId: clients[14].id,
+      status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
+      ...addr(14),
+    },
     // À venir - pending
     {
       guestsNumber: 4,
@@ -1137,7 +1330,9 @@ async function seed() {
     `${requests.length} demandes de cook créées avec conversations et messages`
   );
 
-  // --- Reviews (une seule prestation COMPLETED déjà notée pour lucas.bernard) ---
+  // --- Reviews ---
+
+  // Marie Dupont — 1 avis existant
   const completedWithReview = savedRequests.find(
     (r) =>
       r.cookId === cooks[1].id &&
@@ -1154,6 +1349,77 @@ async function seed() {
       cookRequestId: completedWithReview.id,
     });
   }
+
+  // Pierre Martin — avis sur ses prestations complétées
+  const pierreReviews: {
+    clientIndex: number;
+    rating: number;
+    comment: string;
+  }[] = [
+    {
+      clientIndex: 3,
+      rating: 5,
+      comment:
+        "Cuisine française authentique, Pierre est un chef exceptionnel ! Nos invités étaient bluffés.",
+    },
+    {
+      clientIndex: 4,
+      rating: 4,
+      comment:
+        "Très bon repas, produits frais de qualité. Je recommande vivement.",
+    },
+    {
+      clientIndex: 5,
+      rating: 5,
+      comment:
+        "Pierre a su s'adapter à nos contraintes alimentaires. Une soirée magnifique.",
+    },
+    {
+      clientIndex: 6,
+      rating: 3,
+      comment: "Correct mais sans plus, le service était un peu lent.",
+    },
+    {
+      clientIndex: 7,
+      rating: 5,
+      comment:
+        "Le meilleur dîner qu'on ait jamais organisé à la maison. Merci Pierre !",
+    },
+    {
+      clientIndex: 9,
+      rating: 4,
+      comment: "Très professionnel, cuisine de qualité. On refera appel à lui.",
+    },
+    {
+      clientIndex: 10,
+      rating: 5,
+      comment: "Incroyable talent, le bœuf bourguignon était parfait.",
+    },
+    {
+      clientIndex: 11,
+      rating: 4,
+      comment: "Belle soirée, Pierre est ponctuel et très agréable.",
+    },
+  ];
+
+  for (const { clientIndex, rating, comment } of pierreReviews) {
+    const req = savedRequests.find(
+      (r) =>
+        r.cookId === cooks[0].id &&
+        r.clientId === clients[clientIndex].id &&
+        r.status === CookRequestStatus.COMPLETED
+    );
+    if (req) {
+      await reviewRepo.save({
+        rating,
+        comment,
+        clientId: clients[clientIndex].id,
+        cookId: cooks[0].id,
+        cookRequestId: req.id,
+      });
+    }
+  }
+
   console.log("Reviews créées");
 
   await dataSource.destroy();
