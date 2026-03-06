@@ -124,7 +124,7 @@ cook-us/
 
 ---
 
-## 🧱 CI
+## 🛡️ CI
 
 ### Pre-push hook (Husky)
 
