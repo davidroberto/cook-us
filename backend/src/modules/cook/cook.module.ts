@@ -7,6 +7,7 @@ import { Cook } from "@src/modules/cook/cook.entity";
 import { CookImage } from "@src/modules/cook/cookImage.entity";
 import { CookProfileController } from "@src/modules/cook/cookProfile.controller";
 import { CookRequest } from "@src/modules/cook/cookRequest.entity";
+import { CookUnavailability } from "@src/modules/cook/cookUnavailability.entity";
 import { GetCookController } from "@src/modules/cook/getCook/getCook.controller";
 import { GetCookUseCase } from "@src/modules/cook/getCook/getCook.useCase";
 import { GetCookProfileUseCase } from "@src/modules/cook/getCookProfile/getCookProfile.useCase";
@@ -15,6 +16,8 @@ import { GetCooksUseCase } from "@src/modules/cook/getCooks/getCooks.useCase";
 import { GetCookStatsController } from "@src/modules/cook/getCookStats/getCookStats.controller";
 import { GetCookStatsUseCase } from "@src/modules/cook/getCookStats/getCookStats.useCase";
 import { UpdateCookProfileUseCase } from "@src/modules/cook/updateCookProfile/updateCookProfile.useCase";
+import { CookCalendarController } from "@src/modules/cook/cookCalendar/cookCalendar.controller";
+import { CookCalendarUseCase } from "@src/modules/cook/cookCalendar/cookCalendar.useCase";
 import { User } from "@src/modules/user/user.entity";
 
 @Module({
@@ -23,6 +26,7 @@ import { User } from "@src/modules/user/user.entity";
       Cook,
       CookImage,
       CookRequest,
+      CookUnavailability,
       CookRequestEntity,
       Client,
       User,
@@ -34,6 +38,7 @@ import { User } from "@src/modules/user/user.entity";
     GetCookController,
     CookProfileController,
     GetCookStatsController,
+    CookCalendarController,
   ],
   providers: [
     GetCooksUseCase,
@@ -41,6 +46,7 @@ import { User } from "@src/modules/user/user.entity";
     GetCookProfileUseCase,
     UpdateCookProfileUseCase,
     GetCookStatsUseCase,
+    CookCalendarUseCase,
   ],
 })
 export class CookModule {}

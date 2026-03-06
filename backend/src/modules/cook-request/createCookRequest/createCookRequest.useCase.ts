@@ -15,6 +15,7 @@ import { CreateCookRequestDto } from "@src/modules/cook-request/createCookReques
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
 import { User } from "@src/modules/user/user.entity";
+import { CookUnavailability } from "@src/modules/cook/cookUnavailability.entity";
 import { NotificationService } from "@src/modules/notification/notification.service";
 import { In, Repository } from "typeorm";
 
@@ -35,6 +36,8 @@ export class CreateCookRequestUseCase {
     private readonly participantRepository: Repository<ConversationParticipant>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(CookUnavailability)
+    private readonly unavailabilityRepository: Repository<CookUnavailability>,
     private readonly notificationService: NotificationService
   ) {}
 
@@ -62,6 +65,16 @@ export class CreateCookRequestUseCase {
       where: { id: dto.cookId },
     });
     if (!cook) throw new NotFoundException("Cuisinier introuvable");
+
+    const dateStr = start.toISOString().slice(0, 10);
+    const unavailability = await this.unavailabilityRepository.findOne({
+      where: { cookId: dto.cookId, date: dateStr },
+    });
+    if (unavailability) {
+      throw new BadRequestException(
+        "Ce cuisinier n'est pas disponible à cette date."
+      );
+    }
 
     const clientParticipations = await this.participantRepository.find({
       where: { authorId: client.userId },

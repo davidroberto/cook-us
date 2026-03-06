@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { SPECIALITY_LABEL } from "@/features/client/cookerBooking/cookerList/components/Card";
 import { useAuth } from "@/features/auth/AuthContext";
+import { getApiUrl } from "@/features/api/getApiUrl";
 import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -8,6 +9,8 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from "re
 import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
 import { PropositionFormFields } from "./PropositionFormFields";
+
+const API_URL = getApiUrl();
 
 type Props = {
   cookId: string;
@@ -34,6 +37,7 @@ export function SendPropositionForm({
   const [street, setStreet] = useState(user?.address?.street ?? "");
   const [postalCode, setPostalCode] = useState(user?.address?.postalCode ?? "");
   const [city, setCity] = useState(user?.address?.city ?? "");
+  const [blockedDates, setBlockedDates] = useState<string[]>([]);
 
   useEffect(() => {
     if (user?.address) {
@@ -42,6 +46,14 @@ export function SendPropositionForm({
       setCity((prev) => prev || user.address!.city);
     }
   }, [user?.address]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/cooks/${cookId}/unavailabilities`)
+      .then((r) => r.json())
+      .then((data: { blockedDates: string[] }) => setBlockedDates(data.blockedDates))
+      .catch(() => {});
+  }, [cookId]);
+
   const { error, isLoading, sendProposition } = useSendProposition();
 
   const handleSubmit = async () => {
@@ -109,6 +121,7 @@ export function SendPropositionForm({
         onSubmit={handleSubmit}
         isLoading={isLoading}
         error={error}
+        blockedDates={blockedDates}
       />
     </ScrollView>
     </KeyboardAvoidingView>

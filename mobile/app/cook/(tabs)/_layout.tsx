@@ -55,6 +55,15 @@ export default function CookTabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="calendrier"
+        options={{
+          title: "Calendrier",
+          tabBarIcon: ({ color, size }) => (
+            <TabBarIcon name="calendar" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="compte"
         options={{
           title: "Compte",

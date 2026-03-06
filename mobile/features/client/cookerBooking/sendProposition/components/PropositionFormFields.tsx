@@ -52,6 +52,7 @@ type PropositionFormFieldsProps = {
   onSubmit: () => void;
   isLoading: boolean;
   error: string | null;
+  blockedDates?: string[];
 };
 
 export function PropositionFormFields({
@@ -72,10 +73,19 @@ export function PropositionFormFields({
   onSubmit,
   isLoading,
   error,
+  blockedDates = [],
 }: PropositionFormFieldsProps) {
   const [showPicker, setShowPicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(getTomorrow());
   const [tempDate, setTempDate] = useState<Date>(getTomorrow());
+
+  // Convert DD-MM-YYYY → YYYY-MM-DD for blocked date check
+  const selectedYMD = (() => {
+    if (!startDate || !/^\d{2}-\d{2}-\d{4}$/.test(startDate)) return null;
+    const [d, m, y] = startDate.split("-");
+    return `${y}-${m}-${d}`;
+  })();
+  const isDateBlocked = selectedYMD !== null && blockedDates.includes(selectedYMD);
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -256,11 +266,20 @@ export function PropositionFormFields({
         autoCorrect={false}
       />
 
+      {isDateBlocked && (
+        <View style={styles.blockedDateContainer}>
+          <Text style={styles.blockedDateText}>
+            ⚠️ Ce cuisinier n'est pas disponible à cette date. Veuillez choisir une autre date.
+          </Text>
+        </View>
+      )}
+
       <Button
         testID="submit-button"
         title="Envoyer la proposition"
         onPress={onSubmit}
         loading={isLoading}
+        disabled={isDateBlocked}
         accessibilityRole="button"
       />
 
@@ -381,6 +400,19 @@ const styles = StyleSheet.create({
   },
   required: {
     color: colors.main,
+  },
+  blockedDateContainer: {
+    backgroundColor: "#FFF3E0",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: "#FF9800",
+  },
+  blockedDateText: {
+    color: "#E65100",
+    fontSize: 14,
+    lineHeight: 20,
   },
   errorContainer: {
     backgroundColor: "#FFEBEE",

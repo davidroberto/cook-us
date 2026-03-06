@@ -6,6 +6,7 @@ import { Client } from "@src/modules/client/client.entity";
 import { Conversation } from "@src/modules/conversation/conversation.entity";
 import { ConversationParticipant } from "@src/modules/conversation/conversationParticipant.entity";
 import { Message } from "@src/modules/conversation/message.entity";
+import { CookUnavailability } from "@src/modules/cook/cookUnavailability.entity";
 import { User } from "@src/modules/user/user.entity";
 import { PayCookRequestController } from "@src/modules/cook-request/payCookRequest/payCookRequest.controller";
 import { PayCookRequestUseCase } from "@src/modules/cook-request/payCookRequest/payCookRequest.useCase";
@@ -47,6 +48,7 @@ import { NotificationModule } from "@src/modules/notification/notification.modul
       Conversation,
       ConversationParticipant,
       Message,
+      CookUnavailability,
       User,
       Review,
     ]),
