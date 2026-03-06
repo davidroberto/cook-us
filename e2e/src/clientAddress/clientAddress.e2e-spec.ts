@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test, type APIRequestContext } from "@playwright/test";
 
 const API = "http://localhost:8080/api";
 
@@ -9,9 +9,9 @@ const COOK_EMAIL = "pierre.martin@cookus.app";
 const COOK_PASSWORD = "cook1234";
 
 async function loginAs(
-  request: Parameters<Parameters<typeof test>[1]>[0]["request"],
+  request: APIRequestContext,
   email: string,
-  password: string
+  password: string,
 ): Promise<string> {
   const res = await request.post(`${API}/auth/login`, {
     data: { email, password },
@@ -22,7 +22,7 @@ async function loginAs(
 
 // ─── GET /auth/me ─────────────────────────────────────────────────────────────
 
-test("GET /auth/me retourne le profil du client avec address null par défaut", async ({
+test("GET /auth/me retourne le profil du client avec le champ address", async ({
   request,
 }) => {
   const token = await loginAs(request, CLIENT_EMAIL, CLIENT_PASSWORD);
@@ -95,12 +95,12 @@ test.describe.serial("PATCH /auth/me adresse", () => {
 
 // ─── POST /cook-request ──────────────────────────────────────────────────────
 
-test("POST /cook-request copie l'adresse du client dans la réservation", async ({
+test("POST /cook-request utilise l'adresse du profil client en fallback", async ({
   request,
 }) => {
   const clientToken = await loginAs(request, CLIENT_EMAIL, CLIENT_PASSWORD);
 
-  // S'assure que le client a une adresse
+  // S'assure que le client a une adresse enregistrée sur son profil
   await request.patch(`${API}/auth/me`, {
     headers: { Authorization: `Bearer ${clientToken}` },
     data: { street: "3 rue du Four", postalCode: "75006", city: "Paris" },
@@ -117,6 +117,7 @@ test("POST /cook-request copie l'adresse du client dans la réservation", async 
   tomorrow.setDate(tomorrow.getDate() + 30);
   tomorrow.setHours(19, 0, 0, 0);
 
+  // Crée une demande sans adresse → le backend utilise l'adresse du profil en fallback
   const res = await request.post(`${API}/cook-request`, {
     headers: { Authorization: `Bearer ${clientToken}` },
     data: {
@@ -131,12 +132,74 @@ test("POST /cook-request copie l'adresse du client dans la réservation", async 
   const body = await res.json();
   expect(body).toHaveProperty("id");
   expect(body).toHaveProperty("clientId");
-  // Le snapshot d'adresse est stocké en base (vérifié via GET detail ci-dessous)
+});
+
+// ─── PATCH /cook-request/:id/address ─────────────────────────────────────────
+
+test("PATCH /cook-request/:id/address met à jour l'adresse de la demande", async ({
+  request,
+}) => {
+  const clientToken = await loginAs(request, CLIENT_EMAIL, CLIENT_PASSWORD);
+  const cookToken = await loginAs(request, COOK_EMAIL, COOK_PASSWORD);
+
+  // Récupère un cook
+  const cooksRes = await request.get(`${API}/cooks`, {
+    headers: { Authorization: `Bearer ${clientToken}` },
+  });
+  const cooksBody = await cooksRes.json();
+  const cookId = cooksBody.data?.[0]?.id ?? cooksBody[0]?.id;
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 60);
+  tomorrow.setHours(20, 0, 0, 0);
+
+  // Crée une demande avec adresse initiale
+  const createRes = await request.post(`${API}/cook-request`, {
+    headers: { Authorization: `Bearer ${clientToken}` },
+    data: {
+      cookId,
+      guestsNumber: 3,
+      startDate: tomorrow.toISOString(),
+      mealType: "dinner",
+      street: "1 rue Initiale",
+      postalCode: "75001",
+      city: "Paris",
+    },
+  });
+  expect(createRes.status()).toBe(201);
+  const created = await createRes.json();
+  const requestId = created.id;
+
+  // Met à jour l'adresse
+  const patchRes = await request.patch(
+    `${API}/cook-request/${requestId}/address`,
+    {
+      headers: { Authorization: `Bearer ${clientToken}` },
+      data: {
+        street: "99 rue Modifiée",
+        postalCode: "75020",
+        city: "Paris",
+      },
+    },
+  );
+  expect(patchRes.status()).toBe(200);
+
+  // Vérifie via le détail de la demande côté cook
+  const detailRes = await request.get(`${API}/cook-request/${requestId}`, {
+    headers: { Authorization: `Bearer ${cookToken}` },
+  });
+  expect(detailRes.status()).toBe(200);
+  const detail = await detailRes.json();
+  expect(detail.client.address).toMatchObject({
+    street: "99 rue Modifiée",
+    postalCode: "75020",
+    city: "Paris",
+  });
 });
 
 // ─── GET /cook-request/:id (côté cook) ───────────────────────────────────────
 
-test("GET /cook-request/:id retourne l'adresse du client dans le détail (côté cook)", async ({
+test("GET /cook-request/:id retourne l'adresse de la prestation dans le détail (côté cook)", async ({
   request,
 }) => {
   const clientToken = await loginAs(request, CLIENT_EMAIL, CLIENT_PASSWORD);
@@ -162,15 +225,15 @@ test("GET /cook-request/:id retourne l'adresse du client dans le détail (côté
     headers: { Authorization: `Bearer ${clientToken}` },
   });
   const cooksBody = await cooksRes.json();
-  const cookProfile = cookProfileRes.status() === 200 ? await cookProfileRes.json() : null;
+  const cookProfile =
+    cookProfileRes.status() === 200 ? await cookProfileRes.json() : null;
 
   // Cherche le cook Pierre Martin dans la liste
   const allCooks: Array<{ id: string; firstName: string; lastName: string }> =
     cooksBody.data ?? cooksBody;
   const pierreId =
-    allCooks.find(
-      (c) => c.firstName === "Pierre" && c.lastName === "Martin"
-    )?.id ?? allCooks[0]?.id;
+    allCooks.find((c) => c.firstName === "Pierre" && c.lastName === "Martin")
+      ?.id ?? allCooks[0]?.id;
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 45);

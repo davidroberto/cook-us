@@ -12,7 +12,6 @@ export class UpdateCookValidationUseCase {
   async execute(cookId: string, approve: boolean) {
     const cook = await this.cookRepository.findOne({ where: { id: cookId } });
     if (!cook) throw new NotFoundException("Cuisinier introuvable");
-    cook.isValidated = approve;
     cook.validationStatus = approve
       ? CookValidationStatus.VALIDATED
       : CookValidationStatus.REFUSED;

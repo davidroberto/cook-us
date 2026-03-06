@@ -66,10 +66,10 @@ export const updateProfile = (
     firstName?: string;
     lastName?: string;
     email?: string;
-    street?: string | null;
-    postalCode?: string | null;
-    city?: string | null;
     thumbnail?: string | null;
+    street?: string;
+    postalCode?: string;
+    city?: string;
   }
 ): Promise<AuthUser> =>
   apiFetch<AuthUser>("/auth/me", token, {

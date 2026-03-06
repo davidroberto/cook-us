@@ -54,6 +54,10 @@ export class CreateCookRequestUseCase {
     const client = await this.clientRepository.findOne({ where: { userId } });
     if (!client) throw new NotFoundException("Client introuvable");
 
+    const street = dto.street?.trim() || client.street || null;
+    const postalCode = dto.postalCode?.trim() || client.postalCode || null;
+    const city = dto.city?.trim() || client.city || null;
+
     const cook = await this.cookRepository.findOne({
       where: { id: dto.cookId },
     });
@@ -108,9 +112,9 @@ export class CreateCookRequestUseCase {
       mealType: dto.mealType,
       message: dto.message ?? null,
       conversationId: conversation.id,
-      street: client.street ?? null,
-      postalCode: client.postalCode ?? null,
-      city: client.city ?? null,
+      street,
+      postalCode,
+      city,
     });
     const saved = await this.cookRequestRepository.save(cookRequest);
 

@@ -46,7 +46,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 45,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "52384710900041",
     description:
       "Chef formé à l'École Ferrandi, spécialisé dans la bistronomy moderne. Je cuisine des plats du terroir revisités avec des produits de saison.",
@@ -58,7 +58,7 @@ const COOKS_DATA = [
     speciality: "italian_cooking",
     hourlyRate: 55,
     city: "Lyon",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "78234501200082",
     description:
       "Passionnée par la cuisine italienne authentique, j'ai vécu 5 ans à Rome et Florence. Pâtes fraîches, risottos et tiramisu maison sont mes spécialités.",
@@ -70,7 +70,7 @@ const COOKS_DATA = [
     speciality: "asian_cooking",
     hourlyRate: 40,
     city: "Marseille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "31928456700013",
     description:
       "Autodidacte passionné par l'Asie du Sud-Est. Je propose des menus thaïlandais, vietnamiens et japonais avec des produits frais et authentiques.",
@@ -82,7 +82,7 @@ const COOKS_DATA = [
     speciality: "vegetarian_cooking",
     hourlyRate: 1000000,
     city: "Bordeaux",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "66172839400057",
     description:
       "Diététicien et chef cuisinier, je crée des menus végétariens et vegan gourmands et équilibrés. La preuve que manger sain peut être délicieux.",
@@ -94,7 +94,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 38,
     city: "Toulouse",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "44332211500067",
     description:
       "Champion régional de barbecue 2023. Viandes, poissons et légumes sur le grill, marinades maison et sauces artisanales. L'été à volonté.",
@@ -106,7 +106,7 @@ const COOKS_DATA = [
     speciality: "pastry_cooking",
     hourlyRate: 62,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "49038271500029",
     description:
       "Ancienne pâtissière dans un palace parisien, je propose des buffets de desserts et des pièces montées pour vos événements. Créations sur mesure.",
@@ -118,7 +118,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 48,
     city: "Nice",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "83920165400074",
     description:
       "Né à Nice, je cuisine la Méditerranée : bouillabaisse, socca, ratatouille et mezze. Des saveurs solaires pour vos repas en famille ou entre amis.",
@@ -130,7 +130,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 70,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "27463801900048",
     description:
       "Formée à Paris et Tokyo, je propose une cuisine fusion qui marie techniques françaises et saveurs japonaises. Une expérience gastronomique unique.",
@@ -142,7 +142,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 95,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "61583920700061",
     description:
       "Étoilé Michelin pendant 3 ans, je propose une expérience gastronomique à domicile. Menus dégustation 7 ou 9 services avec accords mets et vins.",
@@ -154,7 +154,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 42,
     city: "Aix-en-Provence",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "94712038300036",
     description:
       "Fille de restaurateurs provençaux, je transmets la chaleur de la cuisine du Sud. Produits du marché, herbes fraîches et huile d'olive de qualité.",
@@ -166,7 +166,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 68,
     city: "Paris",
-    isValidated: false,
+    validationStatus: CookValidationStatus.PENDING,
     siret: "34567890100125",
     description:
       "Formé au Japon pendant 2 ans, je prépare sushis, sashimis et yakitoris devant vos invités. Poissons sourcés directement chez les pêcheurs.",
@@ -178,7 +178,7 @@ const COOKS_DATA = [
     speciality: "mexican_cooking",
     hourlyRate: 36,
     city: "Nantes",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "38201947600019",
     description:
       "Revenue du Mexique après 18 mois d'immersion, je propose des tacos, enchiladas et guacamole authentiques. Épices et piments sélectionnés avec soin.",
@@ -190,7 +190,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 32,
     city: "Lille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "72094831500053",
     description:
       "Globe-trotter culinaire, j'ai voyagé dans 30 pays et rapporté leurs recettes authentiques. Curry indien, pad thaï, shawarma et empanadas au programme.",
@@ -202,7 +202,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 52,
     city: "Rennes",
-    isValidated: false,
+    validationStatus: CookValidationStatus.PENDING,
     siret: "55318264900087",
     thumbnail:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
@@ -216,7 +216,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 58,
     city: "Strasbourg",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "13579024600163",
     description:
       "Chef créatif formé dans les grandes maisons alsaciennes, je propose une cuisine contemporaine alliant tradition et innovation. Menus personnalisés.",
@@ -230,9 +230,6 @@ const CLIENTS_DATA = [
     email: "lucas.bernard@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200",
-    street: "15 rue de Rivoli",
-    postalCode: "75001",
-    city: "Paris",
   },
   {
     firstName: "Emma",
@@ -240,17 +237,11 @@ const CLIENTS_DATA = [
     email: "emma.petit@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
-    street: "8 avenue Jean Jaurès",
-    postalCode: "69007",
-    city: "Lyon",
   },
   {
     firstName: "Hugo",
     lastName: "Simon",
     email: "hugo.simon@cookus.app",
-    street: "22 boulevard de la Canebière",
-    postalCode: "13001",
-    city: "Marseille",
   },
   {
     firstName: "Chloé",
@@ -258,17 +249,11 @@ const CLIENTS_DATA = [
     email: "chloe.dubois@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200",
-    street: "5 place Bellecour",
-    postalCode: "69002",
-    city: "Lyon",
   },
   {
     firstName: "Nathan",
     lastName: "Leroy",
     email: "nathan.leroy@cookus.app",
-    street: "12 rue du Faubourg Saint-Honoré",
-    postalCode: "75008",
-    city: "Paris",
   },
   {
     firstName: "Zoé",
@@ -276,9 +261,6 @@ const CLIENTS_DATA = [
     email: "zoe.girard@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200",
-    street: "3 rue de la République",
-    postalCode: "33000",
-    city: "Bordeaux",
   },
   {
     firstName: "Théo",
@@ -286,17 +268,11 @@ const CLIENTS_DATA = [
     email: "theo.bonnet@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200",
-    street: "18 rue Alsace-Lorraine",
-    postalCode: "31000",
-    city: "Toulouse",
   },
   {
     firstName: "Manon",
     lastName: "Lefebvre",
     email: "manon.lefebvre@cookus.app",
-    street: "7 rue de Siam",
-    postalCode: "29200",
-    city: "Brest",
   },
   {
     firstName: "Raphaël",
@@ -304,9 +280,6 @@ const CLIENTS_DATA = [
     email: "raphael.marchand@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=200",
-    street: "25 avenue de la Liberté",
-    postalCode: "06000",
-    city: "Nice",
   },
   {
     firstName: "Inès",
@@ -314,33 +287,21 @@ const CLIENTS_DATA = [
     email: "ines.bertrand@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=200",
-    street: "10 rue Nationale",
-    postalCode: "59000",
-    city: "Lille",
   },
   {
     firstName: "Louis",
     lastName: "Dumont",
     email: "louis.dumont@cookus.app",
-    street: "14 quai des Chartrons",
-    postalCode: "33000",
-    city: "Bordeaux",
   },
   {
     firstName: "Alice",
     lastName: "Renard",
     email: "alice.renard@cookus.app",
-    street: "6 rue Kléber",
-    postalCode: "67000",
-    city: "Strasbourg",
   },
   {
     firstName: "Valentin",
     lastName: "Morin",
     email: "valentin.morin@cookus.app",
-    street: "20 rue Crébillon",
-    postalCode: "44000",
-    city: "Nantes",
   },
   {
     firstName: "Pauline",
@@ -348,17 +309,11 @@ const CLIENTS_DATA = [
     email: "pauline.simon@cookus.app",
     thumbnail:
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200",
-    street: "9 place du Capitole",
-    postalCode: "31000",
-    city: "Toulouse",
   },
   {
     firstName: "Clément",
     lastName: "Laurent",
     email: "clement.laurent@cookus.app",
-    street: "11 cours Mirabeau",
-    postalCode: "13100",
-    city: "Aix-en-Provence",
   },
 ];
 
@@ -412,10 +367,7 @@ async function seed() {
       hourlyRate: data.hourlyRate,
       city: data.city,
       isActive: true,
-      isValidated: data.isValidated,
-      validationStatus: data.isValidated
-        ? CookValidationStatus.VALIDATED
-        : CookValidationStatus.PENDING,
+      validationStatus: data.validationStatus ?? CookValidationStatus.PENDING,
       description: data.description,
       userId: user.id,
     });
@@ -649,6 +601,33 @@ async function seed() {
   const hashedClientPassword = await bcrypt.hash(CLIENT_PASSWORD, 10);
   const clients: Client[] = [];
 
+  // Adresses de profil pour certains clients (pré-remplissage du formulaire de demande)
+  const CLIENT_PROFILE_ADDRESSES: Record<
+    string,
+    { street: string; postalCode: string; city: string }
+  > = {
+    "lucas.bernard@cookus.app": {
+      street: "15 rue de Rivoli",
+      postalCode: "75001",
+      city: "Paris",
+    },
+    "emma.petit@cookus.app": {
+      street: "8 avenue Jean Jaurès",
+      postalCode: "69007",
+      city: "Lyon",
+    },
+    "hugo.simon@cookus.app": {
+      street: "22 boulevard de la Canebière",
+      postalCode: "13001",
+      city: "Marseille",
+    },
+    "raphael.marchand@cookus.app": {
+      street: "25 avenue de la Liberté",
+      postalCode: "06000",
+      city: "Nice",
+    },
+  };
+
   for (const data of CLIENTS_DATA) {
     const user = await userRepo.save({
       firstName: data.firstName,
@@ -660,11 +639,10 @@ async function seed() {
         ? { thumbnail: data.thumbnail }
         : {}),
     });
+    const profileAddress = CLIENT_PROFILE_ADDRESSES[data.email] ?? {};
     const client = await clientRepo.save({
       userId: user.id,
-      street: data.street,
-      postalCode: data.postalCode,
-      city: data.city,
+      ...profileAddress,
     });
     clients.push(client);
   }
@@ -673,6 +651,37 @@ async function seed() {
   // --- Cook requests avec conversations ---
   // Reproduit le comportement du backend : chaque cook request a une conversation.
   // Si un même couple client/cook a plusieurs demandes, elles partagent la même conversation.
+
+  // Adresses des clients (indexées comme clients[]) — utilisées sur les cook requests
+  const CLIENT_ADDRESSES = [
+    { street: "15 rue de Rivoli", postalCode: "75001", city: "Paris" },
+    { street: "8 avenue Jean Jaurès", postalCode: "69007", city: "Lyon" },
+    {
+      street: "22 boulevard de la Canebière",
+      postalCode: "13001",
+      city: "Marseille",
+    },
+    { street: "5 place Bellecour", postalCode: "69002", city: "Lyon" },
+    {
+      street: "12 rue du Faubourg Saint-Honoré",
+      postalCode: "75008",
+      city: "Paris",
+    },
+    { street: "3 rue de la République", postalCode: "33000", city: "Bordeaux" },
+    { street: "18 rue Alsace-Lorraine", postalCode: "31000", city: "Toulouse" },
+    { street: "7 rue de Siam", postalCode: "29200", city: "Brest" },
+    { street: "25 avenue de la Liberté", postalCode: "06000", city: "Nice" },
+    { street: "10 rue Nationale", postalCode: "59000", city: "Lille" },
+    { street: "14 quai des Chartrons", postalCode: "33000", city: "Bordeaux" },
+    { street: "6 rue Kléber", postalCode: "67000", city: "Strasbourg" },
+    { street: "20 rue Crébillon", postalCode: "44000", city: "Nantes" },
+    { street: "9 place du Capitole", postalCode: "31000", city: "Toulouse" },
+    {
+      street: "11 cours Mirabeau",
+      postalCode: "13100",
+      city: "Aix-en-Provence",
+    },
+  ];
 
   function formatDateDDMMYYYY(date: Date): string {
     const d = date.getUTCDate().toString().padStart(2, "0");
@@ -705,6 +714,8 @@ async function seed() {
     return conversation.id;
   }
 
+  const addr = (i: number) => CLIENT_ADDRESSES[i];
+
   const requests: Partial<CookRequestEntity>[] = [
     // Passées - accepted
     {
@@ -717,6 +728,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
+      ...addr(0),
     },
     {
       guestsNumber: 4,
@@ -726,6 +738,7 @@ async function seed() {
       clientId: clients[1].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      ...addr(1),
     },
     {
       guestsNumber: 10,
@@ -737,6 +750,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Repas d'entreprise, une personne allergique aux fruits à coque.",
+      ...addr(2),
     },
     {
       guestsNumber: 8,
@@ -746,6 +760,7 @@ async function seed() {
       clientId: clients[3].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(3),
     },
     {
       guestsNumber: 3,
@@ -755,6 +770,7 @@ async function seed() {
       clientId: clients[4].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(4),
     },
     {
       guestsNumber: 12,
@@ -766,6 +782,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
+      ...addr(5),
     },
     {
       guestsNumber: 5,
@@ -775,6 +792,7 @@ async function seed() {
       clientId: clients[6].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(6),
     },
     {
       guestsNumber: 7,
@@ -784,6 +802,7 @@ async function seed() {
       clientId: clients[7].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      ...addr(7),
     },
     {
       guestsNumber: 2,
@@ -795,6 +814,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
+      ...addr(8),
     },
     {
       guestsNumber: 20,
@@ -804,6 +824,7 @@ async function seed() {
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(9),
     },
     // Passées - refused
     {
@@ -814,6 +835,7 @@ async function seed() {
       clientId: clients[2].id,
       status: CookRequestStatus.REFUSED,
       mealType: MealType.DINNER,
+      ...addr(2),
     },
     {
       guestsNumber: 4,
@@ -823,6 +845,7 @@ async function seed() {
       clientId: clients[10].id,
       status: CookRequestStatus.REFUSED,
       mealType: MealType.DINNER,
+      ...addr(10),
     },
     {
       guestsNumber: 6,
@@ -832,6 +855,7 @@ async function seed() {
       clientId: clients[11].id,
       status: CookRequestStatus.REFUSED,
       mealType: MealType.LUNCH,
+      ...addr(11),
     },
     // Passées - cancelled
     {
@@ -842,6 +866,7 @@ async function seed() {
       clientId: clients[0].id,
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
+      ...addr(0),
     },
     {
       guestsNumber: 5,
@@ -851,6 +876,7 @@ async function seed() {
       clientId: clients[12].id,
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
+      ...addr(12),
     },
     {
       guestsNumber: 3,
@@ -860,6 +886,7 @@ async function seed() {
       clientId: clients[13].id,
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
+      ...addr(13),
     },
     // Terminées - completed (pour tester la notation)
     {
@@ -871,6 +898,7 @@ async function seed() {
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.DINNER,
       message: "Super soirée, cuisine française excellente.",
+      ...addr(0),
     },
     {
       guestsNumber: 6,
@@ -880,6 +908,7 @@ async function seed() {
       clientId: clients[0].id,
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.LUNCH,
+      ...addr(0),
     },
     {
       guestsNumber: 8,
@@ -889,6 +918,7 @@ async function seed() {
       clientId: clients[1].id,
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.DINNER,
+      ...addr(1),
     },
     // À venir - pending
     {
@@ -900,6 +930,7 @@ async function seed() {
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
       message: "Bonjour, nous sommes 2 végétariens et 2 carnivores.",
+      ...addr(0),
     },
     {
       guestsNumber: 8,
@@ -909,6 +940,7 @@ async function seed() {
       clientId: clients[1].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
+      ...addr(1),
     },
     {
       guestsNumber: 2,
@@ -919,6 +951,7 @@ async function seed() {
       status: CookRequestStatus.PENDING,
       mealType: MealType.LUNCH,
       message: "Déjeuner d'affaires, cuisine légère et raffinée souhaitée.",
+      ...addr(2),
     },
     {
       guestsNumber: 14,
@@ -928,6 +961,7 @@ async function seed() {
       clientId: clients[3].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
+      ...addr(3),
     },
     {
       guestsNumber: 6,
@@ -937,6 +971,7 @@ async function seed() {
       clientId: clients[4].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
+      ...addr(4),
     },
     {
       guestsNumber: 10,
@@ -946,6 +981,7 @@ async function seed() {
       clientId: clients[5].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.LUNCH,
+      ...addr(5),
     },
     {
       guestsNumber: 5,
@@ -955,6 +991,7 @@ async function seed() {
       clientId: clients[6].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
+      ...addr(6),
     },
     {
       guestsNumber: 3,
@@ -964,6 +1001,7 @@ async function seed() {
       clientId: clients[7].id,
       status: CookRequestStatus.PENDING,
       mealType: MealType.DINNER,
+      ...addr(7),
     },
     // À venir - accepted
     {
@@ -975,6 +1013,7 @@ async function seed() {
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
       message: "Événement associatif, budget maîtrisé, cuisine conviviale.",
+      ...addr(8),
     },
     {
       guestsNumber: 7,
@@ -984,6 +1023,7 @@ async function seed() {
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(9),
     },
     {
       guestsNumber: 4,
@@ -993,6 +1033,7 @@ async function seed() {
       clientId: clients[10].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      ...addr(10),
     },
     {
       guestsNumber: 16,
@@ -1002,6 +1043,7 @@ async function seed() {
       clientId: clients[11].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(11),
     },
     {
       guestsNumber: 9,
@@ -1011,6 +1053,7 @@ async function seed() {
       clientId: clients[12].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(12),
     },
     {
       guestsNumber: 6,
@@ -1020,6 +1063,7 @@ async function seed() {
       clientId: clients[13].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      ...addr(13),
     },
     {
       guestsNumber: 12,
@@ -1029,6 +1073,7 @@ async function seed() {
       clientId: clients[14].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      ...addr(14),
     },
   ];
 
@@ -1060,6 +1105,9 @@ async function seed() {
           guestsNumber: saved.guestsNumber,
           mealType: saved.mealType,
           message: saved.message || "",
+          street: saved.street ?? "",
+          postalCode: saved.postalCode ?? "",
+          city: saved.city ?? "",
           cookRequestId: saved.id,
         })}`,
       })

@@ -3,8 +3,9 @@ import {
   useOrderHistory,
   type CookRequestStatus,
 } from "@/features/client/account/viewProfile/useOrderHistory";
-import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
-import { ReviewSection } from "@/features/client/review/ReviewSection";
+import { CookRequestCard } from "@/features/client/cookRequest/components/CookRequestCard";
+import { AddressEditor } from "@/features/client/cookRequest/components/AddressEditor";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useRouter } from "expo-router";
@@ -12,6 +13,8 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,34 +26,13 @@ type Tab = "upcoming" | "completed";
 
 const UPCOMING_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
 const COMPLETED_STATUSES: CookRequestStatus[] = ["completed", "refused", "cancelled"];
-
-const MEAL_TYPE_LABELS: Record<string, string> = {
-  breakfast: "Petit-déjeuner",
-  lunch: "Déjeuner",
-  dinner: "Dîner",
-};
-
-const STATUS_LABEL: Record<CookRequestStatus, string> = {
-  pending: "En attente",
-  accepted: "Acceptée",
-  refused: "Refusée",
-  cancelled: "Annulée",
-  completed: "Terminée",
-};
-
-const STATUS_COLOR: Record<CookRequestStatus, string> = {
-  pending: colors.secondary,
-  accepted: "#4CAF50",
-  refused: colors.mainDark,
-  cancelled: "#9E9E9E",
-  completed: "#607D8B",
-};
-
 const CANCELLABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted"];
+const EDITABLE_STATUSES: CookRequestStatus[] = ["pending", "accepted", "refused", "cancelled"];
 
 export default function OrderHistoryScreen() {
   const router = useRouter();
   const { orders, loading, error, refresh } = useOrderHistory();
+  const { token } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("upcoming");
 
   const filteredOrders = orders.filter((o) =>
@@ -121,8 +103,13 @@ export default function OrderHistoryScreen() {
     <ScreenBackground>
       {header}
       {tabs}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
       <FlatList
         data={filteredOrders}
+        keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
           <View style={styles.centered}>
             <Text style={styles.emptyTitle}>Aucune réservation</Text>
@@ -135,73 +122,34 @@ export default function OrderHistoryScreen() {
         }
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.list}
-        renderItem={({ item }) => {
-          const date = new Date(item.startDate);
-          const formattedDate = date.toLocaleDateString("fr-FR", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          });
-
-          const canCancel = CANCELLABLE_STATUSES.includes(item.status);
-
-          return (
-            <View style={styles.card} testID="order-item">
-              <View style={styles.cardHeader}>
-                <Text style={styles.cookName} testID="order-cook-name">
-                  {item.cook.firstName} {item.cook.lastName}
-                </Text>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    { backgroundColor: STATUS_COLOR[item.status] },
-                  ]}
-                >
-                  <Text style={styles.statusText} testID="order-status">
-                    {STATUS_LABEL[item.status]}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.cardBody}>
-                <Text style={styles.detail} testID="order-date">
-                  {formattedDate}
-                </Text>
-                <Text style={styles.detail} testID="order-guests">
-                  {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
-                </Text>
-              </View>
-              <Text style={styles.detail} testID="order-meal-type">
-                {MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}
-              </Text>
-
-              {item.cancellationReason && (
-                <Text style={styles.cancellationReason} testID="cancellation-reason">
-                  Motif : {item.cancellationReason}
-                </Text>
-              )}
-
-              {canCancel && (
-                <CancelBookingButton
-                  requestId={item.id}
-                  cookName={`${item.cook.firstName} ${item.cook.lastName}`}
-                  onSuccess={refresh}
-                />
-              )}
-
-              {item.status === "completed" && (
-                <ReviewSection
-                  cookRequestId={item.id}
-                  existingReview={item.review}
-                  cookName={`${item.cook.firstName} ${item.cook.lastName}`}
-                  onReviewSubmitted={refresh}
-                />
-              )}
-            </View>
-          );
-        }}
+        renderItem={({ item }) => (
+          <CookRequestCard
+            id={item.id}
+            startDate={item.startDate}
+            status={item.status}
+            guestsNumber={item.guestsNumber}
+            mealType={item.mealType}
+            cancellationReason={item.cancellationReason}
+            cookName={`${item.cook.firstName} ${item.cook.lastName}`}
+            canCancel={CANCELLABLE_STATUSES.includes(item.status)}
+            onCancelSuccess={refresh}
+            review={item.review}
+            onReviewSubmitted={refresh}
+            address={item.street ? `${item.street}, ${item.postalCode} ${item.city}` : null}
+          >
+            <AddressEditor
+              id={item.id}
+              street={item.street}
+              postalCode={item.postalCode}
+              city={item.city}
+              token={token}
+              canEdit={EDITABLE_STATUSES.includes(item.status)}
+              onUpdated={refresh}
+            />
+          </CookRequestCard>
+        )}
       />
-
+      </KeyboardAvoidingView>
     </ScreenBackground>
   );
 }
@@ -236,54 +184,6 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
     flexGrow: 1,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: colors.text,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: colors.opacity[8],
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  cookName: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: colors.text,
-    flex: 1,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: colors.white,
-  },
-  cardBody: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  detail: {
-    fontSize: 14,
-    color: colors.text,
-    opacity: 0.7,
-  },
-  cancellationReason: {
-    marginTop: 8,
-    fontSize: 13,
-    color: colors.mainDark,
-    fontStyle: "italic",
   },
   emptyTitle: {
     fontSize: 18,

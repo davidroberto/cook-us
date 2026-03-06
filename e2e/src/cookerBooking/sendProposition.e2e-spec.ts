@@ -75,6 +75,18 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
     });
   });
 
+  test("affiche les champs adresse", async ({ page }) => {
+    await expect(page.getByTestId("street-input")).toBeVisible({ timeout: FORM_TIMEOUT });
+    await expect(page.getByTestId("postalcode-input")).toBeVisible({ timeout: FORM_TIMEOUT });
+    await expect(page.getByTestId("city-input")).toBeVisible({ timeout: FORM_TIMEOUT });
+  });
+
+  test("pré-remplit les champs adresse depuis le profil client", async ({ page }) => {
+    await expect(page.getByTestId("street-input")).not.toHaveValue("", { timeout: FORM_TIMEOUT });
+    await expect(page.getByTestId("postalcode-input")).not.toHaveValue("");
+    await expect(page.getByTestId("city-input")).not.toHaveValue("");
+  });
+
   test("affiche une erreur si le formulaire est soumis vide", async ({
     page,
   }) => {
@@ -96,6 +108,38 @@ test.describe("Envoi d'une proposition au cuisinier", () => {
         await page.getByTestId("number-of-guests-input").pressSequentially("4");
         await page.getByTestId("start-date-input").fill("15-06-2026");
         await page.getByTestId("meal-type-dinner").click();
+        await page.getByTestId("street-input").fill("15 rue de Rivoli");
+        await page.getByTestId("postalcode-input").fill("75001");
+        await page.getByTestId("city-input").fill("Paris");
+        await page.getByTestId("submit-button").click();
+      })(),
+    ]);
+
+    expect(response.status(), `API a répondu ${response.status()}: ${await response.text()}`).toBe(201);
+
+    await expect(page).toHaveURL(/\/client\/messaging\//, {
+      timeout: FORM_TIMEOUT,
+    });
+  });
+
+  test("envoie la proposition sans retaper l'adresse (pré-remplie depuis le profil)", async ({
+    page,
+  }) => {
+    // Attendre que le pré-remplissage soit effectif
+    await expect(page.getByTestId("street-input")).not.toHaveValue("", {
+      timeout: FORM_TIMEOUT,
+    });
+
+    const [response] = await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes("/cook-request") && res.request().method() === "POST",
+        { timeout: FORM_TIMEOUT },
+      ),
+      (async () => {
+        await page.getByTestId("number-of-guests-input").pressSequentially("2");
+        await page.getByTestId("start-date-input").fill("20-06-2027");
+        await page.getByTestId("meal-type-lunch").click();
+        // Pas de remplissage des champs adresse — on utilise le pré-remplissage
         await page.getByTestId("submit-button").click();
       })(),
     ]);

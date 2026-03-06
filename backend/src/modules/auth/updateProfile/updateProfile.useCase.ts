@@ -40,23 +40,28 @@ export class UpdateProfileUseCase {
 
     await this.userRepository.save(user);
 
-    let address: {
-      street: string | null;
-      postalCode: string | null;
-      city: string | null;
-    } | null = null;
+    let address: { street: string; postalCode: string; city: string } | null =
+      null;
 
     if (user.role === UserRole.CLIENT) {
       const client = await this.clientRepository.findOne({ where: { userId } });
-      if (client) {
-        if (dto.street !== undefined) client.street = dto.street;
-        if (dto.postalCode !== undefined) client.postalCode = dto.postalCode;
-        if (dto.city !== undefined) client.city = dto.city;
+      if (
+        client &&
+        (dto.street !== undefined ||
+          dto.postalCode !== undefined ||
+          dto.city !== undefined)
+      ) {
+        if (dto.street !== undefined) client.street = dto.street || null;
+        if (dto.postalCode !== undefined)
+          client.postalCode = dto.postalCode || null;
+        if (dto.city !== undefined) client.city = dto.city || null;
         await this.clientRepository.save(client);
+      }
+      if (client?.street && client?.postalCode && client?.city) {
         address = {
-          street: client.street ?? null,
-          postalCode: client.postalCode ?? null,
-          city: client.city ?? null,
+          street: client.street,
+          postalCode: client.postalCode,
+          city: client.city,
         };
       }
     }
@@ -68,7 +73,7 @@ export class UpdateProfileUseCase {
       email: user.email,
       role: user.role,
       thumbnail: user.thumbnail ?? null,
-      address,
+      ...(user.role === UserRole.CLIENT ? { address } : {}),
     };
   }
 }

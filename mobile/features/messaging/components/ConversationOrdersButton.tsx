@@ -1,9 +1,11 @@
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,93 +13,89 @@ import {
 } from "react-native";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
+import { useAuth } from "@/features/auth/AuthContext";
 import { useConversationRequests } from "@/features/messaging/useConversationRequests";
 import type { CookRequestSummary } from "@/features/messaging/useConversationRequests";
-import { CancelBookingButton } from "@/features/client/cancelBooking/components/CancelBookingButton";
+import {
+  CookRequestCard,
+  type CookRequestCardStatus,
+} from "@/features/client/cookRequest/components/CookRequestCard";
+import { AddressEditor } from "@/features/client/cookRequest/components/AddressEditor";
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: "En attente",
-  accepted: "Acceptée",
-  refused: "Refusée",
-  cancelled: "Annulée",
-};
-
-const STATUS_COLOR: Record<string, string> = {
-  pending: colors.secondary,
-  accepted: "#4CAF50",
-  refused: colors.mainDark,
-  cancelled: "#9E9E9E",
-};
-
-const MEAL_TYPE_LABELS: Record<string, string> = {
-  breakfast: "Petit-déjeuner",
-  lunch: "Déjeuner",
-  dinner: "Dîner",
-};
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
+const EDITABLE_STATUSES = ["pending", "accepted", "refused", "cancelled"];
 const CANCELLABLE_STATUSES = ["pending", "accepted"];
 
-type RequestItemProps = {
+function RequestItem({
+  item,
+  cookName,
+  isClient,
+  token,
+  onCancelSuccess,
+  onAddressUpdated,
+}: {
   item: CookRequestSummary;
   cookName?: string;
+  isClient: boolean;
+  token: string | null;
   onCancelSuccess?: () => void;
-};
-
-function RequestItem({ item, cookName, onCancelSuccess }: RequestItemProps) {
-  const statusColor = STATUS_COLOR[item.status] ?? "#9E9E9E";
-  const statusLabel = STATUS_LABEL[item.status] ?? item.status;
+  onAddressUpdated: () => void;
+}) {
   const canCancel = !!cookName && CANCELLABLE_STATUSES.includes(item.status);
+  const canEditAddress = isClient && EDITABLE_STATUSES.includes(item.status);
+  const address = item.street
+    ? `${item.street}, ${item.postalCode} ${item.city}`
+    : null;
+
   return (
-    <View style={styles.requestItem}>
-      <View style={styles.requestRow}>
-        <Text style={styles.requestDate}>{formatDate(item.startDate)}</Text>
-        <View style={[styles.badge, { backgroundColor: statusColor }]}>
-          <Text style={styles.badgeText}>{statusLabel}</Text>
-        </View>
-      </View>
-      <Text style={styles.requestDetail}>
-        {item.guestsNumber} convive{item.guestsNumber > 1 ? "s" : ""}
-        {item.mealType
-          ? ` · ${MEAL_TYPE_LABELS[item.mealType] ?? item.mealType}`
-          : ""}
-      </Text>
-      {canCancel && (
-        <CancelBookingButton
-          requestId={item.id}
-          cookName={cookName!}
-          onSuccess={onCancelSuccess ?? (() => {})}
-        />
-      )}
-    </View>
+    <CookRequestCard
+      id={item.id}
+      startDate={item.startDate}
+      status={item.status as CookRequestCardStatus}
+      guestsNumber={item.guestsNumber}
+      mealType={item.mealType}
+      cookName={cookName}
+      canCancel={canCancel}
+      onCancelSuccess={onCancelSuccess}
+      address={address}
+    >
+      <AddressEditor
+        id={item.id}
+        street={item.street}
+        postalCode={item.postalCode}
+        city={item.city}
+        token={token}
+        canEdit={canEditAddress}
+        onUpdated={onAddressUpdated}
+      />
+    </CookRequestCard>
   );
 }
 
 type Props = {
   conversationId: number;
   cookName?: string;
+  onClose?: () => void;
 };
 
-export function ConversationOrdersButton({ conversationId, cookName }: Props) {
+export function ConversationOrdersButton({ conversationId, cookName, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
+  const { user, token } = useAuth();
+  const isClient = user?.role === "client";
 
   const open = useCallback(() => {
     setVisible(true);
     load();
   }, [load]);
 
+  const close = useCallback(() => {
+    setVisible(false);
+    onClose?.();
+  }, [onClose]);
+
   return (
     <>
-      <TouchableOpacity onPress={open} style={styles.button}>
+      <TouchableOpacity onPress={open} style={styles.button} testID="orders-button">
         <Text style={styles.buttonText}>Commandes</Text>
       </TouchableOpacity>
 
@@ -105,13 +103,17 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
         visible={visible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={close}
       >
         <SafeAreaView style={styles.modal}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Commandes</Text>
             <TouchableOpacity
-              onPress={() => setVisible(false)}
+              onPress={close}
               style={styles.closeButton}
             >
               <Text style={styles.closeText}>Fermer</Text>
@@ -144,19 +146,24 @@ export function ConversationOrdersButton({ conversationId, cookName }: Props) {
           )}
 
           {state.status === "success" && state.requests.length > 0 && (
-            <FlatList
-              data={state.requests}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => (
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.list}
+            >
+              {state.requests.map((item) => (
                 <RequestItem
+                  key={String(item.id)}
                   item={item}
                   cookName={cookName}
+                  isClient={isClient}
+                  token={token}
                   onCancelSuccess={load}
+                  onAddressUpdated={load}
                 />
-              )}
-              contentContainerStyle={styles.list}
-            />
+              ))}
+            </ScrollView>
           )}
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </Modal>
     </>
@@ -204,38 +211,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   list: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  requestItem: {
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.tertiary,
-  },
-  requestRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  requestDate: {
-    ...typography.styles.body2Bold,
-    color: colors.text,
-  },
-  requestDetail: {
-    ...typography.styles.body2Regular,
-    color: colors.text,
-    opacity: 0.6,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.white,
+    padding: 16,
+    paddingBottom: 32,
   },
   errorText: {
     ...typography.styles.body1Regular,

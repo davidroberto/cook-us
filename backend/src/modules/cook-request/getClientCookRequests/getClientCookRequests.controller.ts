@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Request } from "@nestjs/common";
+import { Controller, Get, Request } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -32,21 +32,5 @@ export class GetClientCookRequestsController {
   @ApiResponse({ status: 404, description: "Client introuvable" })
   getMyRequests(@Request() req) {
     return this.getClientCookRequestsUseCase.execute(req.user.id);
-  }
-
-  @Get("conversation/:conversationId")
-  @Roles(UserRole.CLIENT, UserRole.COOK)
-  @ApiOperation({
-    summary:
-      "Lister les demandes entre les deux participants d'une conversation",
-  })
-  getByConversation(
-    @Param("conversationId", ParseIntPipe) conversationId: number,
-    @Request() req: { user: { id: number } }
-  ) {
-    return this.getClientCookRequestsUseCase.executeByConversation(
-      conversationId,
-      req.user.id
-    );
   }
 }

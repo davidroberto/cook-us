@@ -1,9 +1,10 @@
 import { Card } from "@/components/ui/Card";
 import { SPECIALITY_LABEL } from "@/features/client/cookerBooking/cookerList/components/Card";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/styles/colors";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from "react-native";
 import type { MealType } from "../types";
 import { useSendProposition } from "../useSendProposition";
 import { PropositionFormFields } from "./PropositionFormFields";
@@ -23,12 +24,24 @@ export function SendPropositionForm({
   cookLastName,
   cookSpeciality,
 }: Props) {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [numberOfGuests, setNumberOfGuests] = useState("");
   const [startDate, setStartDate] = useState("");
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [message, setMessage] = useState("");
+  const [street, setStreet] = useState(user?.address?.street ?? "");
+  const [postalCode, setPostalCode] = useState(user?.address?.postalCode ?? "");
+  const [city, setCity] = useState(user?.address?.city ?? "");
 
-  const router = useRouter();
+  useEffect(() => {
+    if (user?.address) {
+      setStreet((prev) => prev || user.address!.street);
+      setPostalCode((prev) => prev || user.address!.postalCode);
+      setCity((prev) => prev || user.address!.city);
+    }
+  }, [user?.address]);
   const { error, isLoading, sendProposition } = useSendProposition();
 
   const handleSubmit = async () => {
@@ -39,6 +52,9 @@ export function SendPropositionForm({
       startDate,
       mealType: mealType!,
       message,
+      street,
+      postalCode,
+      city,
     });
 
     if (result) {
@@ -56,9 +72,14 @@ export function SendPropositionForm({
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
     <ScrollView
       testID="send-proposition-form"
       contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
     >
       <Card style={styles.cookerHeader}>
         <Text style={styles.cookerLabel}>Cuisinier sélectionné</Text>
@@ -79,11 +100,18 @@ export function SendPropositionForm({
         onMealTypeChange={setMealType}
         message={message}
         onMessageChange={setMessage}
+        street={street}
+        onStreetChange={setStreet}
+        postalCode={postalCode}
+        onPostalCodeChange={setPostalCode}
+        city={city}
+        onCityChange={setCity}
         onSubmit={handleSubmit}
         isLoading={isLoading}
         error={error}
       />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

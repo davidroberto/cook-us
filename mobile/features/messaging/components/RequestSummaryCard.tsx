@@ -13,10 +13,13 @@ type Props = {
   guestsNumber: number;
   mealType?: string;
   message?: string;
+  street?: string;
+  postalCode?: string;
+  city?: string;
   isSentByMe: boolean;
 };
 
-export function RequestSummaryCard({ startDate, guestsNumber, mealType, message, isSentByMe }: Props) {
+export function RequestSummaryCard({ startDate, guestsNumber, mealType, message, street, postalCode, city, isSentByMe }: Props) {
   return (
     <View style={styles.card} testID="request-summary-card">
       <Text style={styles.title}>{isSentByMe ? "Demande envoyée" : "Demande reçue"}</Text>
@@ -34,6 +37,12 @@ export function RequestSummaryCard({ startDate, guestsNumber, mealType, message,
           <View style={styles.row}>
             <Text style={styles.label}>Repas</Text>
             <Text style={styles.value} testID="request-meal-type">{MEAL_TYPE_LABELS[mealType] ?? mealType}</Text>
+          </View>
+        )}
+        {street && postalCode && city && (
+          <View style={styles.row}>
+            <Text style={styles.label}>Adresse</Text>
+            <Text style={[styles.value, styles.addressValue]} testID="request-address">{street}, {postalCode} {city}</Text>
           </View>
         )}
       </View>
@@ -80,6 +89,12 @@ const styles = StyleSheet.create({
   value: {
     ...typography.styles.body2Bold,
     color: colors.text,
+  },
+  addressValue: {
+    flex: 1,
+    textAlign: "right",
+    flexShrink: 1,
+    marginLeft: 8,
   },
   messageBlock: {
     marginTop: 10,

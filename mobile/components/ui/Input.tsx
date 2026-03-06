@@ -7,14 +7,20 @@ interface InputProps extends TextInputProps {
   label?: string;
   hint?: string;
   error?: string;
+  required?: boolean;
 }
 
-export function Input({ label, hint, error, style, onFocus, onBlur, ...props }: InputProps) {
+export function Input({ label, hint, error, required, style, onFocus, onBlur, ...props }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={styles.container}>
-      {label && <Text style={[styles.label, isFocused && styles.labelFocused]}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, isFocused && styles.labelFocused]}>
+          {label}
+          {required && <Text style={styles.required}> *</Text>}
+        </Text>
+      )}
       <TextInput
         style={[
           styles.input,
@@ -65,6 +71,9 @@ const styles = StyleSheet.create({
     borderColor: colors.mainDark,
   },
   labelFocused: {
+    color: colors.main,
+  },
+  required: {
     color: colors.main,
   },
   hint: {

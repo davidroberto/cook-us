@@ -4,6 +4,8 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -29,11 +31,8 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   const [siret, setSiret] = useState("");
   const [description, setDescription] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
-  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
-  const [street, setStreet] = useState("");
-  const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
-
+  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
   const { error, isLoading, register } = useRegister();
 
   const pickImage = async () => {
@@ -56,18 +55,12 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       password,
       role,
       thumbnail: thumbnailUri ?? undefined,
-      ...(role === "client"
-        ? {
-            street: street.trim() || undefined,
-            postalCode: postalCode.trim() || undefined,
-            city: city.trim() || undefined,
-          }
-        : {}),
       ...(role === "cook" && speciality
         ? {
             cookProfile: {
               speciality,
               siret,
+              city: city.trim(),
               description: description.trim() || undefined,
               hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
             },
@@ -78,7 +71,11 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
   };
 
   return (
-    <ScrollView testID="register-form" contentContainerStyle={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <ScrollView testID="register-form" contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Créer un compte</Text>
 
       {/* Photo de profil */}
@@ -105,7 +102,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Prénom</Text>
+        <Text style={styles.label}>Prénom <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="firstname-input"
           style={styles.input}
@@ -118,7 +115,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Nom</Text>
+        <Text style={styles.label}>Nom <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="lastname-input"
           style={styles.input}
@@ -131,7 +128,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Email <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="email-input"
           style={styles.input}
@@ -145,7 +142,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Mot de passe</Text>
+        <Text style={styles.label}>Mot de passe <Text style={styles.required}>*</Text></Text>
         <TextInput
           testID="password-input"
           style={styles.input}
@@ -158,7 +155,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Je suis un…</Text>
+        <Text style={styles.label}>Je suis un… <Text style={styles.required}>*</Text></Text>
         <View style={styles.radioGroup}>
           <TouchableOpacity
             testID="role-client"
@@ -198,55 +195,10 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
         </View>
       </View>
 
-      {role === "client" && (
-        <>
-          <Text style={styles.addressTitle}>Adresse de prestation</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Rue</Text>
-            <TextInput
-              testID="street-input"
-              style={styles.input}
-              value={street}
-              onChangeText={setStreet}
-              placeholder="12 rue de la Paix"
-              autoCapitalize="sentences"
-              autoCorrect={false}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Code postal</Text>
-            <TextInput
-              testID="postalcode-input"
-              style={styles.input}
-              value={postalCode}
-              onChangeText={setPostalCode}
-              placeholder="75001"
-              keyboardType="numeric"
-              autoCorrect={false}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Ville</Text>
-            <TextInput
-              testID="city-input"
-              style={styles.input}
-              value={city}
-              onChangeText={setCity}
-              placeholder="Paris"
-              autoCapitalize="words"
-              autoCorrect={false}
-            />
-          </View>
-        </>
-      )}
-
       {role === "cook" && (
         <>
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Spécialité</Text>
+            <Text style={styles.label}>Spécialité <Text style={styles.required}>*</Text></Text>
             <View style={styles.specialityGrid}>
               {COOK_SPECIALITIES.map((item) => (
                 <TouchableOpacity
@@ -273,7 +225,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>SIRET</Text>
+            <Text style={styles.label}>SIRET <Text style={styles.required}>*</Text></Text>
             <TextInput
               testID="siret-input"
               style={styles.input}
@@ -282,6 +234,19 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
               placeholder="14 chiffres"
               keyboardType="numeric"
               maxLength={14}
+              autoCorrect={false}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Ville <Text style={styles.required}>*</Text></Text>
+            <TextInput
+              testID="cook-city-input"
+              style={styles.input}
+              value={city}
+              onChangeText={setCity}
+              placeholder="Paris"
+              autoCapitalize="words"
               autoCorrect={false}
             />
           </View>
@@ -345,6 +310,7 @@ export function RegisterForm({ onSuccess, onNavigateLogin }: Props) {
         <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -480,12 +446,6 @@ const styles = StyleSheet.create({
   specialityChipTextSelected: {
     color: colors.white,
   },
-  addressTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginBottom: 16,
-  },
   button: {
     backgroundColor: colors.main,
     padding: 16,
@@ -521,5 +481,8 @@ const styles = StyleSheet.create({
     color: colors.main,
     fontSize: 14,
     fontWeight: "600",
+  },
+  required: {
+    color: colors.main,
   },
 });

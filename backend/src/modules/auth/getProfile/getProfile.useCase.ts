@@ -19,19 +19,16 @@ export class GetProfileUseCase {
       throw new NotFoundException("Utilisateur introuvable.");
     }
 
-    let address: {
-      street: string | null;
-      postalCode: string | null;
-      city: string | null;
-    } | null = null;
+    let address: { street: string; postalCode: string; city: string } | null =
+      null;
 
     if (user.role === UserRole.CLIENT) {
       const client = await this.clientRepository.findOne({ where: { userId } });
-      if (client) {
+      if (client?.street && client?.postalCode && client?.city) {
         address = {
-          street: client.street ?? null,
-          postalCode: client.postalCode ?? null,
-          city: client.city ?? null,
+          street: client.street,
+          postalCode: client.postalCode,
+          city: client.city,
         };
       }
     }
@@ -43,7 +40,7 @@ export class GetProfileUseCase {
       email: user.email,
       role: user.role,
       thumbnail: user.thumbnail ?? null,
-      address,
+      ...(user.role === UserRole.CLIENT ? { address } : {}),
     };
   }
 }

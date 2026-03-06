@@ -82,13 +82,21 @@ describe("SendPropositionForm", () => {
     render(<SendPropositionForm {...BASE_PROPS} />);
     fireEvent.changeText(screen.getByTestId("number-of-guests-input"), "4");
     fireEvent.changeText(screen.getByTestId("start-date-input"), "15-06-2026");
+    fireEvent.changeText(screen.getByTestId("street-input"), "12 rue de la Paix");
+    fireEvent.changeText(screen.getByTestId("postalcode-input"), "75001");
+    fireEvent.changeText(screen.getByTestId("city-input"), "Paris");
     fireEvent.press(screen.getByTestId("submit-button"));
-    expect(mockSendProposition).toHaveBeenCalledWith({
-      cookId: "cook-1",
-      cookUserId: 2,
-      numberOfGuests: 4,
-      startDate: "15-06-2026",
-    });
+    expect(mockSendProposition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cookId: "cook-1",
+        cookUserId: 2,
+        numberOfGuests: 4,
+        startDate: "15-06-2026",
+        street: "12 rue de la Paix",
+        postalCode: "75001",
+        city: "Paris",
+      })
+    );
   });
 
   // --- États du hook ---

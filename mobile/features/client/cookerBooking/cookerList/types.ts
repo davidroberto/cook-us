@@ -60,7 +60,6 @@ export interface Cook {
   photoUrl: string | null;
   city: string | null;
   isActive: boolean;
-  isValidated: boolean;
   /** Relation : users */
   user: User;
   /** Relation : cook_image[] */

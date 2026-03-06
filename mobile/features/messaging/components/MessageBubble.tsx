@@ -48,6 +48,9 @@ export function MessageBubble({ message, showReadReceipt }: Props) {
           guestsNumber={message.requestData.guestsNumber}
           mealType={message.requestData.mealType}
           message={message.requestData.message}
+          street={message.requestData.street}
+          postalCode={message.requestData.postalCode}
+          city={message.requestData.city}
           isSentByMe={isClient}
         />
       ) : (

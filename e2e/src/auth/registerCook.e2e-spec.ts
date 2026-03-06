@@ -101,6 +101,7 @@ test.describe("Inscription cuisinier", () => {
     await page.getByTestId("role-cook").click();
     await page.getByTestId("speciality-french_cooking").click();
     await page.getByTestId("siret-input").pressSequentially("81234567800015");
+    await page.getByTestId("cook-city-input").pressSequentially("Paris");
     await page
       .getByTestId("description-input")
       .pressSequentially("Cuisinière passionnée par la gastronomie française.");

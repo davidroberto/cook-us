@@ -27,7 +27,6 @@ export class GetCookUseCase {
         speciality: true,
         hourlyRate: true,
         isActive: true,
-        isValidated: true,
         city: true,
         user: {
           id: true,

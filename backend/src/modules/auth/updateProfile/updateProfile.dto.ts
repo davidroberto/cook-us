@@ -17,6 +17,11 @@ export class UpdateProfileDto {
   @IsEmail()
   email?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  thumbnail?: string;
+
   @ApiPropertyOptional({ example: "12 rue de la Paix" })
   @IsOptional()
   @IsString()
@@ -31,9 +36,4 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   city?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  thumbnail?: string;
 }

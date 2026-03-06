@@ -36,7 +36,6 @@ export class RejectCookUseCase {
       throw new NotFoundException(`Profil cuisinier introuvable`);
     }
 
-    cook.isValidated = false;
     cook.validationStatus = CookValidationStatus.REFUSED;
     return this.cookRepository.save(cook);
   }

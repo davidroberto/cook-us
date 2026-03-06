@@ -23,7 +23,7 @@ beforeEach(() => {
 describe('useRejectCook', () => {
     it('appelle PATCH /api/backoffice/users/:id/reject', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: false }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'refused' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useRejectCook(), { wrapper: createWrapper() })
@@ -39,7 +39,7 @@ describe('useRejectCook', () => {
 
     it('envoie le token d\'authentification dans le header', async () => {
         const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: false }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'refused' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useRejectCook(), { wrapper: createWrapper() })
@@ -87,7 +87,7 @@ describe('useRejectCook', () => {
 
     it('commence en état idle avant la mutation', () => {
         vi.spyOn(global, 'fetch').mockResolvedValue(
-            new Response(JSON.stringify({ isValidated: false }), { status: 200 }),
+            new Response(JSON.stringify({ validationStatus: 'refused' }), { status: 200 }),
         )
 
         const { result } = renderHook(() => useRejectCook(), { wrapper: createWrapper() })
