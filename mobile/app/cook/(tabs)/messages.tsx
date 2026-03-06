@@ -10,7 +10,7 @@ import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useMyConversations } from "@/features/messaging/useMyConversations";
-import { COOK_REQUEST_MESSAGE_PREFIX, COOK_ACCEPT_MESSAGE_PREFIX } from "@/features/messaging/useConversation";
+import { COOK_REQUEST_MESSAGE_PREFIX, COOK_ACCEPT_MESSAGE_PREFIX, COOK_PAID_MESSAGE_PREFIX } from "@/features/messaging/useConversation";
 import type { ApiConversation } from "@/features/messaging/types";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
@@ -20,6 +20,14 @@ function getOtherParticipant(conversation: ApiConversation, currentUserId: numbe
 }
 
 function formatMessagePreview(raw: string): string {
+  if (raw.startsWith(COOK_PAID_MESSAGE_PREFIX)) {
+    try {
+      const data = JSON.parse(raw.slice(COOK_PAID_MESSAGE_PREFIX.length)) as { total: number };
+      return `Prestation payée · ${data.total.toFixed(2)} €`;
+    } catch {
+      return "Prestation payée";
+    }
+  }
   if (raw.startsWith(COOK_ACCEPT_MESSAGE_PREFIX)) {
     try {
       const data = JSON.parse(raw.slice(COOK_ACCEPT_MESSAGE_PREFIX.length)) as { price: number };

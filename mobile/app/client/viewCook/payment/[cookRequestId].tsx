@@ -39,7 +39,7 @@ export default function PaymentPage() {
         cookLastName={cookLastName ?? ""}
         startDate={startDate ?? ""}
         endDate={endDate ?? ""}
-        onGoHome={() => router.replace("/client")}
+        onGoBack={() => router.back()}
       />
     </ScreenBackground>
   );

@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import type { Message } from "../types";
 import { RequestSummaryCard } from "./RequestSummaryCard";
 import { AcceptSummaryCard } from "./AcceptSummaryCard";
+import { PaidSummaryCard } from "./PaidSummaryCard";
 
 type Props = {
   message: Message;
@@ -58,6 +59,11 @@ export function MessageBubble({ message, showReadReceipt }: Props) {
         <AcceptSummaryCard
           price={message.acceptData.price}
           isSentByMe={!isClient}
+        />
+      ) : message.paidData ? (
+        <PaidSummaryCard
+          total={message.paidData.total}
+          isSentByMe={isClient}
         />
       ) : (
         <View style={[styles.bubble, isClient ? styles.clientBubble : styles.cookBubble]}>

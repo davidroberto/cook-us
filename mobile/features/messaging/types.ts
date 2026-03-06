@@ -68,6 +68,10 @@ export type Message = {
     price: number;
     cookRequestId: number;
   };
+  paidData?: {
+    cookRequestId: number;
+    total: number;
+  };
 };
 
 export type Conversation = {

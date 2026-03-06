@@ -10,6 +10,7 @@ export type CookRequestCardStatus =
   | "accepted"
   | "refused"
   | "cancelled"
+  | "paid"
   | "completed";
 
 const STATUS_LABEL: Record<CookRequestCardStatus, string> = {
@@ -17,6 +18,7 @@ const STATUS_LABEL: Record<CookRequestCardStatus, string> = {
   accepted: "Acceptée",
   refused: "Refusée",
   cancelled: "Annulée",
+  paid: "Payée",
   completed: "Terminée",
 };
 
@@ -25,6 +27,7 @@ const STATUS_COLOR: Record<CookRequestCardStatus, string> = {
   accepted: "#4CAF50",
   refused: colors.mainDark,
   cancelled: "#9E9E9E",
+  paid: "#2E7D32",
   completed: "#607D8B",
 };
 

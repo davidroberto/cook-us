@@ -13,6 +13,10 @@ import {
 import { Client } from "@src/modules/client/client.entity";
 import { Message } from "@src/modules/conversation/message.entity";
 import { User } from "@src/modules/user/user.entity";
+import { ChatGateway } from "@src/modules/conversation/chat.gateway";
+
+const COOK_PAID_PREFIX = "__COOK_PAID__";
+const PLATFORM_COMMISSION_RATE = 0.3;
 
 @Injectable()
 export class PayCookRequestUseCase {
@@ -24,7 +28,8 @@ export class PayCookRequestUseCase {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly chatGateway: ChatGateway
   ) {}
 
   async execute(id: number, userId: number) {
@@ -54,16 +59,26 @@ export class PayCookRequestUseCase {
     const saved = await this.cookRequestRepository.save(cookRequest);
 
     if (cookRequest.conversationId) {
-      const user = await this.userRepository.findOne({ where: { id: userId } });
-      if (user) {
-        await this.messageRepository.save(
-          this.messageRepository.create({
-            authorId: userId,
-            conversationId: cookRequest.conversationId,
-            message: `La prestation a été réglée par ${user.firstName} ${user.lastName}.`,
-          })
-        );
-      }
+      const subtotal = Number(cookRequest.price ?? 0);
+      const total =
+        Math.round(subtotal * (1 + PLATFORM_COMMISSION_RATE) * 100) / 100;
+
+      const savedMessage = await this.messageRepository.save(
+        this.messageRepository.create({
+          authorId: userId,
+          conversationId: cookRequest.conversationId,
+          message: `${COOK_PAID_PREFIX}${JSON.stringify({
+            cookRequestId: cookRequest.id,
+            total,
+          })}`,
+        })
+      );
+
+      this.chatGateway.emitToConversation(
+        cookRequest.conversationId,
+        "newMessage",
+        savedMessage
+      );
     }
 
     return saved;

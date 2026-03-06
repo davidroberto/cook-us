@@ -1,9 +1,11 @@
+import { useCallback } from "react";
 import { useConversation } from "@/features/messaging/useConversation";
 import { ConversationView } from "@/features/messaging/components/ConversationView";
 import { ConversationOrdersButton } from "@/features/messaging/components/ConversationOrdersButton";
 import { colors } from "@/styles/colors";
 import { typography } from "@/styles/typography";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -18,6 +20,12 @@ export default function CookMessagingPage() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
   const { state, retry, sendMessage, loadMore } = useConversation(parseInt(conversationId ?? "0", 10));
+
+  useFocusEffect(
+    useCallback(() => {
+      retry();
+    }, [retry])
+  );
 
   const headerTitle =
     state.status === "success"

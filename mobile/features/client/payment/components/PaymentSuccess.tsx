@@ -7,10 +7,10 @@ import {
 } from "react-native";
 
 type Props = {
-  onGoHome: () => void;
+  onGoBack: () => void;
 };
 
-export function PaymentSuccess({ onGoHome }: Props) {
+export function PaymentSuccess({ onGoBack }: Props) {
   return (
     <View testID="payment-success" style={styles.container}>
       <View style={styles.iconContainer}>
@@ -25,10 +25,10 @@ export function PaymentSuccess({ onGoHome }: Props) {
       <TouchableOpacity
         testID="go-home-button"
         style={styles.button}
-        onPress={onGoHome}
+        onPress={onGoBack}
         accessibilityRole="button"
       >
-        <Text style={styles.buttonText}>Retour à l'accueil</Text>
+        <Text style={styles.buttonText}>Retour à la conversation</Text>
       </TouchableOpacity>
     </View>
   );

@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { usePayment } from "../usePayment";
+import { useAuth } from "@/features/auth/AuthContext";
 import { OrderSummary } from "./OrderSummary";
 import { PaymentSuccess } from "./PaymentSuccess";
 
@@ -20,26 +21,27 @@ type Props = {
   cookLastName: string;
   startDate: string;
   endDate: string;
-  onGoHome: () => void;
+  onGoBack: () => void;
 };
 
 export function PaymentForm({
-  cookRequestId: _cookRequestId,
+  cookRequestId,
   amount,
   cookFirstName,
   cookLastName,
   startDate,
   endDate,
-  onGoHome,
+  onGoBack,
 }: Props) {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
+  const { token } = useAuth();
 
-  const { state, pay } = usePayment();
+  const { state, pay } = usePayment(cookRequestId, token);
 
   if (state.status === "success") {
-    return <PaymentSuccess onGoHome={onGoHome} />;
+    return <PaymentSuccess onGoBack={onGoBack} />;
   }
 
   const isLoading = state.status === "loading";
@@ -88,9 +90,16 @@ export function PaymentForm({
             testID="expiry-input"
             style={styles.input}
             value={expiryDate}
-            onChangeText={setExpiryDate}
+            onChangeText={(text) => {
+              const digits = text.replace(/\D/g, "");
+              if (digits.length <= 2) {
+                setExpiryDate(digits);
+              } else {
+                setExpiryDate(`${digits.slice(0, 2)}/${digits.slice(2, 4)}`);
+              }
+            }}
             placeholder="MM/AA"
-            keyboardType="numbers-and-punctuation"
+            keyboardType="number-pad"
             maxLength={5}
             autoCorrect={false}
           />

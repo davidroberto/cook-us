@@ -15,6 +15,7 @@ import { Client } from "@src/modules/client/client.entity";
 import { User } from "@src/modules/user/user.entity";
 import { Message } from "@src/modules/conversation/message.entity";
 import { NotificationService } from "@src/modules/notification/notification.service";
+import { ChatGateway } from "@src/modules/conversation/chat.gateway";
 
 const COOK_ACCEPT_PREFIX = "__COOK_ACCEPT__";
 
@@ -31,7 +32,8 @@ export class AcceptCookRequestUseCase {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly chatGateway: ChatGateway
   ) {}
 
   async execute(
@@ -65,7 +67,7 @@ export class AcceptCookRequestUseCase {
     const saved = await this.cookRequestRepository.save(cookRequest);
 
     if (cookRequest.conversationId) {
-      await this.messageRepository.save(
+      const savedMessage = await this.messageRepository.save(
         this.messageRepository.create({
           authorId: currentUserId,
           conversationId: cookRequest.conversationId,
@@ -74,6 +76,12 @@ export class AcceptCookRequestUseCase {
             cookRequestId: cookRequest.id,
           })}`,
         })
+      );
+
+      this.chatGateway.emitToConversation(
+        cookRequest.conversationId,
+        "newMessage",
+        savedMessage
       );
     }
 

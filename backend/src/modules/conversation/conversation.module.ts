@@ -66,5 +66,6 @@ import { NotificationModule } from "@src/modules/notification/notification.modul
     ConversationParticipantGuard,
     ChatGateway,
   ],
+  exports: [ChatGateway],
 })
 export class ConversationModule {}

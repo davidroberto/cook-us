@@ -38,6 +38,7 @@ import { UpdateCookRequestAddressUseCase } from "@src/modules/cook-request/updat
 import { UpdateCookRequestPriceController } from "@src/modules/cook-request/updateCookRequestPrice/updateCookRequestPrice.controller";
 import { UpdateCookRequestPriceUseCase } from "@src/modules/cook-request/updateCookRequestPrice/updateCookRequestPrice.useCase";
 import { NotificationModule } from "@src/modules/notification/notification.module";
+import { ConversationModule } from "@src/modules/conversation/conversation.module";
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { NotificationModule } from "@src/modules/notification/notification.modul
       Review,
     ]),
     NotificationModule,
+    ConversationModule,
   ],
   controllers: [
     CreateCookRequestController,

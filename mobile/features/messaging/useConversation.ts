@@ -26,6 +26,7 @@ type ConversationState =
 
 export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
 export const COOK_ACCEPT_MESSAGE_PREFIX = "__COOK_ACCEPT__";
+export const COOK_PAID_MESSAGE_PREFIX = "__COOK_PAID__";
 
 function parseRequestData(
   raw: string,
@@ -57,6 +58,17 @@ function parseAcceptData(
   }
 }
 
+function parsePaidData(
+  raw: string,
+): { cookRequestId: number; total: number } | null {
+  if (!raw.startsWith(COOK_PAID_MESSAGE_PREFIX)) return null;
+  try {
+    return JSON.parse(raw.slice(COOK_PAID_MESSAGE_PREFIX.length));
+  } catch {
+    return null;
+  }
+}
+
 function toMessage(
   msg: {
     id: number;
@@ -69,6 +81,7 @@ function toMessage(
 ): Message {
   const requestData = parseRequestData(msg.message);
   const acceptData = parseAcceptData(msg.message);
+  const paidData = parsePaidData(msg.message);
   return {
     id: msg.id,
     content: msg.message,
@@ -77,6 +90,7 @@ function toMessage(
     readAt: msg.readAt ?? null,
     ...(requestData ? { requestData } : {}),
     ...(acceptData ? { acceptData } : {}),
+    ...(paidData ? { paidData } : {}),
   };
 }
 
@@ -216,7 +230,11 @@ export function useConversation(conversationId: number) {
         createdAt: string;
       }) => {
         if (msg.conversationId !== conversationId) return;
-        if (msg.authorId === currentUserId) return;
+        const isSystemMessage =
+          msg.message.startsWith("__COOK_ACCEPT__") ||
+          msg.message.startsWith("__COOK_PAID__") ||
+          msg.message.startsWith("__COOK_REQUEST__");
+        if (msg.authorId === currentUserId && !isSystemMessage) return;
 
         setState((prev) => {
           if (prev.status !== "success") return prev;
