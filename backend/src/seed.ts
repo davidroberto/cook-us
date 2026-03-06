@@ -728,6 +728,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Bonjour, nous célébrons un anniversaire, menu surprise bienvenu !",
+      price: 270,
       ...addr(0),
     },
     {
@@ -738,6 +739,7 @@ async function seed() {
       clientId: clients[1].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      price: 165,
       ...addr(1),
     },
     {
@@ -750,6 +752,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Repas d'entreprise, une personne allergique aux fruits à coque.",
+      price: 475,
       ...addr(2),
     },
     {
@@ -760,6 +763,7 @@ async function seed() {
       clientId: clients[3].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 217,
       ...addr(3),
     },
     {
@@ -770,6 +774,7 @@ async function seed() {
       clientId: clients[4].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 120,
       ...addr(4),
     },
     {
@@ -782,6 +787,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Soirée du réveillon, nous souhaitons un menu festif avec champagne.",
+      price: 570,
       ...addr(5),
     },
     {
@@ -792,6 +798,7 @@ async function seed() {
       clientId: clients[6].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 240,
       ...addr(6),
     },
     {
@@ -802,6 +809,7 @@ async function seed() {
       clientId: clients[7].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      price: 350,
       ...addr(7),
     },
     {
@@ -814,6 +822,7 @@ async function seed() {
       mealType: MealType.DINNER,
       message:
         "Dîner romantique pour la Saint-Valentin en avance, ambiance cosy.",
+      price: 140,
       ...addr(8),
     },
     {
@@ -824,6 +833,7 @@ async function seed() {
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 380,
       ...addr(9),
     },
     // Passées - refused
@@ -898,6 +908,7 @@ async function seed() {
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.DINNER,
       message: "Super soirée, cuisine française excellente.",
+      price: 180,
       ...addr(0),
     },
     {
@@ -908,6 +919,7 @@ async function seed() {
       clientId: clients[0].id,
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.LUNCH,
+      price: 165,
       ...addr(0),
     },
     {
@@ -918,6 +930,7 @@ async function seed() {
       clientId: clients[1].id,
       status: CookRequestStatus.COMPLETED,
       mealType: MealType.DINNER,
+      price: 248,
       ...addr(1),
     },
     // À venir - pending
@@ -1013,6 +1026,7 @@ async function seed() {
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
       message: "Événement associatif, budget maîtrisé, cuisine conviviale.",
+      price: 450,
       ...addr(8),
     },
     {
@@ -1023,6 +1037,7 @@ async function seed() {
       clientId: clients[9].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 385,
       ...addr(9),
     },
     {
@@ -1033,6 +1048,7 @@ async function seed() {
       clientId: clients[10].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      price: 145,
       ...addr(10),
     },
     {
@@ -1043,6 +1059,7 @@ async function seed() {
       clientId: clients[11].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 496,
       ...addr(11),
     },
     {
@@ -1053,6 +1070,7 @@ async function seed() {
       clientId: clients[12].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 324,
       ...addr(12),
     },
     {
@@ -1063,6 +1081,7 @@ async function seed() {
       clientId: clients[13].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.LUNCH,
+      price: 240,
       ...addr(13),
     },
     {
@@ -1073,6 +1092,7 @@ async function seed() {
       clientId: clients[14].id,
       status: CookRequestStatus.ACCEPTED,
       mealType: MealType.DINNER,
+      price: 420,
       ...addr(14),
     },
   ];
