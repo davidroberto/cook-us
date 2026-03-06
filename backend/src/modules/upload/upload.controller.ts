@@ -9,13 +9,11 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
 import { diskStorage } from "multer";
 import { extname } from "path";
-import { Public } from "@src/modules/auth/public.decorator";
 
 @ApiTags("upload")
 @Controller("upload")
 export class UploadController {
   @Post()
-  @Public()
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     schema: {
