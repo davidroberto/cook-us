@@ -68,6 +68,7 @@ export function AcceptPriceModal({
             onChangeText={setPriceText}
             placeholder="Ex : 150"
             keyboardType="numeric"
+            testID="price-input"
           />
 
           {isValidPrice && (
@@ -108,6 +109,7 @@ export function AcceptPriceModal({
             />
             <Button
               title={confirmLabel}
+              testID="accept-confirm-button"
               onPress={handleConfirm}
               loading={isLoading}
               disabled={!isValidPrice}

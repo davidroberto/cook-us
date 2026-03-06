@@ -41,6 +41,11 @@ test.describe("Accepter une proposition (cuisinier)", () => {
     const hasAcceptButton = await acceptBtn.isVisible().catch(() => false);
 
     if (hasAcceptButton) {
+      // Click opens AcceptPriceModal — fill price and confirm
+      await acceptBtn.click();
+      await expect(page.getByTestId("price-input")).toBeVisible({ timeout: TIMEOUT });
+      await page.getByTestId("price-input").fill("100");
+
       const [response] = await Promise.all([
         page.waitForResponse(
           (res) =>
@@ -48,7 +53,7 @@ test.describe("Accepter une proposition (cuisinier)", () => {
             res.request().method() === "PATCH",
           { timeout: TIMEOUT }
         ),
-        acceptBtn.click(),
+        page.getByTestId("accept-confirm-button").click(),
       ]);
 
       expect(
@@ -86,6 +91,10 @@ test.describe("Refuser une proposition (cuisinier)", () => {
     const hasRefuseButton = await refuseBtn.isVisible().catch(() => false);
 
     if (hasRefuseButton) {
+      // Click opens RefuseModal — confirm refusal
+      await refuseBtn.click();
+      await expect(page.getByTestId("refuse-confirm-button")).toBeVisible({ timeout: TIMEOUT });
+
       const [response] = await Promise.all([
         page.waitForResponse(
           (res) =>
@@ -93,7 +102,7 @@ test.describe("Refuser une proposition (cuisinier)", () => {
             res.request().method() === "PATCH",
           { timeout: TIMEOUT }
         ),
-        refuseBtn.click(),
+        page.getByTestId("refuse-confirm-button").click(),
       ]);
 
       expect(

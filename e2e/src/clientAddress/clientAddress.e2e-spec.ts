@@ -147,7 +147,12 @@ test("PATCH /cook-request/:id/address met à jour l'adresse de la demande", asyn
     headers: { Authorization: `Bearer ${clientToken}` },
   });
   const cooksBody = await cooksRes.json();
-  const cookId = cooksBody.data?.[0]?.id ?? cooksBody[0]?.id;
+  const allCooks: Array<{ id: string; firstName: string; lastName: string }> =
+    cooksBody.data ?? cooksBody;
+  const pierre = allCooks.find(
+    (c) => c.firstName === "Pierre" && c.lastName === "Martin",
+  );
+  const cookId = pierre?.id ?? allCooks[0]?.id;
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 60);

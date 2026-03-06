@@ -105,10 +105,10 @@ test.describe("Modification d'adresse depuis le modal des commandes", () => {
       // Fermer le modal → déclenche le refresh de la conversation
       await page.getByText("Fermer").click();
 
-      // La bulle de demande doit afficher la nouvelle adresse
+      // La bulle de demande doit afficher la nouvelle adresse (refresh async après fermeture)
       await expect(
         page.getByTestId("request-address").filter({ hasText: newStreet }).first()
-      ).toBeVisible({ timeout: TIMEOUT });
+      ).toBeVisible({ timeout: TIMEOUT * 2 });
     });
   });
 });

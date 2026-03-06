@@ -51,6 +51,7 @@ export function RefuseModal({
             />
             <Button
               title="Refuser"
+              testID="refuse-confirm-button"
               onPress={onConfirm}
               loading={isLoading}
               style={styles.actionButton}
