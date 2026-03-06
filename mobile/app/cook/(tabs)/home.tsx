@@ -141,7 +141,7 @@ export default function CookHomeTab() {
     );
   }
 
-  const filteredRequests = requests.filter((r) => {
+  const filteredRequests = (requests ?? []).filter((r) => {
     if (activeTab === "active") return ACTIVE_STATUSES.includes(r.status);
     if (activeTab === "completed") return COMPLETED_STATUSES.includes(r.status);
     return REFUSED_STATUSES.includes(r.status);

@@ -35,6 +35,7 @@ export class GetCookCookRequestsUseCase {
       endDate: r.endDate ?? null,
       status: r.status,
       cancellationReason: r.cancellationReason,
+      price: r.price ?? null,
       street: r.street ?? null,
       postalCode: r.postalCode ?? null,
       city: r.city ?? null,
