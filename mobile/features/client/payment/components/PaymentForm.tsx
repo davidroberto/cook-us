@@ -67,8 +67,6 @@ export function PaymentForm({
         endDate={endDate}
       />
 
-      <Text style={styles.title}>Paiement par carte</Text>
-
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Numéro de carte</Text>
         <TextInput

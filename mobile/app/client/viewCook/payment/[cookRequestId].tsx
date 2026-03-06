@@ -1,7 +1,9 @@
 import { PaymentForm } from "@/features/client/payment/components/PaymentForm";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { colors } from "@/styles/colors";
+import { typography } from "@/styles/typography";
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -22,7 +24,14 @@ export default function PaymentPage() {
   }>();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenBackground edges={["top"]}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backText}>← Retour</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Paiement de la prestation</Text>
+        <View style={styles.headerRight} />
+      </View>
       <PaymentForm
         cookRequestId={cookRequestId ?? ""}
         amount={parseFloat(amount ?? "0")}
@@ -32,12 +41,28 @@ export default function PaymentPage() {
         endDate={endDate ?? ""}
         onGoHome={() => router.replace("/client")}
       />
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.tertiary,
   },
+  backButton: { padding: 4 },
+  backText: {
+    ...typography.styles.body1Regular,
+    color: colors.main,
+  },
+  headerTitle: {
+    ...typography.styles.body1Bold,
+    color: colors.text,
+  },
+  headerRight: { width: 60 },
 });

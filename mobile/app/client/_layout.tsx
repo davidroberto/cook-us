@@ -54,6 +54,10 @@ export default function ClientLayout() {
         name="messaging/[requestId]"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="viewCook/payment/[cookRequestId]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
