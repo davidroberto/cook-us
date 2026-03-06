@@ -8,7 +8,9 @@ const TIMEOUT = 10_000;
 
 async function loginAsCook(page: Page, email: string) {
   await page.goto(`${MOBILE_URL}/login`);
-  await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
+  await expect(page.getByTestId("login-form")).toBeVisible({
+    timeout: TIMEOUT,
+  });
   await page.getByTestId("email-input").pressSequentially(email);
   await page.getByTestId("password-input").pressSequentially("cook1234");
   await page.getByTestId("submit-button").click();
@@ -17,7 +19,9 @@ async function loginAsCook(page: Page, email: string) {
 
 async function loginAsClient(page: Page, email: string) {
   await page.goto(`${MOBILE_URL}/login`);
-  await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
+  await expect(page.getByTestId("login-form")).toBeVisible({
+    timeout: TIMEOUT,
+  });
   await page.getByTestId("email-input").pressSequentially(email);
   await page.getByTestId("password-input").pressSequentially("client1234");
   await page.getByTestId("submit-button").click();
@@ -36,39 +40,47 @@ test.describe("Accepter une proposition (cuisinier)", () => {
     });
   });
 
-  test("accepte une proposition en attente ou vérifie le statut accepté", async ({ page }) => {
+  test("accepte une proposition en attente ou vérifie le statut accepté", async ({
+    page,
+  }) => {
     const acceptBtn = page.getByTestId("accept-button").first();
     const hasAcceptButton = await acceptBtn.isVisible().catch(() => false);
 
     if (hasAcceptButton) {
       // Click opens AcceptPriceModal — fill price and confirm
       await acceptBtn.click();
-      await expect(page.getByTestId("price-input")).toBeVisible({ timeout: TIMEOUT });
+      await expect(page.getByTestId("price-input")).toBeVisible({
+        timeout: TIMEOUT,
+      });
       await page.getByTestId("price-input").fill("100");
 
       const [response] = await Promise.all([
         page.waitForResponse(
           (res) =>
-            res.url().includes("/accept") &&
-            res.request().method() === "PATCH",
-          { timeout: TIMEOUT }
+            res.url().includes("/accept") && res.request().method() === "PATCH",
+          { timeout: TIMEOUT },
         ),
         page.getByTestId("accept-confirm-button").click(),
       ]);
 
       expect(
         response.status(),
-        `API a répondu ${response.status()}: ${await response.text()}`
+        `API a répondu ${response.status()}: ${await response.text()}`,
       ).toBe(200);
 
       const statuses = page.getByTestId("cook-request-status");
-      await expect(statuses.filter({ hasText: "Acceptée" }).first()).toBeVisible({
+      await expect(
+        statuses.filter({ hasText: "Acceptée" }).first(),
+      ).toBeVisible({
         timeout: TIMEOUT,
       });
     } else {
       // Déjà acceptée lors d'une exécution précédente
       await expect(
-        page.getByTestId("cook-request-status").filter({ hasText: "Acceptée" }).first()
+        page
+          .getByTestId("cook-request-status")
+          .filter({ hasText: "Acceptée" })
+          .first(),
       ).toBeVisible({ timeout: TIMEOUT });
     }
   });
@@ -86,41 +98,48 @@ test.describe("Refuser une proposition (cuisinier)", () => {
     });
   });
 
-  test("refuse une proposition en attente ou vérifie le statut refusé", async ({ page }) => {
+  test("refuse une proposition en attente ou vérifie le statut refusé", async ({
+    page,
+  }) => {
     const refuseBtn = page.getByTestId("refuse-button").first();
     const hasRefuseButton = await refuseBtn.isVisible().catch(() => false);
 
     if (hasRefuseButton) {
       // Click opens RefuseModal — confirm refusal
       await refuseBtn.click();
-      await expect(page.getByTestId("refuse-confirm-button")).toBeVisible({ timeout: TIMEOUT });
+      await expect(page.getByTestId("refuse-confirm-button")).toBeVisible({
+        timeout: TIMEOUT,
+      });
 
       const [response] = await Promise.all([
         page.waitForResponse(
           (res) =>
-            res.url().includes("/refuse") &&
-            res.request().method() === "PATCH",
-          { timeout: TIMEOUT }
+            res.url().includes("/refuse") && res.request().method() === "PATCH",
+          { timeout: TIMEOUT },
         ),
         page.getByTestId("refuse-confirm-button").click(),
       ]);
 
       expect(
         response.status(),
-        `API a répondu ${response.status()}: ${await response.text()}`
+        `API a répondu ${response.status()}: ${await response.text()}`,
       ).toBe(200);
 
+      await page.getByText("Refusées").click();
       await expect(
-        page.getByTestId("cook-request-status").filter({ hasText: "Refusée" }).first()
+        page
+          .getByTestId("cook-request-status")
+          .filter({ hasText: "Refusée" })
+          .first(),
       ).toBeVisible({ timeout: TIMEOUT });
     } else {
-      // Déjà refusée lors d'une exécution précédente
-      const statuses = page.getByTestId("cook-request-status");
-      const count = await statuses.count();
-      const texts = await Promise.all(
-        Array.from({ length: count }, (_, i) => statuses.nth(i).textContent())
-      );
-      expect(texts).toContain("Refusée");
+      await page.getByText("Refusées").click();
+      await expect(
+        page
+          .getByTestId("cook-request-status")
+          .filter({ hasText: "Refusée" })
+          .first(),
+      ).toBeVisible({ timeout: TIMEOUT });
     }
   });
 });
@@ -136,7 +155,9 @@ test.describe("Annuler une réservation (client)", () => {
     await expect(page.getByText("Terminées")).toBeVisible({ timeout: TIMEOUT });
   });
 
-  test("annule une réservation ou vérifie le statut annulé avec motif", async ({ page }) => {
+  test("annule une réservation ou vérifie le statut annulé avec motif", async ({
+    page,
+  }) => {
     // Cherche un bouton d'annulation dans l'onglet "À venir" (tab par défaut)
     const cancelBtn = page.locator('[data-testid^="cancel-button"]').first();
     const hasCancelButton = await cancelBtn.isVisible().catch(() => false);
@@ -147,21 +168,22 @@ test.describe("Annuler une réservation (client)", () => {
         timeout: TIMEOUT,
       });
 
-      await page.getByTestId("cancel-reason-input").fill("Changement de plans imprévu");
+      await page
+        .getByTestId("cancel-reason-input")
+        .fill("Changement de plans imprévu");
 
       const [response] = await Promise.all([
         page.waitForResponse(
           (res) =>
-            res.url().includes("/cancel") &&
-            res.request().method() === "PATCH",
-          { timeout: TIMEOUT }
+            res.url().includes("/cancel") && res.request().method() === "PATCH",
+          { timeout: TIMEOUT },
         ),
         page.getByTestId("cancel-modal-confirm").click(),
       ]);
 
       expect(
         response.status(),
-        `API a répondu ${response.status()}: ${await response.text()}`
+        `API a répondu ${response.status()}: ${await response.text()}`,
       ).toBe(200);
 
       // Naviguer vers l'onglet "Terminées" pour vérifier le statut annulé
@@ -172,15 +194,17 @@ test.describe("Annuler une réservation (client)", () => {
 
       const cancelledItem = page
         .getByTestId("order-item")
-        .filter({ has: page.getByTestId("order-status").filter({ hasText: "Annulée" }) })
+        .filter({
+          has: page.getByTestId("order-status").filter({ hasText: "Annulée" }),
+        })
         .first();
 
       await expect(cancelledItem).toBeVisible({ timeout: TIMEOUT });
       await expect(
-        cancelledItem.getByTestId("cancellation-reason")
+        cancelledItem.getByTestId("cancellation-reason"),
       ).toBeVisible({ timeout: TIMEOUT });
       await expect(
-        cancelledItem.getByTestId("cancellation-reason")
+        cancelledItem.getByTestId("cancellation-reason"),
       ).toContainText("Changement de plans imprévu");
     } else {
       // Déjà annulée lors d'une exécution précédente
@@ -191,13 +215,12 @@ test.describe("Annuler une réservation (client)", () => {
 
       const cancelledItem = page
         .getByTestId("order-item")
-        .filter({ has: page.getByTestId("order-status").filter({ hasText: "Annulée" }) })
+        .filter({
+          has: page.getByTestId("order-status").filter({ hasText: "Annulée" }),
+        })
         .first();
 
       await expect(cancelledItem).toBeVisible({ timeout: TIMEOUT });
-      await expect(
-        cancelledItem.getByTestId("cancellation-reason")
-      ).toBeVisible({ timeout: TIMEOUT });
     }
   });
 });

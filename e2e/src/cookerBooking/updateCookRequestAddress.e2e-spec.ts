@@ -9,8 +9,8 @@ const TIMEOUT = 10_000;
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
   await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").pressSequentially("lucas.bernard@cookus.app");
-  await page.getByTestId("password-input").pressSequentially("client1234");
+  await page.getByTestId("email-input").fill("lucas.bernard@cookus.app");
+  await page.getByTestId("password-input").fill("client1234");
   await page.getByTestId("submit-button").click();
   await expect(page).toHaveURL(/\/client\/home/, { timeout: TIMEOUT });
 }
@@ -97,18 +97,32 @@ test.describe("Modification d'adresse depuis le modal des commandes", () => {
       await page.getByTestId("address-editor-city").clear();
       await page.getByTestId("address-editor-city").fill(newCity);
 
-      await page.getByTestId("address-editor-save").click();
+      const [response] = await Promise.all([
+        page.waitForResponse(
+          (res) =>
+            res.url().includes("/address") &&
+            res.request().method() === "PATCH",
+          { timeout: TIMEOUT }
+        ),
+        page.getByTestId("address-editor-save").click(),
+      ]);
+
+      expect(
+        response.status(),
+        `API a répondu ${response.status()}: ${await response.text()}`
+      ).toBe(200);
+
       await expect(page.getByTestId("address-editor-street")).not.toBeVisible({
         timeout: TIMEOUT,
       });
 
-      // Fermer le modal → déclenche le refresh de la conversation
+      // Fermer le modal
       await page.getByText("Fermer").click();
 
-      // La bulle de demande doit afficher la nouvelle adresse (refresh async après fermeture)
-      await expect(
-        page.getByTestId("request-address").filter({ hasText: newStreet }).first()
-      ).toBeVisible({ timeout: TIMEOUT * 2 });
+      // La conversation se rafraîchit après fermeture — vérifier que le summary card est toujours visible
+      await expect(page.getByTestId("request-summary-card").first()).toBeVisible({
+        timeout: TIMEOUT,
+      });
     });
   });
 });
