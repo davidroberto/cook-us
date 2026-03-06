@@ -34,7 +34,7 @@ function getMimeType(uri: string): string {
   return mimeTypes[ext ?? ""] ?? "image/jpeg";
 }
 
-export const uploadProfileThumbnail = async (uri: string): Promise<string> => {
+export const uploadProfileThumbnail = async (token: string, uri: string): Promise<string> => {
   const mimeType = getMimeType(uri);
   const filename = uri.split("/").pop() ?? "profile.jpg";
   const formData = new FormData();
@@ -42,6 +42,7 @@ export const uploadProfileThumbnail = async (uri: string): Promise<string> => {
 
   const response = await fetch(`${getApiUrl()}/upload`, {
     method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
 

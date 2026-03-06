@@ -101,7 +101,7 @@ export function CookProfileScreen() {
 
     setIsUploadingPhoto(true);
     try {
-      const url = await uploadProfileThumbnail(result.assets[0].uri);
+      const url = await uploadProfileThumbnail(token, result.assets[0].uri);
       const updatedUser = await updateProfile(token, { thumbnail: url });
       updateUser(updatedUser);
       setThumbnailError(false);
