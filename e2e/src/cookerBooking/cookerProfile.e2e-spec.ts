@@ -80,7 +80,21 @@ test.describe("Profil cuisinier", () => {
     expect(await images.count()).toBeGreaterThanOrEqual(1);
   });
 
-  // ── Avis clients ──────────────────────────────────────────────────────────
+});
+
+// ─── Scénario : Avis clients sur un profil cuisinier avec des avis ──────────
+
+test.describe("Profil cuisinier — avis clients", () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAsClient(page);
+    await expect(page.getByTestId("cooker-list")).toBeVisible({ timeout: PROFILE_TIMEOUT });
+
+    // Naviguer vers Pierre Martin (cuisinier avec des avis en base)
+    const card = page.getByTestId("cooker-card").filter({ hasText: "Pierre Martin" });
+    await expect(card.first()).toBeVisible({ timeout: PROFILE_TIMEOUT });
+    await card.first().click();
+    await expect(page).toHaveURL(/\/client\/viewCook\/profile\//, { timeout: PROFILE_TIMEOUT });
+  });
 
   test("affiche la section avis clients", async ({ page }) => {
     const reviews = page.getByTestId("profile-reviews");
