@@ -22,7 +22,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
+      background: none;
       color: var(--fg);
       height: 100dvh;
       overflow: hidden;
@@ -72,6 +72,7 @@
       pointer-events: none;
       z-index: 0;
     }
+
 
     .slide > * { position: relative; z-index: 1; }
 
@@ -412,6 +413,8 @@
 </head>
 <body>
 
+<div style="position:fixed;inset:0;background-image:url('mobile/assets/images/food-pattern.png');background-repeat:repeat;background-size:280px;opacity:1;pointer-events:none;z-index:0;"></div>
+
 <button class="nav-btn" id="prev-btn" aria-label="Précédent">←</button>
 <button class="nav-btn" id="next-btn" aria-label="Suivant">→</button>
 
@@ -420,7 +423,7 @@
   <!-- ── 1. Titre ─────────────────────────────────────────── -->
   <section class="slide active" id="s1">
     <div class="label">Workshop 2026 — B3 Dev Web</div>
-    <img src="cook-us/mobile/assets/logo.png" alt="Cook'US" style="height:300px;width:auto;margin-bottom:-.5rem" />
+    <img src="mobile/assets/logo.png" alt="Cook'US" style="height:300px;width:auto;margin-bottom:-.5rem" />
     <p class="subtitle">La cuisine à domicile, réinventée</p>
     <div class="divider"></div>
     <div class="team" style="flex-direction:column;gap:.6rem">
