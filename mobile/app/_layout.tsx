@@ -30,7 +30,9 @@ function NotificationSetup() {
 }
 
 export default function RootLayout() {
-  const [splashDone, setSplashDone] = useState(false);
+  const [splashDone, setSplashDone] = useState(
+    process.env.EXPO_PUBLIC_SKIP_SPLASH === "true"
+  );
   const [fontsLoaded] = useFonts({
     Alexandria_400Regular,
     Alexandria_700Bold,
