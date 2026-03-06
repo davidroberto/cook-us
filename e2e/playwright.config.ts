@@ -12,10 +12,13 @@ export default defineConfig({
   timeout: 30_000,
   webServer: {
     command: `cd ../mobile && npx expo start --port 8082`,
-    env: { EXPO_PUBLIC_SKIP_SPLASH: "true" },
-    url: mobileUrl,
+        url: mobileUrl,
     reuseExistingServer: false,
     timeout: 120_000,
+    env: {
+      ...process.env,
+      EXPO_PUBLIC_SKIP_SPLASH: "true",
+    },
   },
   use: {
     baseURL: mobileUrl,
