@@ -67,20 +67,24 @@ export class UpdateCookRequestAddressUseCase {
         },
       });
 
+      let updated = false;
       for (const msg of messages) {
         try {
           const payload = JSON.parse(
             msg.message.slice(COOK_REQUEST_MESSAGE_PREFIX.length)
           );
-          if (payload.cookRequestId === cookRequest.id) {
+
+          // Convert both to numbers for comparison (in case cookRequestId is stored as string)
+          if (Number(payload.cookRequestId) === Number(cookRequest.id)) {
             payload.street = dto.street;
             payload.postalCode = dto.postalCode;
             payload.city = dto.city;
             msg.message = COOK_REQUEST_MESSAGE_PREFIX + JSON.stringify(payload);
             await this.messageRepository.save(msg);
+            updated = true;
             break;
           }
-        } catch {
+        } catch (err) {
           // skip malformed messages
         }
       }

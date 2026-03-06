@@ -12,7 +12,15 @@ export class GetCooksUseCase {
   ) {}
 
   async execute(query: GetCooksQueryDto = {}) {
-    const { speciality, minHourlyRate, maxHourlyRate, city, search, page = 1, limit = 20 } = query;
+    const {
+      speciality,
+      minHourlyRate,
+      maxHourlyRate,
+      city,
+      search,
+      page = 1,
+      limit = 20,
+    } = query;
 
     const qb = this.cookRepository
       .createQueryBuilder("cook")

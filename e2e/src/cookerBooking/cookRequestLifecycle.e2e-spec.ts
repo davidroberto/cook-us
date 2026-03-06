@@ -153,6 +153,8 @@ test.describe("Annuler une réservation (client)", () => {
     await loginAsClient(page, "raphael.marchand@cookus.app");
     await page.goto(`${MOBILE_URL}/client/orderHistory`);
     await expect(page.getByText("Terminées")).toBeVisible({ timeout: TIMEOUT });
+    // Wait for the list to finish loading before checking for buttons
+    await page.waitForLoadState("networkidle", { timeout: TIMEOUT });
   });
 
   test("annule une réservation ou vérifie le statut annulé avec motif", async ({

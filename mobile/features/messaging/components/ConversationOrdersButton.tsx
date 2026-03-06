@@ -141,7 +141,11 @@ type Props = {
   onClose?: () => void;
 };
 
-export function ConversationOrdersButton({ conversationId, cookName, cookFirstName, cookLastName, onClose }: Props) {
+export function ConversationOrdersButton({
+  conversationId,
+  cookName,
+  onClose,
+}: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
   const { user, token } = useAuth();
@@ -159,7 +163,11 @@ export function ConversationOrdersButton({ conversationId, cookName, cookFirstNa
 
   return (
     <>
-      <TouchableOpacity onPress={open} style={styles.button} testID="orders-button">
+      <TouchableOpacity
+        onPress={open}
+        style={styles.button}
+        testID="orders-button"
+      >
         <Text style={styles.buttonText}>Commandes</Text>
       </TouchableOpacity>
 
@@ -174,62 +182,56 @@ export function ConversationOrdersButton({ conversationId, cookName, cookFirstNa
             style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Commandes</Text>
-            <TouchableOpacity
-              onPress={close}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeText}>Fermer</Text>
-            </TouchableOpacity>
-          </View>
-
-          {state.status === "loading" && (
-            <View style={styles.centered}>
-              <ActivityIndicator size="large" color={colors.main} />
-            </View>
-          )}
-
-          {state.status === "error" && (
-            <View style={styles.centered}>
-              <Text style={styles.errorText}>
-                Impossible de charger les commandes.
-              </Text>
-              <TouchableOpacity onPress={load} style={styles.retryButton}>
-                <Text style={styles.retryText}>Réessayer</Text>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Commandes</Text>
+              <TouchableOpacity onPress={close} style={styles.closeButton}>
+                <Text style={styles.closeText}>Fermer</Text>
               </TouchableOpacity>
             </View>
-          )}
 
-          {state.status === "success" && state.requests.length === 0 && (
-            <View style={styles.centered}>
-              <Text style={styles.emptyText}>
-                Aucune commande pour l'instant.
-              </Text>
-            </View>
-          )}
+            {state.status === "loading" && (
+              <View style={styles.centered}>
+                <ActivityIndicator size="large" color={colors.main} />
+              </View>
+            )}
 
-          {state.status === "success" && state.requests.length > 0 && (
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={styles.list}
-            >
-              {state.requests.map((item) => (
-                <RequestItem
-                  key={String(item.id)}
-                  item={item}
-                  cookName={cookName}
-                  cookFirstName={cookFirstName}
-                  cookLastName={cookLastName}
-                  isClient={isClient}
-                  token={token}
-                  onCancelSuccess={load}
-                  onAddressUpdated={load}
-                  onClose={close}
-                />
-              ))}
-            </ScrollView>
-          )}
+            {state.status === "error" && (
+              <View style={styles.centered}>
+                <Text style={styles.errorText}>
+                  Impossible de charger les commandes.
+                </Text>
+                <TouchableOpacity onPress={load} style={styles.retryButton}>
+                  <Text style={styles.retryText}>Réessayer</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {state.status === "success" && state.requests.length === 0 && (
+              <View style={styles.centered}>
+                <Text style={styles.emptyText}>
+                  Aucune commande pour l'instant.
+                </Text>
+              </View>
+            )}
+
+            {state.status === "success" && state.requests.length > 0 && (
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.list}
+              >
+                {state.requests.map((item) => (
+                  <RequestItem
+                    key={String(item.id)}
+                    item={item}
+                    cookName={cookName}
+                    isClient={isClient}
+                    token={token}
+                    onCancelSuccess={load}
+                    onAddressUpdated={load}
+                  />
+                ))}
+              </ScrollView>
+            )}
           </KeyboardAvoidingView>
         </SafeAreaView>
       </Modal>

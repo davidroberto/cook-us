@@ -142,17 +142,15 @@ test("PATCH /cook-request/:id/address met à jour l'adresse de la demande", asyn
   const clientToken = await loginAs(request, CLIENT_EMAIL, CLIENT_PASSWORD);
   const cookToken = await loginAs(request, COOK_EMAIL, COOK_PASSWORD);
 
-  // Récupère un cook
-  const cooksRes = await request.get(`${API}/cooks`, {
+  // Récupère Pierre Martin (le cook connecté) via son email
+  const cooksRes = await request.get(`${API}/cooks?limit=50`, {
     headers: { Authorization: `Bearer ${clientToken}` },
   });
   const cooksBody = await cooksRes.json();
-  const allCooks: Array<{ id: string; firstName: string; lastName: string }> =
+  const allCooks: Array<{ id: string; user?: { email: string } }> =
     cooksBody.data ?? cooksBody;
-  const pierre = allCooks.find(
-    (c) => c.firstName === "Pierre" && c.lastName === "Martin",
-  );
-  const cookId = pierre?.id ?? allCooks[0]?.id;
+  const cookId =
+    allCooks.find((c) => c.user?.email === COOK_EMAIL)?.id ?? allCooks[0]?.id;
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 60);
@@ -220,25 +218,15 @@ test("GET /cook-request/:id retourne l'adresse de la prestation dans le détail 
     },
   });
 
-  // Récupère l'id du cook Pierre Martin via son token
-  const cookProfileRes = await request.get(`${API}/auth/me`, {
-    headers: { Authorization: `Bearer ${cookToken}` },
-  });
-  // Pour créer la réservation on a besoin du cookId (UUID de la table cook)
-  // On le trouve via la liste des cooks
-  const cooksRes = await request.get(`${API}/cooks`, {
+  // Récupère Pierre Martin (le cook connecté) via son email
+  const cooksRes = await request.get(`${API}/cooks?limit=50`, {
     headers: { Authorization: `Bearer ${clientToken}` },
   });
   const cooksBody = await cooksRes.json();
-  const cookProfile =
-    cookProfileRes.status() === 200 ? await cookProfileRes.json() : null;
-
-  // Cherche le cook Pierre Martin dans la liste
-  const allCooks: Array<{ id: string; firstName: string; lastName: string }> =
+  const allCooks: Array<{ id: string; user?: { email: string } }> =
     cooksBody.data ?? cooksBody;
   const pierreId =
-    allCooks.find((c) => c.firstName === "Pierre" && c.lastName === "Martin")
-      ?.id ?? allCooks[0]?.id;
+    allCooks.find((c) => c.user?.email === COOK_EMAIL)?.id ?? allCooks[0]?.id;
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 45);
@@ -275,7 +263,4 @@ test("GET /cook-request/:id retourne l'adresse de la prestation dans le détail 
       city: "Paris",
     },
   });
-
-  // Nettoyage : restaure cookProfile info (optionnel)
-  void cookProfile;
 });

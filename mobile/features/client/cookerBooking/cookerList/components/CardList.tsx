@@ -44,12 +44,32 @@ export const CookerList = () => {
   const minHourlyRate = minPriceInput ? Number(minPriceInput) : undefined;
   const maxHourlyRate = maxPriceInput ? Number(maxPriceInput) : undefined;
 
-  const { cooks, loading, loadingMore, error, refresh, loadMore } = useCookerList({
-    search: debouncedSearch || undefined,
-    speciality: selectedSpeciality ?? undefined,
-    minHourlyRate,
-    maxHourlyRate,
-  });
+  const { cooks, loading, loadingMore, error, refresh, loadMore } =
+    useCookerList({
+      search: debouncedSearch || undefined,
+      speciality: selectedSpeciality ?? undefined,
+      minHourlyRate,
+      maxHourlyRate,
+    });
+
+  // Handle scroll with manual infinite scroll detection for RN Web
+  const handleScroll = useCallback(
+    (e: any) => {
+      const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
+      scrollOffsetRef.current = contentOffset.y;
+
+      // Check if we're near the bottom (within 30% of remaining content)
+      const paddingToBottom = contentSize.height * 0.3;
+      const isNearBottom =
+        layoutMeasurement.height + contentOffset.y >=
+        contentSize.height - paddingToBottom;
+
+      if (isNearBottom && !loading && !loadingMore) {
+        loadMore();
+      }
+    },
+    [loadMore, loading, loadingMore],
+  );
 
   // Restaure la position de scroll au retour depuis un profil
   useFocusEffect(
@@ -60,7 +80,7 @@ export const CookerList = () => {
           animated: false,
         });
       }
-    }, [])
+    }, []),
   );
 
   if (error) {
@@ -91,7 +111,11 @@ export const CookerList = () => {
             style={styles.clearButton}
             testID="search-clear-btn"
           >
-            <Ionicons name="close-circle" size={18} color={colors.text + "80"} />
+            <Ionicons
+              name="close-circle"
+              size={18}
+              color={colors.text + "80"}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -181,23 +205,20 @@ export const CookerList = () => {
           renderItem={({ item }) => (
             <CookerCard
               cooker={item}
-              onPress={() =>
-                router.push(`/client/viewCook/profile/${item.id}`)
-              }
+              onPress={() => router.push(`/client/viewCook/profile/${item.id}`)}
             />
           )}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           testID="cooker-list"
-          onScroll={(e) => {
-            scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
-          }}
+          onScroll={handleScroll}
           scrollEventThrottle={16}
           onEndReached={loadMore}
           onEndReachedThreshold={0.3}
           ListFooterComponent={
             loadingMore ? (
               <ActivityIndicator
+                testID="loading-more-indicator"
                 size="small"
                 color={colors.main}
                 style={styles.footerLoader}

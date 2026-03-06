@@ -28,9 +28,7 @@ export const COOK_REQUEST_MESSAGE_PREFIX = "__COOK_REQUEST__";
 export const COOK_ACCEPT_MESSAGE_PREFIX = "__COOK_ACCEPT__";
 export const COOK_PAID_MESSAGE_PREFIX = "__COOK_PAID__";
 
-function parseRequestData(
-  raw: string,
-): {
+function parseRequestData(raw: string): {
   startDate: string;
   guestsNumber: number;
   mealType?: string;
@@ -124,9 +122,7 @@ export function useConversation(conversationId: number) {
       const api: ApiConversation = await convRes.json();
       const paginated: ApiPaginatedMessages = await msgsRes.json();
 
-      const other = api.participants.find(
-        (p) => p.authorId !== currentUserId,
-      );
+      const other = api.participants.find((p) => p.authorId !== currentUserId);
 
       // Messages come DESC from backend — keep DESC for inverted FlatList
       const messages = paginated.messages.map((m) =>

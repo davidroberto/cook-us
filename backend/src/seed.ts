@@ -167,7 +167,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 68,
     city: "Paris",
-    validationStatus: CookValidationStatus.PENDING,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "34567890100125",
     description:
       "Formé au Japon pendant 2 ans, je prépare sushis, sashimis et yakitoris devant vos invités. Poissons sourcés directement chez les pêcheurs.",
@@ -203,7 +203,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 52,
     city: "Rennes",
-    validationStatus: CookValidationStatus.PENDING,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "55318264900087",
     thumbnail:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
@@ -240,7 +240,7 @@ const COOKS_DATA = [
     speciality: "indian_cooking",
     hourlyRate: 44,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "21349876500028",
     description:
       "Après 3 ans passés à Mumbai et Chennai, je maîtrise les épices indiennes comme personne. Tandooris, biryanis et currys parfumés pour des soirées exotiques.",
@@ -252,7 +252,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 50,
     city: "Bordeaux",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "67832104900051",
     description:
       "Passionné de cuisine du Sud-Ouest, je travaille avec les producteurs locaux de la région. Canard, foie gras et vins de Bordeaux sont mes alliés.",
@@ -264,7 +264,7 @@ const COOKS_DATA = [
     speciality: "vegetarian_cooking",
     hourlyRate: 38,
     city: "Montpellier",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "54219038700042",
     description:
       "Chef végétarienne certifiée, je crée des menus colorés et savoureux sans viande ni poisson. Cuisine crudivore, fermentée et végane sur demande.",
@@ -276,7 +276,7 @@ const COOKS_DATA = [
     speciality: "asian_cooking",
     hourlyRate: 46,
     city: "Lyon",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "38920147600073",
     description:
       "Amoureux des cuisines coréenne et japonaise, je propose bibimbap, bulgogi et ramen maison. Produits importés directement d'Asie pour une authenticité maximale.",
@@ -288,7 +288,7 @@ const COOKS_DATA = [
     speciality: "pastry_cooking",
     hourlyRate: 57,
     city: "Nantes",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "72018394500064",
     description:
       "Pâtissière MOF (Meilleure Ouvrière de France) en chocolaterie, je sublime vos événements avec des créations en chocolat et entremets sur mesure.",
@@ -300,7 +300,7 @@ const COOKS_DATA = [
     speciality: "asian_cooking",
     hourlyRate: 42,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "89301274600037",
     description:
       "Franco-vietnamien, je perpétue les recettes familiales : phở, bún bò huế et bánh mì. Une cuisine fraîche, légère et pleine de parfums du Vietnam.",
@@ -312,7 +312,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 53,
     city: "Lille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "43892016500089",
     description:
       "Spécialiste de la cuisine nordiste, je propose carbonade flamande, potjevleesch et gaufres de Liège. Le terroir ch'ti revisité avec modernité.",
@@ -324,7 +324,7 @@ const COOKS_DATA = [
     speciality: "italian_cooking",
     hourlyRate: 47,
     city: "Marseille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "16274039800015",
     description:
       "Demi-finaliste Top Chef 2022, je propose une cuisine italienne créative loin des clichés. Pasta fraîche, ossobuco revisité et desserts siciliens inédits.",
@@ -336,7 +336,7 @@ const COOKS_DATA = [
     speciality: "mexican_cooking",
     hourlyRate: 40,
     city: "Toulouse",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "57193048200026",
     description:
       "Mexicaine d'adoption, je prépare pozole, mole negro et tamales comme une grand-mère de Oaxaca. Piments, maïs et citron vert au cœur de chaque plat.",
@@ -348,7 +348,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 75,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "30481957200058",
     description:
       "Spécialiste de la cuisine fusion franco-asiatique, j'ai officié dans des restaurants 2 étoiles à Paris et Hong Kong. Accords audacieux et présentation artistique.",
@@ -360,7 +360,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 49,
     city: "Strasbourg",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "91837264500031",
     description:
       "Alsacienne de cœur, je cuisine la choucroute, le baeckeoffe et la flammekueche comme ma grand-mère. Un héritage culinaire transmis avec amour.",
@@ -372,7 +372,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 43,
     city: "Lyon",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "62748013900047",
     description:
       "Passionné de cuisine méditerranéenne et du Maghreb, je propose couscous, tajines et mezze. Des recettes familiales transmises de génération en génération.",
@@ -384,7 +384,7 @@ const COOKS_DATA = [
     speciality: "pastry_cooking",
     hourlyRate: 60,
     city: "Bordeaux",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "47219380600062",
     description:
       "Ancienne cheffe pâtissière du Grand Hôtel de Bordeaux, je crée des desserts gastronomiques pour vos dîners. Wedding cakes et pièces sculptées sur commande.",
@@ -396,7 +396,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 65,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "28394710500083",
     description:
       "Itamae certifié après 4 ans à Tokyo, je prépare des omakase sushi de haute qualité. Poissons travaillés à la minute, riz vinaigrés à la tradition japonaise.",
@@ -408,7 +408,7 @@ const COOKS_DATA = [
     speciality: "vegetarian_cooking",
     hourlyRate: 41,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "63901847200019",
     description:
       "Ancienne diététicienne reconvertie en cheffe végé, je concocte des menus sains et gourmands. Spécialiste des superaliments, farines alternatives et substituts créatifs.",
@@ -420,7 +420,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 55,
     city: "Rennes",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "14829036700074",
     description:
       "Breton passionné, je cuisine les crustacés, fruits de mer et galettes au sarrasin avec des produits de la criée de Quimper. La Bretagne dans votre assiette.",
@@ -432,7 +432,7 @@ const COOKS_DATA = [
     speciality: "indian_cooking",
     hourlyRate: 46,
     city: "Nice",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "50738294100038",
     description:
       "Cheffe franco-tunisienne formée à Delhi, je mêle les épices du Maghreb et de l'Inde. Mes currys et biryanis d'inspiration fusion ravissent les papilles les plus exigeantes.",
@@ -444,7 +444,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 85,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "76019283400055",
     description:
       "Chef consultant ex-Robuchon, je propose des menus de chef à domicile à partir de 6 convives. Technique classique, produits d'exception, service discret et professionnel.",
@@ -456,7 +456,7 @@ const COOKS_DATA = [
     speciality: "italian_cooking",
     hourlyRate: 51,
     city: "Aix-en-Provence",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "31847590200066",
     description:
       "Revenue de Florence après un stage chez Cibrèo, je prépare une cuisine toscane authentique. Ribollita, bistecca fiorentina et panna cotta selon les saisons.",
@@ -468,7 +468,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 48,
     city: "Montpellier",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "82946031500021",
     description:
       "Chef du terroir languedocien, je travaille avec les vignerons et producteurs locaux. Tielle sétoise, bourride et fromages de brebis sublimés par nos vins du Languedoc.",
@@ -480,7 +480,7 @@ const COOKS_DATA = [
     speciality: "asian_cooking",
     hourlyRate: 39,
     city: "Lille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "49038176200093",
     description:
       "Passionnée de street food asiatique, je reproduis les saveurs des marchés de Bangkok et Taipei. Som tam, laksa et char siu bao faits maison avec authenticité.",
@@ -492,7 +492,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 54,
     city: "Nantes",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "65103928400044",
     description:
       "Spécialiste des cuisines du monde, j'ai travaillé sur des yachts privés en Méditerranée. Menus thématiques : soirée grecque, espagnole, libanaise ou marocaine.",
@@ -504,7 +504,7 @@ const COOKS_DATA = [
     speciality: "pastry_cooking",
     hourlyRate: 59,
     city: "Lyon",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "27490163800056",
     description:
       "Pâtissière lyonnaise formée chez Bernachon, je travaille exclusivement le chocolat grand cru. Ganaches, mousses et pralinés d'une finesse inégalée pour vos occasions.",
@@ -516,7 +516,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 45,
     city: "Toulouse",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "93712048600012",
     description:
       "Gascon de souche, je cuisine le cassoulet, le confit de canard et le magret comme un art de vivre. Produits du Gers, recettes ancestrales, convivialité garantie.",
@@ -528,7 +528,7 @@ const COOKS_DATA = [
     speciality: "vegetarian_cooking",
     hourlyRate: 37,
     city: "Bordeaux",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "58302941700069",
     description:
       "Militante du bien-manger, je propose une cuisine végétale locale et de saison. Zéro déchet, circuits courts et saveurs intenses pour prendre soin de vous et la planète.",
@@ -540,7 +540,7 @@ const COOKS_DATA = [
     speciality: "japanese_cooking",
     hourlyRate: 72,
     city: "Bordeaux",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "40281937600035",
     description:
       "Amoureux du Japon depuis l'enfance, je réalise des kaiseki selon les saisons. Chaque plat est un équilibre entre goût, couleur et texture, inspiré de la philosophie zen.",
@@ -552,7 +552,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 35,
     city: "Clermont-Ferrand",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "71493028500077",
     description:
       "Cuisinière du Massif Central, je propose potée auvergnate, truffade et pounti. Des recettes robustes et chaleureuses transmises par ma grand-mère, à partager en famille.",
@@ -564,7 +564,7 @@ const COOKS_DATA = [
     speciality: "italian_cooking",
     hourlyRate: 44,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "36720419800048",
     description:
       "Passé par plusieurs trattorias romaines, je maîtrise les sauces mères italiennes sur le bout des doigts. Carbonara à l'œuf frais, cacio e pepe et supplì di riso.",
@@ -576,7 +576,7 @@ const COOKS_DATA = [
     speciality: "indian_cooking",
     hourlyRate: 48,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "84031976200023",
     description:
       "Formatrice en cuisine indienne pour l'école Ritz Escoffier, je propose des cours et prestations à domicile. Du masala chai aux biryani, l'Inde dans votre cuisine.",
@@ -588,7 +588,7 @@ const COOKS_DATA = [
     speciality: "autre",
     hourlyRate: 62,
     city: "Rennes",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "59214830700081",
     description:
       "Chef aventurier et globe-trotter, je propose des dîners immersifs : un pays, une musique, une cuisine. Pérou, Éthiopie, Géorgie... dépaysement total garanti.",
@@ -600,7 +600,7 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 56,
     city: "Nice",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "20948371600054",
     description:
       "Sommelière et cheffe, je compose des menus avec accords mets et vins. Chaque plat est pensé pour mettre en valeur un vin d'exception de ma cave personnelle.",
@@ -612,7 +612,7 @@ const COOKS_DATA = [
     speciality: "asian_cooking",
     hourlyRate: 43,
     city: "Marseille",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "73819204500016",
     description:
       "Spécialiste de la cuisine sino-cantonaise après 2 ans à Guangzhou, je reproduis les dim sum, canard laqué et riz sauté wok comme dans les grandes brasseries de Canton.",
@@ -624,7 +624,7 @@ const COOKS_DATA = [
     speciality: "pastry_cooking",
     hourlyRate: 63,
     city: "Paris",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "61037492800087",
     description:
       "Cheffe pâtissière et blogueuse culinaire avec 200k abonnés, je crée des pâtisseries aussi belles que bonnes. Entremets, layer cakes et viennoiseries beurre pur.",
@@ -636,10 +636,22 @@ const COOKS_DATA = [
     speciality: "french_cooking",
     hourlyRate: 66,
     city: "Lyon",
-    isValidated: true,
+    validationStatus: CookValidationStatus.VALIDATED,
     siret: "48291063700032",
     description:
       "Ancien chef de partie chez Paul Bocuse, je perpétue la grande tradition lyonnaise. Quenelles, volaille de Bresse et tarte praline pour honorer la capitale de la gastronomie.",
+  },
+  {
+    firstName: "Julien",
+    lastName: "Lacroix",
+    email: "julien.lacroix@cookus.app",
+    speciality: "autre",
+    hourlyRate: 47,
+    city: "Paris",
+    validationStatus: CookValidationStatus.VALIDATED,
+    siret: "19283746500092",
+    description:
+      "Chef polyvalent avec 15 ans d'expérience en restauration collective et événementielle. Je m'adapte à tous les goûts et toutes les occasions.",
   },
 ];
 
@@ -1094,21 +1106,18 @@ async function seed() {
     {
       cookIndex: 16,
       description: "Soupe à l'oignon gratinée",
-      imgUrl:
-        "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
     },
     {
       cookIndex: 16,
       description: "Entrecôte bordelaise sauce à l'échalote",
-      imgUrl:
-        "https://images.unsplash.com/photo-1544025162-d76694265947?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600",
     },
     // Lucie Perrin — vegetarian_cooking
     {
       cookIndex: 17,
       description: "Buddha bowl coloré et nourrissant",
-      imgUrl:
-        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
     },
     {
       cookIndex: 17,
@@ -1138,8 +1147,7 @@ async function seed() {
     {
       cookIndex: 18,
       description: "Kimchi maison fermenté",
-      imgUrl:
-        "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
     },
     // Mélanie Caron — pastry_cooking (chocolat)
     {
@@ -1170,8 +1178,7 @@ async function seed() {
     {
       cookIndex: 20,
       description: "Bánh mì crevettes grillées",
-      imgUrl:
-        "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
     },
     {
       cookIndex: 20,
@@ -1189,8 +1196,7 @@ async function seed() {
     {
       cookIndex: 21,
       description: "Welsh rarebit et frites maison",
-      imgUrl:
-        "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=600",
     },
     // Julien Dupuis — italian_cooking (créatif)
     {
@@ -1297,8 +1303,7 @@ async function seed() {
     {
       cookIndex: 27,
       description: "Mille-feuille crème vanille bourbon",
-      imgUrl:
-        "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
     },
     // Thibault Gros — japanese_cooking (omakase)
     {
@@ -1316,8 +1321,7 @@ async function seed() {
     {
       cookIndex: 28,
       description: "Chirashi bowl au riz vinaigré",
-      imgUrl:
-        "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
     },
     // Aurélie Collet — vegetarian_cooking (superaliments)
     {
@@ -1329,8 +1333,7 @@ async function seed() {
     {
       cookIndex: 29,
       description: "Tartines avocat et graines germées",
-      imgUrl:
-        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
     },
     // Benoît Pichon — french_cooking (breton)
     {
@@ -1348,8 +1351,7 @@ async function seed() {
     {
       cookIndex: 30,
       description: "Bisque de homard à la crème",
-      imgUrl:
-        "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
     },
     // Yasmine Touati — indian_cooking (fusion maghreb-inde)
     {
@@ -1393,8 +1395,7 @@ async function seed() {
     {
       cookIndex: 33,
       description: "Bistecca alla fiorentina saignante",
-      imgUrl:
-        "https://images.unsplash.com/photo-1558030006-450675393462?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1558030006-450675393462?w=600",
     },
     {
       cookIndex: 33,
@@ -1419,8 +1420,7 @@ async function seed() {
     {
       cookIndex: 35,
       description: "Som tam thaï papaye verte et crevettes",
-      imgUrl:
-        "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
     },
     {
       cookIndex: 35,
@@ -1431,8 +1431,7 @@ async function seed() {
     {
       cookIndex: 35,
       description: "Laksa malaisien aux nouilles de riz",
-      imgUrl:
-        "https://images.unsplash.com/photo-1562967916-eb82221dfb44?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1562967916-eb82221dfb44?w=600",
     },
     // Florian Tessier — autre (world food)
     {
@@ -1451,8 +1450,7 @@ async function seed() {
     {
       cookIndex: 37,
       description: "Tablette de chocolat noir grand cru",
-      imgUrl:
-        "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600",
     },
     {
       cookIndex: 37,
@@ -1508,8 +1506,7 @@ async function seed() {
     {
       cookIndex: 40,
       description: "Wagyu japonais A5 grillé au charbon",
-      imgUrl:
-        "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600",
     },
     {
       cookIndex: 40,
@@ -1534,8 +1531,7 @@ async function seed() {
     {
       cookIndex: 42,
       description: "Cacio e pepe à la romaine",
-      imgUrl:
-        "https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600",
     },
     {
       cookIndex: 42,
@@ -1591,8 +1587,7 @@ async function seed() {
     {
       cookIndex: 45,
       description: "Plateau de fromages affinés sélectionnés",
-      imgUrl:
-        "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600",
     },
     {
       cookIndex: 45,
@@ -1610,21 +1605,18 @@ async function seed() {
     {
       cookIndex: 46,
       description: "Dim sum vapeur assortis",
-      imgUrl:
-        "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
     },
     {
       cookIndex: 46,
       description: "Riz cantonais au wok, crevettes et œufs",
-      imgUrl:
-        "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600",
     },
     // Céline Ferrand — pastry_cooking (blogueuse)
     {
       cookIndex: 47,
       description: "Layer cake vanille fraise en hauteur",
-      imgUrl:
-        "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+      imgUrl: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
     },
     {
       cookIndex: 47,
@@ -2035,6 +2027,7 @@ async function seed() {
       cookId: cooks[1].id,
       clientId: clients[0].id,
       status: CookRequestStatus.CANCELLED,
+      cancellationReason: "Changement de plans de dernière minute",
       mealType: MealType.DINNER,
       ...addr(0),
     },
@@ -2057,6 +2050,17 @@ async function seed() {
       status: CookRequestStatus.CANCELLED,
       mealType: MealType.DINNER,
       ...addr(13),
+    },
+    {
+      guestsNumber: 10,
+      startDate: new Date("2026-01-15T19:00:00Z"),
+      endDate: new Date("2026-01-15T22:00:00Z"),
+      cookId: cooks[4].id,
+      clientId: clients[8].id,
+      status: CookRequestStatus.CANCELLED,
+      mealType: MealType.DINNER,
+      cancellationReason: "Changement de plans imprévu",
+      ...addr(8),
     },
     // Terminées - completed (pour tester la notation)
     {

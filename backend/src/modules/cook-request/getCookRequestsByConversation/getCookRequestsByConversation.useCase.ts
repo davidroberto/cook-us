@@ -58,7 +58,11 @@ export class GetCookRequestsByConversationUseCase {
     const cook = cooks[0];
 
     const requests = await this.cookRequestRepository.find({
-      where: { cookId: cook.id, clientId: client.id },
+      where: {
+        cookId: cook.id,
+        clientId: client.id,
+        conversationId,
+      },
       order: { startDate: "DESC" },
     });
 

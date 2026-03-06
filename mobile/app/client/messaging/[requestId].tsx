@@ -23,7 +23,9 @@ export default function MessagingPage() {
     otherLastName?: string;
   }>();
 
-  const { state, retry, sendMessage, loadMore } = useConversation(parseInt(requestId ?? "0", 10));
+  const { state, retry, sendMessage, loadMore } = useConversation(
+    parseInt(requestId ?? "0", 10),
+  );
 
   // Reload conversation when screen regains focus (e.g., coming back from payment)
   useFocusEffect(
@@ -63,7 +65,10 @@ export default function MessagingPage() {
   return (
     <ScreenBackground edges={["top"]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.replace("/client/(tabs)/messages")} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => router.replace("/client/(tabs)/messages")}
+          style={styles.backButton}
+        >
           <Text style={styles.backText}>← Retour</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{headerTitle}</Text>
