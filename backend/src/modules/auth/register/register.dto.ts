@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
   ValidateNested,
 } from "class-validator";
@@ -34,6 +35,9 @@ export class RegisterCookProfileDto {
     description: "Numéro SIRET (14 chiffres)",
   })
   @IsString()
+  @Matches(/^\d{14}$/, {
+    message: "Le SIRET doit contenir exactement 14 chiffres",
+  })
   siret: string;
 
   @ApiPropertyOptional({
