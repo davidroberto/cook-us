@@ -21,6 +21,7 @@ import {
   type CookRequestCardStatus,
 } from "@/features/client/cookRequest/components/CookRequestCard";
 import { AddressEditor } from "@/features/client/cookRequest/components/AddressEditor";
+import { useRouter } from "expo-router";
 
 const EDITABLE_STATUSES = ["pending", "accepted", "refused", "cancelled"];
 const CANCELLABLE_STATUSES = ["pending", "accepted"];
@@ -28,23 +29,56 @@ const CANCELLABLE_STATUSES = ["pending", "accepted"];
 function RequestItem({
   item,
   cookName,
+  cookFirstName,
+  cookLastName,
   isClient,
   token,
   onCancelSuccess,
   onAddressUpdated,
+  onClose,
 }: {
   item: CookRequestSummary;
   cookName?: string;
+  cookFirstName?: string;
+  cookLastName?: string;
   isClient: boolean;
   token: string | null;
   onCancelSuccess?: () => void;
   onAddressUpdated: () => void;
+  onClose?: () => void;
 }) {
+  const router = useRouter();
   const canCancel = !!cookName && CANCELLABLE_STATUSES.includes(item.status);
   const canEditAddress = isClient && EDITABLE_STATUSES.includes(item.status);
+  const showPriceAndAccept =
+    isClient && item.status === "accepted" && item.price !== null;
   const address = item.street
     ? `${item.street}, ${item.postalCode} ${item.city}`
     : null;
+
+  const handleAccept = () => {
+    onClose?.();
+    const total =
+      Math.round((item.price! + item.price! * 0.3) * 100) / 100;
+    router.push({
+      pathname: "/client/viewCook/payment/[cookRequestId]",
+      params: {
+        cookRequestId: String(item.id),
+        amount: String(total),
+        cookFirstName: cookFirstName ?? "",
+        cookLastName: cookLastName ?? "",
+        startDate: item.startDate,
+        endDate: item.endDate ?? "",
+      },
+    });
+  };
+
+  const commission = showPriceAndAccept
+    ? Math.round(item.price! * 0.3 * 100) / 100
+    : 0;
+  const total = showPriceAndAccept
+    ? Math.round((item.price! + commission) * 100) / 100
+    : 0;
 
   return (
     <CookRequestCard
@@ -57,6 +91,34 @@ function RequestItem({
       canCancel={canCancel}
       onCancelSuccess={onCancelSuccess}
       address={address}
+      beforeCancel={
+        showPriceAndAccept ? (
+          <>
+            <View style={styles.priceSeparator} />
+            <Text style={styles.priceTitle}>Prix proposé</Text>
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>Prix du cook</Text>
+              <Text style={styles.priceValue}>{item.price!.toFixed(2)} €</Text>
+            </View>
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>Commission (30%)</Text>
+              <Text style={styles.priceValue}>{commission.toFixed(2)} €</Text>
+            </View>
+            <View style={styles.priceRow}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalValue}>{total.toFixed(2)} €</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.acceptButton}
+              onPress={handleAccept}
+            >
+              <Text style={styles.acceptButtonText}>
+                Accepter la prestation
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : undefined
+      }
     >
       <AddressEditor
         id={item.id}
@@ -74,10 +136,12 @@ function RequestItem({
 type Props = {
   conversationId: number;
   cookName?: string;
+  cookFirstName?: string;
+  cookLastName?: string;
   onClose?: () => void;
 };
 
-export function ConversationOrdersButton({ conversationId, cookName, onClose }: Props) {
+export function ConversationOrdersButton({ conversationId, cookName, cookFirstName, cookLastName, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const { state, load } = useConversationRequests(conversationId);
   const { user, token } = useAuth();
@@ -155,10 +219,13 @@ export function ConversationOrdersButton({ conversationId, cookName, onClose }: 
                   key={String(item.id)}
                   item={item}
                   cookName={cookName}
+                  cookFirstName={cookFirstName}
+                  cookLastName={cookLastName}
                   isClient={isClient}
                   token={token}
                   onCancelSuccess={load}
                   onAddressUpdated={load}
+                  onClose={close}
                 />
               ))}
             </ScrollView>
@@ -236,5 +303,55 @@ const styles = StyleSheet.create({
     color: colors.text,
     opacity: 0.5,
     textAlign: "center",
+  },
+  priceSeparator: {
+    height: 1,
+    backgroundColor: colors.text,
+    opacity: 0.1,
+    marginVertical: 10,
+  },
+  priceTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.text,
+    marginBottom: 6,
+  },
+  priceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  priceLabel: {
+    fontSize: 13,
+    color: colors.text,
+    opacity: 0.6,
+  },
+  priceValue: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  totalLabel: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  totalValue: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.mainDark,
+  },
+  acceptButton: {
+    backgroundColor: colors.main,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  acceptButtonText: {
+    ...typography.styles.body1Bold,
+    color: colors.white,
   },
 });

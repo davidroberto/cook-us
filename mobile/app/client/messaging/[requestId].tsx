@@ -65,6 +65,16 @@ export default function MessagingPage() {
               ? `${state.conversation.otherFirstName} ${state.conversation.otherLastName}`
               : undefined
           }
+          cookFirstName={
+            state.status === "success"
+              ? state.conversation.otherFirstName
+              : undefined
+          }
+          cookLastName={
+            state.status === "success"
+              ? state.conversation.otherLastName
+              : undefined
+          }
           onClose={retry}
         />
       </View>

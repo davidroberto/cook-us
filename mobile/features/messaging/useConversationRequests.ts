@@ -11,6 +11,7 @@ export type CookRequestSummary = {
   guestsNumber: number;
   mealType: string;
   status: string;
+  price: number | null;
   street: string | null;
   postalCode: string | null;
   city: string | null;

@@ -69,6 +69,7 @@ export class GetCookRequestsByConversationUseCase {
       guestsNumber: r.guestsNumber,
       mealType: r.mealType,
       status: r.status,
+      price: r.price ? Number(r.price) : null,
       street: r.street ?? null,
       postalCode: r.postalCode ?? null,
       city: r.city ?? null,

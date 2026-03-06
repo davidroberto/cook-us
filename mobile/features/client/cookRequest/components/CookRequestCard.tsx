@@ -47,6 +47,7 @@ type Props = {
   review?: OrderReview | null;
   onReviewSubmitted?: () => void;
   address?: string | null;
+  beforeCancel?: ReactNode;
   children?: ReactNode;
 };
 
@@ -63,6 +64,7 @@ export function CookRequestCard({
   review,
   onReviewSubmitted,
   address,
+  beforeCancel,
   children,
 }: Props) {
   const formattedDate = new Date(startDate).toLocaleDateString("fr-FR", {
@@ -111,6 +113,8 @@ export function CookRequestCard({
           Motif : {cancellationReason}
         </Text>
       ) : null}
+
+      {beforeCancel}
 
       {canCancel && onCancelSuccess && cookName ? (
         <CancelBookingButton
