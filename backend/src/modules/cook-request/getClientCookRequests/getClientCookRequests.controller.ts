@@ -33,6 +33,4 @@ export class GetClientCookRequestsController {
   getMyRequests(@Request() req) {
     return this.getClientCookRequestsUseCase.execute(req.user.id);
   }
-
-
 }

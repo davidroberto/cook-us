@@ -19,12 +19,17 @@ export class GetProfileUseCase {
       throw new NotFoundException("Utilisateur introuvable.");
     }
 
-    let address: { street: string; postalCode: string; city: string } | null = null;
+    let address: { street: string; postalCode: string; city: string } | null =
+      null;
 
     if (user.role === UserRole.CLIENT) {
       const client = await this.clientRepository.findOne({ where: { userId } });
       if (client?.street && client?.postalCode && client?.city) {
-        address = { street: client.street, postalCode: client.postalCode, city: client.city };
+        address = {
+          street: client.street,
+          postalCode: client.postalCode,
+          city: client.city,
+        };
       }
     }
 
