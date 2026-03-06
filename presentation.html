@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cook'US — Soutenance</title>
+  <style>
+    /* ─── Design tokens ─────────────────────────────────── */
+    :root {
+      --bg:        #FDF6E7;
+      --fg:        #240E0D;
+      --primary:   #D7553A;
+      --dark-red:  #A82712;
+      --white:     #FFFFFF;
+      --card:      rgba(255,255,255,0.70);
+      --radius:    12px;
+      --trans:     0.45s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── Reset / Base ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      height: 100dvh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ─── Slide deck ────────────────────────────────────── */
+    #deck {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 6rem;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity var(--trans), transform var(--trans);
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ─── Background texture (subtle grain) ────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(215,85,58,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 90% 80%, rgba(168,39,18,.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .slide > * { position: relative; z-index: 1; }
+
+    /* ─── Typography ────────────────────────────────────── */
+    .label {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: .75rem;
+    }
+
+    h1 {
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      font-weight: 800;
+      line-height: 1.05;
+      color: var(--fg);
+    }
+
+    h1 span { color: var(--primary); }
+
+    h2 {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--fg);
+      margin-bottom: 1.5rem;
+    }
+
+    h2 span { color: var(--primary); }
+
+    .subtitle {
+      font-size: 1.5rem;
+      color: var(--fg);
+      opacity: .65;
+      margin-top: .75rem;
+      font-weight: 400;
+    }
+
+    /* ─── Cards / Pills ─────────────────────────────────── */
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1.5px solid rgba(36,14,13,.10);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .4rem;
+      min-width: 160px;
+      backdrop-filter: blur(6px);
+    }
+
+    .card .icon { font-size: 2rem; line-height: 1; }
+    .card .name { font-size: 1.2rem; font-weight: 700; }
+    .card .detail { font-size: 1rem; opacity: .6; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--card);
+      border: 1.5px solid rgba(36,14,13,.10);
+      border-radius: 999px;
+      padding: .45rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+    }
+
+    .pill.accent {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    /* ─── Divider ───────────────────────────────────────── */
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin: 1.25rem 0;
+    }
+
+    /* ─── Team badges ───────────────────────────────────── */
+    .team {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .member {
+      background: var(--card);
+      border: 1.5px solid rgba(36,14,13,.10);
+      border-radius: 999px;
+      padding: .5rem 1.25rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+    }
+
+    /* ─── Two-column layout ─────────────────────────────── */
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 1.5rem;
+    }
+
+    .col { display: flex; flex-direction: column; gap: .75rem; }
+
+    /* ─── Icon list ─────────────────────────────────────── */
+    .list { display: flex; flex-direction: column; gap: .65rem; margin-top: 1rem; }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    .list-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* ─── Architecture diagram ──────────────────────────── */
+    .arch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      margin-top: 1rem;
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .arch-box {
+      background: var(--card);
+      border: 1.5px solid rgba(36,14,13,.12);
+      border-radius: 8px;
+      padding: .65rem 1.3rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+      text-align: center;
+    }
+
+    .arch-box.primary {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .arch-box.dark {
+      background: var(--dark-red);
+      color: var(--white);
+      border-color: var(--dark-red);
+    }
+
+    .arch-arrow { font-size: 1.5rem; opacity: .5; }
+
+    /* ─── Big number / stat ─────────────────────────────── */
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .stat .num {
+      font-size: 4.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .stat .desc { font-size: 1.1rem; opacity: .65; font-weight: 500; }
+
+    .stats-row {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    /* ─── Transition slide ──────────────────────────────── */
+    .slide.transition-slide {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .slide.transition-slide h1,
+    .slide.transition-slide h2,
+    .slide.transition-slide .label { color: var(--white); }
+
+    .slide.transition-slide .subtitle { color: rgba(255,255,255,.75); }
+
+    .slide.transition-slide::before {
+      display: none;
+    }
+
+    /* ─── Progress bar ──────────────────────────────────── */
+    #progress {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 100;
+    }
+
+    #counter {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--fg);
+      opacity: .5;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    #dots {
+      display: flex;
+      gap: .4rem;
+    }
+
+    .dot-btn {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(36,14,13,.2);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background .2s, width .2s;
+    }
+
+    .dot-btn.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /* ─── Nav arrows ────────────────────────────────────── */
+    .nav-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--card);
+      border: 1.5px solid rgba(36,14,13,.1);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      z-index: 100;
+      transition: background .2s, opacity .2s;
+      backdrop-filter: blur(6px);
+      opacity: .5;
+    }
+
+    .nav-btn:hover { opacity: 1; background: var(--white); }
+    #prev-btn { left: 1.5rem; }
+    #next-btn { right: 1.5rem; }
+
+    /* ─── Tag row ───────────────────────────────────────── */
+    .tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; justify-content: center; }
+
+    .tag {
+      background: rgba(215,85,58,.12);
+      color: var(--primary);
+      border-radius: 6px;
+      padding: .4rem .9rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    /* ─── Flow U ────────────────────────────────────────── */
+    .flow-u {
+      display: grid;
+      grid-template-columns: auto 2.5rem minmax(4rem, auto) 2.5rem auto;
+      align-items: center;
+      justify-items: center;
+      margin-top: 1.25rem;
+    }
+
+    .fu-arrow {
+      color: var(--primary);
+      font-size: 1.6rem;
+      font-weight: 700;
+      opacity: .85;
+      line-height: 1;
+    }
+
+    /* ─── Big icon slide ────────────────────────────────── */
+    .big-icon {
+      font-size: 5rem;
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+
+    /* ─── Responsive tweaks ─────────────────────────────── */
+    @media (max-width: 700px) {
+      .slide { padding: 2rem 1.5rem; }
+      .cols { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="nav-btn" id="prev-btn" aria-label="Précédent">←</button>
+<button class="nav-btn" id="next-btn" aria-label="Suivant">→</button>
+
+<div id="deck">
+
+  <!-- ── 1. Titre ─────────────────────────────────────────── -->
+  <section class="slide active" id="s1">
+    <div class="label">Workshop 2026 — B3 Dev Web</div>
+    <img src="cook-us/mobile/assets/logo.png" alt="Cook'US" style="height:300px;width:auto;margin-bottom:-.5rem" />
+    <p class="subtitle">La cuisine à domicile, réinventée</p>
+    <div class="divider"></div>
+    <div class="team" style="flex-direction:column;gap:.6rem">
+      <div style="display:flex;gap:.75rem;justify-content:center">
+        <span class="member">👤 Ethan</span>
+        <span class="member">👤 Justin</span>
+        <span class="member">👤 Emma</span>
+        <span class="member">👤 Lucas</span>
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:center">
+        <span class="member">👤 Daria</span>
+        <span class="member">👤 Cassandra</span>
+        <span class="member">👤 Loïc</span>
+        <span class="member">👤 Maxence</span>
+        <span class="member">👤 Marc</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. Concept ────────────────────────────────────────── -->
+  <section class="slide" id="s2">
+    <div class="label">Contexte</div>
+    <h2>Le <span>concept</span></h2>
+    <div class="divider"></div>
+    <div style="display:flex;gap:1.5rem;width:100%;max-width:800px;margin-top:1rem">
+      <div class="card" style="flex:1">
+        <div class="icon">🍽️</div>
+        <div class="name">Le problème</div>
+        <div class="detail">Trouver un cuisinier à domicile de confiance pour nos événements et repas — brunch, apéro, dîner — est fastidieux, fragmenté et manque de garanties</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">💡</div>
+        <div class="name">La solution</div>
+        <div class="detail">Une marketplace qui connecte clients et cuisiniers certifiés</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. Stack technique ─────────────────────────────────── -->
+  <section class="slide" id="s3">
+    <div class="label">Stack technique</div>
+    <h2>Technologies</h2>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;width:100%;max-width:900px;margin-top:1.5rem">
+      <div class="card" style="flex:1">
+        <div class="icon">⚙️</div>
+        <div class="name">NestJS 9</div>
+        <div class="detail">Backend API REST</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🗄️</div>
+        <div class="name">PostgreSQL 16</div>
+        <div class="detail">Base de données + TypeORM</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">⚛️</div>
+        <div class="name">React 19</div>
+        <div class="detail">Backoffice — Vite + TypeScript</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">📱</div>
+        <div class="name">React Native</div>
+        <div class="detail">Mobile — Expo</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🎭</div>
+        <div class="name">Playwright</div>
+        <div class="detail">Tests E2E</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🐳</div>
+        <div class="name">Docker</div>
+        <div class="detail">Compose + Nginx reverse proxy</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🔌</div>
+        <div class="name">WebSockets</div>
+        <div class="detail">Temps réel — NestJS Gateway</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🔑</div>
+        <div class="name">JWT</div>
+        <div class="detail">Authentification — access + refresh tokens</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. Architecture ────────────────────────────────────── -->
+  <section class="slide" id="s4">
+    <div class="label">Architecture</div>
+    <h2>Clean Architecture <span>simplifiée</span></h2>
+    <div class="divider"></div>
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box">📱 Mobile (Expo)</div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-box">🖥️ Backoffice (React)</div>
+      </div>
+      <div class="arch-arrow">↕ HTTPS via Nginx</div>
+      <div class="arch-row">
+        <div class="arch-box primary">⚙️ API NestJS</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-arrow">↓</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box dark">Controller</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box dark">UseCase</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box dark">Repository</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box">🗄️ PostgreSQL</div>
+      </div>
+    </div>
+    <div class="tags" style="margin-top:1.5rem">
+      <span class="tag">auth</span>
+      <span class="tag">client</span>
+      <span class="tag">cook</span>
+      <span class="tag">cook-request</span>
+      <span class="tag">conversation</span>
+      <span class="tag">notification</span>
+      <span class="tag">backoffice</span>
+      <span class="tag">upload</span>
+    </div>
+  </section>
+
+  <!-- ── 5. Workflow ────────────────────────────────────────── -->
+  <section class="slide" id="s5">
+    <div class="label">Organisation</div>
+    <h2>Workflow &amp; <span>Méthode agile</span></h2>
+    <div class="divider"></div>
+    <div style="display:flex;gap:1.5rem;width:100%;max-width:900px;margin-top:1rem">
+      <div class="card" style="flex:1">
+        <div class="icon">🌿</div>
+        <div class="name">Une seule branche</div>
+        <div class="detail">Travail collaboratif en méthode agile sur une branche unique partagée</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">📋</div>
+        <div class="name">GitHub Projects</div>
+        <div class="detail">Board Kanban — Backlog · Todo · In Progress · Done</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🎭</div>
+        <div class="name">Tests E2E avant push</div>
+        <div class="detail">Playwright lancé avant chaque push pour sécuriser la branche</div>
+      </div>
+    </div>
+    <p class="subtitle" style="margin-top:1.5rem;font-size:.9rem">→ GitHub Projects ouvert en parallèle</p>
+  </section>
+
+  <!-- ── 6. Story Map ───────────────────────────────────────── -->
+  <section class="slide" id="s6">
+    <div class="label">Vision produit</div>
+    <h2>Story <span>Map</span></h2>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;width:100%;max-width:1000px;margin-top:1rem">
+      <div class="card" style="flex:1">
+        <div class="icon">🎯</div>
+        <div class="name">Objectifs business</div>
+        <div class="detail">Ce que le produit doit accomplir</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">👤</div>
+        <div class="name">Acteurs &amp; objectifs</div>
+        <div class="detail">Qui utilise l'app et ce qu'il veut accomplir</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🪜</div>
+        <div class="name">Activités</div>
+        <div class="detail">Étapes concrètes pour atteindre l'objectif</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">📝</div>
+        <div class="name">User stories</div>
+        <div class="detail">Fonctionnalités livrables pour la 1ère release</div>
+      </div>
+      <div class="card" style="flex:1;grid-column:1/3">
+        <div class="icon">📐</div>
+        <div class="name">Règles métier / UI / système</div>
+        <div class="detail">Contraintes et comportements attendus par user story</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">✅</div>
+        <div class="name">Critères d'acceptation</div>
+        <div class="detail">Exemples concrets pour valider la user story</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">📦</div>
+        <div class="name">Module / Bounded Context</div>
+        <div class="detail">Où placer la user story dans l'architecture</div>
+      </div>
+    </div>
+    <p class="subtitle" style="margin-top:1rem;font-size:.9rem">→ FigJam ouvert en parallèle</p>
+  </section>
+
+  <!-- ── 7. Transition Démo ──────────────────────────────────── -->
+  <section class="slide transition-slide" id="s7">
+    <div class="big-icon">🎬</div>
+    <div class="label" style="color:rgba(255,255,255,.7)">Démo live</div>
+    <h1 style="color:#fff">Démonstration</h1>
+    <p class="subtitle">Parcours client · Parcours cuisinier · Backoffice admin</p>
+  </section>
+
+  <!-- ── 8. Parcours Client ─────────────────────────────────── -->
+  <section class="slide" id="s8">
+    <div class="label">Démo — 1/3</div>
+    <h2>Parcours <span>Client</span></h2>
+    <div class="divider"></div>
+    <!-- U : 3 items left (top→bottom), → at bottom, 3 items right (bottom→top) -->
+    <div class="flow-u" style="grid-template-rows:auto 1.5rem auto 1.5rem auto">
+      <div class="card" style="grid-column:1;grid-row:1"><div class="icon">📋</div><div class="name">Inscription</div><div class="detail">Créer un compte client</div></div>
+      <div class="card" style="grid-column:5;grid-row:1"><div class="icon">✅</div><div class="name">Confirmation</div><div class="detail">Validation et suivi</div></div>
+      <span class="fu-arrow" style="grid-column:1;grid-row:2">↓</span>
+      <span class="fu-arrow" style="grid-column:5;grid-row:2">↑</span>
+      <div class="card" style="grid-column:1;grid-row:3"><div class="icon">🔑</div><div class="name">Connexion</div><div class="detail">Se connecter à son compte</div></div>
+      <div class="card" style="grid-column:5;grid-row:3"><div class="icon">💬</div><div class="name">Conversation</div><div class="detail">Discuter avec le cuisinier</div></div>
+      <span class="fu-arrow" style="grid-column:1;grid-row:4">↓</span>
+      <span class="fu-arrow" style="grid-column:5;grid-row:4">↑</span>
+      <div class="card" style="grid-column:1;grid-row:5"><div class="icon">🔍</div><div class="name">Recherche</div><div class="detail">Chercher un cuisinier disponible</div></div>
+      <span class="fu-arrow" style="grid-column:2/5;grid-row:5">→</span>
+      <div class="card" style="grid-column:5;grid-row:5"><div class="icon">📝</div><div class="name">Demande</div><div class="detail">Envoyer une cook request</div></div>
+    </div>
+    <p class="subtitle" style="margin-top:1rem;font-size:.9rem">→ Émulateur mobile en parallèle</p>
+  </section>
+
+  <!-- ── 9. Parcours Cuisinier ──────────────────────────────── -->
+  <section class="slide" id="s9">
+    <div class="label">Démo — 2/3</div>
+    <h2>Parcours <span>Cuisinier</span></h2>
+    <div class="divider"></div>
+    <!-- U : 4 colonnes (2-1-1-2) -->
+    <div class="flow-u" style="grid-template-columns:auto 2.5rem auto 2.5rem auto 2.5rem auto;grid-template-rows:auto 1.5rem auto">
+      <div class="card" style="grid-column:1;grid-row:1"><div class="icon">📋</div><div class="name">Inscription</div><div class="detail">Créer un profil cuisinier</div></div>
+      <div class="card" style="grid-column:7;grid-row:1"><div class="icon">📨</div><div class="name">Confirmation</div><div class="detail">Envoyer la confirmation de l'événement au client</div></div>
+      <span class="fu-arrow" style="grid-column:1;grid-row:2">↓</span>
+      <span class="fu-arrow" style="grid-column:7;grid-row:2">↑</span>
+      <div class="card" style="grid-column:1;grid-row:3"><div class="icon">🔐</div><div class="name">Validation admin</div><div class="detail">Compte validé par l'admin</div></div>
+      <span class="fu-arrow" style="grid-column:2;grid-row:3">→</span>
+      <div class="card" style="grid-column:3;grid-row:3"><div class="icon">📩</div><div class="name">Demandes reçues</div><div class="detail">Consulter les cook requests</div></div>
+      <span class="fu-arrow" style="grid-column:4;grid-row:3">→</span>
+      <div class="card" style="grid-column:5;grid-row:3"><div class="icon">✔️</div><div class="name">Accepter / Refuser</div><div class="detail">Gérer les demandes clients</div></div>
+      <span class="fu-arrow" style="grid-column:6;grid-row:3">→</span>
+      <div class="card" style="grid-column:7;grid-row:3"><div class="icon">💬</div><div class="name">Chat</div><div class="detail">Communiquer avec le client</div></div>
+    </div>
+    <p class="subtitle" style="margin-top:1rem;font-size:.9rem">→ Émulateur mobile en parallèle</p>
+  </section>
+
+  <!-- ── 10. Backoffice Admin ────────────────────────────────── -->
+  <section class="slide" id="s10">
+    <div class="label">Démo — 3/3</div>
+    <h2>Backoffice <span>Admin</span></h2>
+    <div class="divider"></div>
+    <!-- U : 2 left (↓), → at bottom, 2 right (↑) -->
+    <div class="flow-u" style="grid-template-rows:auto 1.5rem auto">
+      <div class="card" style="grid-column:1;grid-row:1"><div class="icon">🔐</div><div class="name">Connexion admin</div><div class="detail">Accès réservé aux admins</div></div>
+      <div class="card" style="grid-column:5;grid-row:1"><div class="icon">👥</div><div class="name">Utilisateurs</div><div class="detail">Gérer les comptes clients</div></div>
+      <span class="fu-arrow" style="grid-column:1;grid-row:2">↓</span>
+      <span class="fu-arrow" style="grid-column:5;grid-row:2">↑</span>
+      <div class="card" style="grid-column:1;grid-row:3"><div class="icon">📊</div><div class="name">Dashboard</div><div class="detail">Vue d'ensemble de l'activité</div></div>
+      <span class="fu-arrow" style="grid-column:2/5;grid-row:3">→</span>
+      <div class="card" style="grid-column:5;grid-row:3"><div class="icon">👨‍🍳</div><div class="name">Cuisiniers</div><div class="detail">Valider les demandes cuisinier</div></div>
+    </div>
+    <p class="subtitle" style="margin-top:1rem;font-size:.9rem">→ Interface web en parallèle</p>
+  </section>
+
+  <!-- ── 11. Features techniques ────────────────────────────── -->
+  <section class="slide" id="s11">
+    <div class="label">Technique</div>
+    <h2>Features <span>notables</span></h2>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;width:100%;max-width:900px;margin-top:1rem">
+      <div class="card" style="flex:1">
+        <div class="icon">🔐</div>
+        <div class="name">Authentification JWT</div>
+        <div class="detail">Access + refresh tokens, rôles client / cuisinier / admin</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">💬</div>
+        <div class="name">Messagerie temps réel</div>
+        <div class="detail">Chat entre client et cuisinier via WebSocket gateway</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🖼️</div>
+        <div class="name">Upload de médias</div>
+        <div class="detail">Photos de profil et de plats stockées côté serveur</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">🔔</div>
+        <div class="name">Notifications push</div>
+        <div class="detail">Alertes en temps réel sur l'app mobile (Expo)</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">✅</div>
+        <div class="name">Validation cuisinier</div>
+        <div class="detail">Workflow de certification des profils via le backoffice admin</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="icon">📝</div>
+        <div class="name">Cook requests</div>
+        <div class="detail">Envoi, acceptation et suivi des demandes de prestation</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 12. Bilan ─────────────────────────────────────────── -->
+  <section class="slide" id="s12">
+    <div class="label">Bilan</div>
+    <h2>Ce qu'on a <span>appris</span></h2>
+    <div class="divider"></div>
+    <div class="stats-row">
+      <div class="stat"><div class="num">3</div><div class="desc">apps distinctes</div></div>
+      <div class="stat"><div class="num">8</div><div class="desc">modules backend</div></div>
+      <div class="stat"><div class="num">E2E</div><div class="desc">tests Playwright</div></div>
+    </div>
+    <div style="margin-top:1.5rem;width:100%;max-width:700px">
+      <div class="card" style="width:100%">
+        <div class="icon">🎓</div>
+        <div class="name">Ce qu'on a appris</div>
+        <div class="list" style="margin-top:.5rem">
+          <div class="list-item"><span class="dot"></span>Travail de groupe sur une seule branche en méthode agile</div>
+          <div class="list-item"><span class="dot"></span>Création de tests E2E afin de sécuriser les pushs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 13. Clôture ───────────────────────────────────────── -->
+  <section class="slide transition-slide" id="s13">
+    <div class="big-icon">🍳</div>
+    <h1 style="color:#fff">Merci !</h1>
+    <p class="subtitle">Questions ?</p>
+    <div style="display:flex;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center">
+      <span class="pill" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">Cook'US</span>
+      <span class="pill" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">2025 / 2026</span>
+      <span class="pill" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">ESD</span>
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<!-- ─── Progress ─────────────────────────────────────────── -->
+<div id="progress">
+  <div id="dots"></div>
+  <div id="counter">1 / 13</div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  /* Build dot buttons */
+  slides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'dot-btn' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Slide ${i + 1}`);
+    btn.addEventListener('click', () => go(i));
+    dots.appendChild(btn);
+  });
+
+  function go(index) {
+    if (index < 0 || index >= slides.length) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('prev');
+
+    /* Clean prev class after transition */
+    const old = slides[current];
+    setTimeout(() => old.classList.remove('prev'), 500);
+
+    current = index;
+    slides[current].classList.add('active');
+
+    /* Update dots */
+    document.querySelectorAll('.dot-btn').forEach((d, i) =>
+      d.classList.toggle('active', i === current)
+    );
+
+    counter.textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  /* Keyboard navigation */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ')
+      go(current + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')
+      go(current - 1);
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+  });
+
+  /* Button navigation */
+  document.getElementById('prev-btn').addEventListener('click', () => go(current - 1));
+  document.getElementById('next-btn').addEventListener('click', () => go(current + 1));
+
+  /* Touch / swipe support */
+  let touchX = null;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) go(dx < 0 ? current + 1 : current - 1);
+    touchX = null;
+  });
+</script>
+
+</body>
+</html>
