@@ -10,9 +10,6 @@ const API_URL = getApiUrl();
 
 const WEB_CLIENT_ID =
   "23048309381-rs777825pp3nult0ku2qsqor24c3eb0f.apps.googleusercontent.com";
-const IOS_CLIENT_ID =
-  "23048309381-264nop00q263uit4t96fo1cb1n6u9tqk.apps.googleusercontent.com";
-// const ANDROID_CLIENT_ID = "TODO";
 
 export type GoogleUser = {
   email: string;
@@ -83,8 +80,9 @@ export function useGoogleAuth() {
 
   const [request, , promptAsync] = Google.useAuthRequest({
     webClientId: WEB_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    // androidClientId: ANDROID_CLIENT_ID,
+    androidClientId: WEB_CLIENT_ID,
+    iosClientId: WEB_CLIENT_ID,
+    redirectUri: "https://auth.expo.io/@mdorizon/cook-us",
   });
 
   async function signInWithGoogle(): Promise<GoogleAuthResult> {
