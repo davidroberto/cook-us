@@ -65,4 +65,37 @@ test.describe("Profil cuisinier", () => {
     await expect(rate).toBeVisible({ timeout: PROFILE_TIMEOUT });
     await expect(rate).toContainText("€/h");
   });
+
+  // ── Galerie de photos ─────────────────────────────────────────────────────
+
+  test("affiche la galerie de photos du cuisinier", async ({ page }) => {
+    const gallery = page.getByTestId("profile-gallery");
+    await expect(gallery).toBeVisible({ timeout: PROFILE_TIMEOUT });
+  });
+
+  test("affiche au moins une photo dans la galerie", async ({ page }) => {
+    await expect(page.getByTestId("profile-gallery")).toBeVisible({ timeout: PROFILE_TIMEOUT });
+    const images = page.locator('[data-testid^="gallery-image-"]');
+    await expect(images.first()).toBeVisible({ timeout: PROFILE_TIMEOUT });
+    expect(await images.count()).toBeGreaterThanOrEqual(1);
+  });
+
+  // ── Avis clients ──────────────────────────────────────────────────────────
+
+  test("affiche la section avis clients", async ({ page }) => {
+    const reviews = page.getByTestId("profile-reviews");
+    await expect(reviews).toBeVisible({ timeout: PROFILE_TIMEOUT });
+  });
+
+  test("affiche la note moyenne du cuisinier", async ({ page }) => {
+    const rating = page.getByTestId("profile-average-rating");
+    await expect(rating).toBeVisible({ timeout: PROFILE_TIMEOUT });
+  });
+
+  test("affiche au moins un avis client", async ({ page }) => {
+    await expect(page.getByTestId("profile-reviews")).toBeVisible({ timeout: PROFILE_TIMEOUT });
+    const reviewItems = page.getByTestId("profile-review-item");
+    await expect(reviewItems.first()).toBeVisible({ timeout: PROFILE_TIMEOUT });
+    expect(await reviewItems.count()).toBeGreaterThanOrEqual(1);
+  });
 });
