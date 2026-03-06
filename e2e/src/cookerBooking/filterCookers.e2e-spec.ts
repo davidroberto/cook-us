@@ -70,4 +70,61 @@ test.describe("Filtrer les cuisiniers", () => {
     await page.getByTestId("speciality-chip-french_cooking").click();
     await expect(page.getByTestId("cooker-list")).toBeVisible({ timeout: TIMEOUT });
   });
+
+  // ── Filtre par prix ───────────────────────────────────────────────────────
+
+  test("affiche les champs de filtre par prix", async ({ page }) => {
+    await expect(page.getByTestId("price-min-input")).toBeVisible({ timeout: TIMEOUT });
+    await expect(page.getByTestId("price-max-input")).toBeVisible({ timeout: TIMEOUT });
+  });
+
+  test("filtrer par prix max affiche des résultats ou le message vide", async ({ page }) => {
+    await page.getByTestId("price-max-input").fill("10");
+    const cardOrEmpty = page
+      .getByTestId("cooker-card")
+      .first()
+      .or(page.getByTestId("empty-message"));
+    await expect(cardOrEmpty).toBeVisible({ timeout: TIMEOUT });
+  });
+
+  test("filtrer par prix min affiche des résultats ou le message vide", async ({ page }) => {
+    await page.getByTestId("price-min-input").fill("100");
+    const cardOrEmpty = page
+      .getByTestId("cooker-card")
+      .first()
+      .or(page.getByTestId("empty-message"));
+    await expect(cardOrEmpty).toBeVisible({ timeout: TIMEOUT });
+  });
+
+  test("filtrer par plage de prix affiche uniquement les cuisiniers dans la fourchette", async ({ page }) => {
+    await page.getByTestId("price-min-input").fill("20");
+    await page.getByTestId("price-max-input").fill("50");
+
+    const cardOrEmpty = page
+      .getByTestId("cooker-card")
+      .first()
+      .or(page.getByTestId("empty-message"));
+    await expect(cardOrEmpty).toBeVisible({ timeout: TIMEOUT });
+
+    // Si des résultats existent, vérifier que les tarifs sont dans la fourchette
+    const cards = page.getByTestId("cooker-card");
+    const count = await cards.count();
+    for (let i = 0; i < count; i++) {
+      const rateText = await cards.nth(i).getByTestId("cooker-rate").innerText();
+      const rate = parseFloat(rateText.replace(/[^0-9.,]/g, "").replace(",", "."));
+      expect(rate).toBeGreaterThanOrEqual(20);
+      expect(rate).toBeLessThanOrEqual(50);
+    }
+  });
+
+  test("effacer les filtres de prix restaure la liste complète", async ({ page }) => {
+    // Appliquer un filtre restrictif
+    await page.getByTestId("price-max-input").fill("1");
+    await expect(page.getByTestId("empty-message")).toBeVisible({ timeout: TIMEOUT });
+
+    // Effacer le filtre
+    await page.getByTestId("price-max-input").fill("");
+    await expect(page.getByTestId("cooker-list")).toBeVisible({ timeout: TIMEOUT });
+    await expect(page.getByTestId("cooker-card").first()).toBeVisible({ timeout: TIMEOUT });
+  });
 });

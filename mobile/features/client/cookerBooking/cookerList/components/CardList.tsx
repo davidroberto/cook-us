@@ -122,6 +122,7 @@ export const CookerList = () => {
 
       <View style={styles.priceRow}>
         <TextInput
+          testID="price-min-input"
           style={styles.priceInput}
           placeholder="Prix min"
           placeholderTextColor={colors.text + "80"}
@@ -131,6 +132,7 @@ export const CookerList = () => {
         />
         <Text style={styles.priceSeparator}>—</Text>
         <TextInput
+          testID="price-max-input"
           style={styles.priceInput}
           placeholder="Prix max"
           placeholderTextColor={colors.text + "80"}
