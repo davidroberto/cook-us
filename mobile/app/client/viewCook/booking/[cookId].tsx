@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 
 export default function BookingPage() {
   const { cookId } = useLocalSearchParams<{ cookId: string }>();
@@ -29,29 +29,29 @@ export default function BookingPage() {
 
   if (state.status === "loading") {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenBackground>
         {header}
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.main} />
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   if (state.status === "not_found") {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenBackground>
         {header}
         <View style={styles.centered}>
           <Text style={styles.notFoundText}>Ce cuisinier est introuvable.</Text>
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   if (state.status === "error") {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenBackground>
         {header}
         <View style={styles.centered}>
           <Text style={styles.errorText}>
@@ -61,12 +61,12 @@ export default function BookingPage() {
             <Text style={styles.retryText}>Réessayer</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenBackground>
       {header}
       <SendPropositionForm
         cookId={cookId ?? ""}
@@ -75,15 +75,11 @@ export default function BookingPage() {
         cookLastName={state.cook.lastName}
         cookSpeciality={state.cook.speciality}
       />
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -108,7 +104,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
-    backgroundColor: colors.background,
   },
   notFoundText: {
     fontSize: 16,

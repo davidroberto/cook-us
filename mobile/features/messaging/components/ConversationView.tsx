@@ -125,7 +125,6 @@ export function ConversationView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   list: {
     flex: 1,

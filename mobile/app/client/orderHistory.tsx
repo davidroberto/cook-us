@@ -20,7 +20,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenBackground } from "@/components/ui/ScreenBackground";
 
 type Tab = "upcoming" | "completed";
 
@@ -74,19 +74,19 @@ export default function OrderHistoryScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <ScreenBackground>
         {header}
         {tabs}
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.main} />
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <ScreenBackground>
         {header}
         {tabs}
         <View style={styles.centered}>
@@ -95,12 +95,12 @@ export default function OrderHistoryScreen() {
             <Button title="Réessayer" variant="outline" onPress={refresh} />
           </View>
         </View>
-      </SafeAreaView>
+      </ScreenBackground>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <ScreenBackground>
       {header}
       {tabs}
       <KeyboardAvoidingView
@@ -150,15 +150,11 @@ export default function OrderHistoryScreen() {
         )}
       />
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -183,12 +179,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
-    backgroundColor: colors.background,
   },
   list: {
     padding: 16,
     paddingBottom: 32,
-    backgroundColor: colors.background,
     flexGrow: 1,
   },
   emptyTitle: {
@@ -214,7 +208,6 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: colors.background,
   },
   tab: {
     flex: 1,

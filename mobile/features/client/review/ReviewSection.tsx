@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   commentInput: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.tertiary,
     borderRadius: 8,
