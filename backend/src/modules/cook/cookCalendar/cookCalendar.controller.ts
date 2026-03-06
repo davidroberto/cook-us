@@ -19,7 +19,9 @@ class BlockDateDto {
   @ApiProperty({ example: "2026-03-15" })
   @IsString()
   @IsNotEmpty()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: "Format de date invalide (attendu : YYYY-MM-DD)" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Format de date invalide (attendu : YYYY-MM-DD)",
+  })
   date: string;
 }
 
@@ -30,7 +32,9 @@ export class CookCalendarController {
   constructor(private readonly useCase: CookCalendarUseCase) {}
 
   @Get("me/calendar")
-  @ApiOperation({ summary: "Calendrier du cuisinier (réservations + dates bloquées)" })
+  @ApiOperation({
+    summary: "Calendrier du cuisinier (réservations + dates bloquées)",
+  })
   @ApiQuery({ name: "year", required: true, example: 2026 })
   @ApiQuery({ name: "month", required: true, example: 3 })
   getCalendar(

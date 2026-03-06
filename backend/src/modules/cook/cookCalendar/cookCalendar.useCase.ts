@@ -7,7 +7,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Between, Repository } from "typeorm";
 import { Cook } from "@src/modules/cook/cook.entity";
 import { CookUnavailability } from "@src/modules/cook/cookUnavailability.entity";
-import { CookRequestEntity, CookRequestStatus } from "@src/modules/cook-request/cookRequest.entity";
+import {
+  CookRequestEntity,
+  CookRequestStatus,
+} from "@src/modules/cook-request/cookRequest.entity";
 
 @Injectable()
 export class CookCalendarUseCase {
@@ -58,7 +61,9 @@ export class CookCalendarUseCase {
         status: r.status,
       }));
 
-    const monthPrefix = `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}`;
+    const monthPrefix = `${String(year).padStart(4, "0")}-${String(
+      month
+    ).padStart(2, "0")}`;
     const blockedDates = unavailabilities
       .filter((u) => u.date.startsWith(monthPrefix))
       .map((u) => u.date);
@@ -68,7 +73,9 @@ export class CookCalendarUseCase {
 
   async blockDate(userId: number, date: string) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      throw new BadRequestException("Format de date invalide (attendu : YYYY-MM-DD).");
+      throw new BadRequestException(
+        "Format de date invalide (attendu : YYYY-MM-DD)."
+      );
     }
     const cook = await this.findCookByUserId(userId);
 
