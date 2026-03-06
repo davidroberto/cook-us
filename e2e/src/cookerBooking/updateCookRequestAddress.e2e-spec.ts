@@ -8,9 +8,6 @@ const TIMEOUT = 10_000;
 
 async function loginAsClient(page: Page) {
   await page.goto(`${MOBILE_URL}/login`);
-  await expect(page.getByTestId("login-form")).toBeVisible({ timeout: TIMEOUT });
-  await page.getByTestId("email-input").fill("test.addr.client@cookus.app");
-  await page.getByTestId("password-input").fill("client1234");
   await expect(page.getByTestId("login-form")).toBeVisible({
     timeout: TIMEOUT,
   });
@@ -123,14 +120,14 @@ test.describe("Modification d'adresse depuis le modal des commandes", () => {
           (res) =>
             res.url().includes("/address") &&
             res.request().method() === "PATCH",
-          { timeout: TIMEOUT }
+          { timeout: TIMEOUT },
         ),
         page.getByTestId("address-editor-save").click(),
       ]);
 
       expect(
         response.status(),
-        `API a répondu ${response.status()}: ${await response.text()}`
+        `API a répondu ${response.status()}: ${await response.text()}`,
       ).toBe(200);
 
       await expect(page.getByTestId("address-editor-street")).not.toBeVisible({
@@ -140,10 +137,6 @@ test.describe("Modification d'adresse depuis le modal des commandes", () => {
       // Fermer le modal
       await page.getByText("Fermer").click();
 
-      // La conversation se rafraîchit après fermeture — vérifier que le summary card est toujours visible
-      await expect(page.getByTestId("request-summary-card").first()).toBeVisible({
-        timeout: TIMEOUT,
-      });
       // Wait for modal to close
       await expect(
         page.getByTestId("request-summary-card").first(),

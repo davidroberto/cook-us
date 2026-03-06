@@ -232,7 +232,8 @@ const COOKS_DATA = [
     city: "Paris",
     validationStatus: CookValidationStatus.VALIDATED,
     siret: "11122233300044",
-    description: "Compte dédié aux tests e2e."},
+    description: "Compte dédié aux tests e2e.",
+  },
   {
     firstName: "Sophie",
     lastName: "Blanc",
