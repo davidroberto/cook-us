@@ -31,7 +31,7 @@ function getMimeType(uri: string): string {
   return mimeTypes[ext ?? ""] ?? "image/jpeg";
 }
 
-async function uploadThumbnail(uri: string): Promise<string> {
+async function uploadThumbnail(uri: string, token: string): Promise<string> {
   const mimeType = getMimeType(uri);
   const filename = uri.split("/").pop() ?? "profile.jpg";
   const formData = new FormData();
@@ -43,6 +43,7 @@ async function uploadThumbnail(uri: string): Promise<string> {
 
   const response = await fetch(`${API_URL}/upload`, {
     method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
 
@@ -60,6 +61,32 @@ async function uploadThumbnail(uri: string): Promise<string> {
   return `${baseUrl}${relativeUrl}`;
 }
 
+async function patchThumbnail(
+  thumbnailUrl: string,
+  token: string,
+  role: string
+): Promise<void> {
+  await fetch(`${API_URL}/auth/me`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ thumbnail: thumbnailUrl }),
+  });
+
+  if (role === "cook") {
+    await fetch(`${API_URL}/cook/profile`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ photoUrl: thumbnailUrl }),
+    });
+  }
+}
+
 export function useRegister() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,19 +100,10 @@ export function useRegister() {
     try {
       validateCommand(command);
 
-      let thumbnailUrl: string | undefined = undefined;
-      if (command.thumbnail) {
-        try {
-          thumbnailUrl = await uploadThumbnail(command.thumbnail);
-        } catch (uploadErr) {
-          console.warn("Upload photo échoué, inscription sans photo:", uploadErr);
-        }
-      }
-
       const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...command, thumbnail: thumbnailUrl }),
+        body: JSON.stringify({ ...command, thumbnail: undefined }),
       });
 
       if (!response.ok) {
@@ -96,7 +114,21 @@ export function useRegister() {
         );
       }
 
-      return (await response.json()) as AuthResponse;
+      const authData = (await response.json()) as AuthResponse;
+
+      if (command.thumbnail) {
+        try {
+          const thumbnailUrl = await uploadThumbnail(
+            command.thumbnail,
+            authData.token
+          );
+          await patchThumbnail(thumbnailUrl, authData.token, command.role);
+        } catch (uploadErr) {
+          console.warn("Upload photo échoué, inscription sans photo:", uploadErr);
+        }
+      }
+
+      return authData;
     } catch (err) {
       setError(
         err instanceof Error
